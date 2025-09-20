@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Admin Dashboard</title>
+</head>
+<body>
+	<h2>Admin Dashboard</h2>
+	<div>
+		<p>Total Profit: <span th:text="${totalProfit}"></span></p>
+		<p>Total Dues Receivable: <span th:text="${totalDuesReceivable}"></span></p>
+		<p>Total Payable to Vendors: <span th:text="${totalVendorPayables}"></span></p>
+	</div>
+	<h3>Top 10 Customers by Profit</h3>
+	<table border="1">
+		<thead>
+			<tr><th>Customer</th><th>Profit</th></tr>
+		</thead>
+		<tbody>
+			<tr th:each="c : ${top10Customers}">
+				<td th:text="${c.customerName}"></td>
+				<td th:text="${c.profit}"></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<h3>Admin Actions</h3>
+	<p><a th:href="@{/admin/users}">Manage Users</a></p>
+</body>
+</html> 

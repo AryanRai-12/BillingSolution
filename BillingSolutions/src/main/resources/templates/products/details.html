@@ -1,0 +1,215 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Product Details</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h2>Product Details</h2>-->
+<!--    <a th:href="@{/products}">Back to Products</a>-->
+    
+<!--    <table border="1">-->
+<!--        <tr>-->
+<!--            <th>ID</th>-->
+<!--            <td th:text="${product.id}">1</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th>Name</th>-->
+<!--            <td th:text="${product.name}">Product Name</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th>SKU</th>-->
+<!--            <td th:text="${product.sku}">SKU</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th>Selling Price</th>-->
+<!--            <td th:text="${product.sellingPrice}">0.00</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th>Cost Price</th>-->
+<!--            <td th:text="${product.costPrice}">0.00</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th>Unit Type</th>-->
+<!--            <td th:text="${product.unitType != null ? product.unitType.name() : 'N/A'}">PCS/KG</td>-->
+<!--        </tr>-->
+
+<!--         PCS Fields -->
+<!--        <tr th:if="${product.unitType != null} and ${product.unitType.name() == 'PCS'}">-->
+<!--            <th>Number of Boxes</th>-->
+<!--            <td th:text="${product.numberOfBoxes}">0</td>-->
+<!--        </tr>-->
+<!--        <tr th:if="${product.unitType != null} and ${product.unitType.name() == 'PCS'}">-->
+<!--            <th>Units Per Box</th>-->
+<!--            <td th:text="${product.unitsPerBox}">0</td>-->
+<!--        </tr>-->
+<!--        <tr th:if="${product.unitType != null} and ${product.unitType.name() == 'PCS'}">-->
+<!--            <th>Total Pcs</th>-->
+<!--            <td th:text="${product.pcs}">0</td>-->
+<!--        </tr>-->
+
+<!--         KG Fields -->
+<!--        <tr th:if="${product.unitType != null} and ${product.unitType.name() == 'KG'}">-->
+<!--            <th>Total Bags</th>-->
+<!--            <td th:text="${product.totalBags}">0</td>-->
+<!--        </tr>-->
+<!--        <tr th:if="${product.unitType != null} and ${product.unitType.name() == 'KG'}">-->
+<!--            <th>Total Bag Weight</th>-->
+<!--            <td th:text="${product.totalBagWeight}">0.00</td>-->
+<!--        </tr>-->
+<!--        <tr th:if="${product.unitType != null} and ${product.unitType.name() == 'KG'}">-->
+<!--            <th>Weight Per Item</th>-->
+<!--            <td th:text="${product.weightPerItem}">0.00</td>-->
+<!--        </tr>-->
+<!--        <tr th:if="${product.unitType != null} and ${product.unitType.name() == 'KG'}">-->
+<!--            <th>Total Pcs</th>-->
+<!--            <td th:text="${product.pcs}">0</td>-->
+<!--        </tr>-->
+		
+<!--    </table>-->
+	
+
+<!--	 ✅ Delete button -->
+<!--	<form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" style="display:inline;">-->
+<!--	    <button type="submit" onclick="return confirm('Are you sure you want to delete this product?');">-->
+<!--	        Delete Product-->
+<!--	    </button>-->
+<!--	</form>-->
+<!--	<a th:href="@{/products/{id}/edit(id=${product.id})}">-->
+<!--	    <button type="button">Edit Product</button>-->
+<!--	</a>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background: #f2f2f2;
+        }
+        .actions {
+            margin-top: 20px;
+        }
+        .actions a, .actions button {
+            display: inline-block;
+            padding: 8px 14px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .edit-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+        .back-btn {
+            background: #777;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>Product Details</h1>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <td th:text="${product.id}"></td>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <td th:text="${product.name}"></td>
+    </tr>
+    <tr>
+        <th>SKU</th>
+        <td th:text="${product.sku}"></td>
+    </tr>
+    <tr>
+        <th>Vendor</th>
+        <td th:text="${product.vendor}"></td>
+    </tr>
+    <tr>
+        <th>Cost Price</th>
+        <td th:text="${product.costPrice}"></td>
+    </tr>
+    <tr>
+        <th>Selling Price</th>
+        <td th:text="${product.sellingPrice}"></td>
+    </tr>
+    <tr>
+        <th>Unit Type</th>
+        <td th:text="${product.unitType}"></td>
+    </tr>
+    <tr>
+        <th>Units Per Box</th>
+        <td th:text="${product.unitsPerBox}"></td>
+    </tr>
+    <tr>
+        <th>Number of Boxes</th>
+        <td th:text="${product.numberOfBoxes}"></td>
+    </tr>
+    <tr>
+        <th>Pcs</th>
+        <td th:text="${product.pcs}"></td>
+    </tr>
+    <tr>
+        <th>Total Bags</th>
+        <td th:text="${product.totalBags}"></td>
+    </tr>
+    <tr>
+        <th>Weight Per Item</th>
+        <td th:text="${product.weightPerItem}"></td>
+    </tr>
+    <tr>
+        <th>Total Bag Weight</th>
+        <td th:text="${product.totalBagWeight}"></td>
+    </tr>
+</table>
+
+<div class="actions">
+    <!-- Edit Button -->
+    <a th:href="@{/products/{id}/edit(id=${product.id})}" class="edit-btn">Edit</a>
+
+    <!-- Delete Button -->
+    <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" style="display:inline;">
+        <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this product?');">
+            Delete
+        </button>
+    </form>
+
+    <!-- Back Button -->
+    <a th:href="@{/products}" class="back-btn">Back to List</a>
+</div>
+
+</body>
+</html>

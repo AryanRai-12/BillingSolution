@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Bill</title>
+</head>
+<body>
+	<h2>Bill</h2>
+	<div>
+		<p><strong>Customer:</strong> <span th:text="${bill.customerNameSnapshot}"></span></p>
+		<p><strong>GST:</strong> <span th:text="${bill.customerGstSnapshot}"></span></p>
+		<p><strong>Phone:</strong> <span th:text="${bill.customerPhoneSnapshot}"></span></p>
+		<p><strong>Address:</strong> <span th:text="${bill.customerAddressSnapshot}"></span></p>
+	</div>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>Product</th><th>Unit Price</th><th>Qty (pcs)</th><th>Discount</th><th>Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="i : ${bill.items}">
+				<td th:text="${i.product.name}"></td>
+				<td th:text="${i.unitPriceSnapshot}"></td>
+				<td th:text="${i.totalPieces}"></td>
+				<td th:text="${i.lineDiscount}"></td>
+				<td th:text="${i.lineTotal}"></td>
+			</tr>
+		</tbody>
+	</table>
+	<div>
+		<p><strong>Sub Total:</strong> <span th:text="${bill.subTotal}"></span></p>
+		<p><strong>Total Discount:</strong> <span th:text="${bill.totalDiscount}"></span></p>
+		<p><strong>Total:</strong> <span th:text="${bill.total}"></span></p>
+		<p><strong>Previous Due:</strong> <span th:text="${bill.previousDue}"></span></p>
+		<p><strong>Paid Against Previous Due:</strong> <span th:text="${bill.paymentAgainstPreviousDue}"></span></p>
+		<p><strong>New Due:</strong> <span th:text="${bill.newDue}"></span></p>
+	</div>
+</body>
+</html> 

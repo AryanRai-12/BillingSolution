@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8">
+	<title>BillingSolutions</title>
+</head>
+<body>
+	<h1>BillingSolutions</h1>
+	<nav>
+		<a th:href="@{/customers}">Customers</a> |
+		<a th:href="@{/vendors}">Vendors</a> |
+		<a th:href="@{/products}">Products</a> |
+		<a th:href="@{/billing/create}">Create Bill</a>
+		<span sec:authorize="hasRole('ADMIN')"> | <a th:href="@{/admin/dashboard}">Admin Dashboard</a></span>
+	</nav>
+</body>
+</html> 

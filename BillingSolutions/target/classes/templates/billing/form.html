@@ -1,0 +1,1126 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Create Bill</title>-->
+<!--    <style>-->
+<!--        .form-group { margin-bottom: 15px; }-->
+<!--        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }-->
+<!--        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }-->
+<!--        .error-message { color: red; font-weight: bold; margin-top: 10px; }-->
+<!--        .items-table { width: 100%; border-collapse: collapse; margin-top: 10px; }-->
+<!--        .items-table th, .items-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }-->
+<!--        .items-table th { background-color: #f2f2f2; }-->
+<!--        .delete-btn { background-color: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }-->
+<!--        .delete-btn:hover { background-color: #c82333; }-->
+        
+<!--        /* Searchable dropdown styles */-->
+<!--        .dropdown { position: relative; width: 100%; display: inline-block; }-->
+<!--        .dropdown input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; }-->
+<!--        .dropdown-list { position: absolute; border: 1px solid #ddd; border-top: none; max-height: 150px; overflow-y: auto; background: white; display: none; z-index: 1000; width: 100%; }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2>Create Bill</h2>-->
+
+<!--<div th:if="${error}" class="error-message">-->
+<!--    <p th:text="${error}"></p>-->
+<!--</div>-->
+
+<!--<form th:action="@{/billing/create}" th:object="${request}" method="post">-->
+
+<!--    <div class="form-group">-->
+<!--        <label>Customer</label>-->
+<!--        <div class="dropdown" id="customerDropdown">-->
+<!--            <input type="text" placeholder="Search customer..." autocomplete="off">-->
+<!--            <div class="dropdown-list">-->
+<!--                <div th:each="c : ${customers}" th:text="${c.name}" th:attr="data-value=${c.id}"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <input type="hidden" th:field="*{customerId}" id="customerIdHidden"/>-->
+<!--    </div>-->
+
+<!--    <div class="form-group">-->
+<!--        <label>Salesman</label>-->
+<!--        <div class="dropdown" id="salesmanDropdown">-->
+<!--            <input type="text" placeholder="Search salesman..." autocomplete="off">-->
+<!--            <div class="dropdown-list">-->
+<!--                <div th:each="s : ${salesmen}" th:text="${s.name}" th:attr="data-value=${s.id}"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <input type="hidden" th:field="*{salesmanId}" id="salesmanIdHidden"/>-->
+<!--    </div>-->
+
+<!--    <div class="form-group">-->
+<!--        <label>Payment Against Previous Due</label>-->
+<!--        <input th:field="*{paymentAgainstPreviousDue}" type="number" step="0.01" value="0"/>-->
+<!--    </div>-->
+
+<!--    <fieldset>-->
+<!--        <legend>Items</legend>-->
+<!--        <table class="items-table">-->
+<!--            <thead>-->
+<!--                <tr>-->
+<!--                    <th>Product</th>-->
+<!--                    <th>Unit Type</th>-->
+<!--                    <th>Quantity</th>-->
+<!--                    <th>Unit Price</th>-->
+<!--                    <th>Discount %</th>-->
+<!--                    <th>Item Total</th>-->
+<!--                    <th>Action</th>-->
+<!--                </tr>-->
+<!--            </thead>-->
+<!--            <tbody id="items-container">-->
+<!--                <tr class="product-row">-->
+<!--                    <td>-->
+<!--                        <div class="dropdown" id="productDropdown0">-->
+<!--                            <input type="text" placeholder="Search product..." autocomplete="off">-->
+<!--                            <div class="dropdown-list">-->
+<!--                                <div th:each="p : ${products}" th:text="${p.name}" th:attr="data-value=${p.id}"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" th:field="*{items[0].productId}" name="items[0].productId" id="productIdHidden0"/>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <select th:field="*{items[0].unitType}" name="items[0].unitType">-->
+<!--                            <option value="PCS">PCS</option>-->
+<!--                            <option value="DOZEN">DOZEN</option>-->
+<!--                            <option value="HALF_DOZEN">HALF_DOZEN</option>-->
+<!--                            <option value="BOX">BOX</option>-->
+<!--                        </select>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <input th:field="*{items[0].quantity}" name="items[0].quantity" type="number" step="1" value="1" min="1" style="width: 80px;" onchange="calculateItemTotal(this)"/>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <span id="unitPrice0" class="unit-price">₹0.00</span>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <input th:field="*{items[0].discountPercent}" name="items[0].discountPercent" type="number" step="0.01" value="0" style="width: 80px;" onchange="calculateItemTotal(this)"/>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <span id="itemTotal0" class="item-total">₹0.00</span>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+
+<!--        <button type="button" onclick="addItem()">+ Add Item</button>-->
+        
+<!--        <div style="margin-top: 20px; text-align: right;">-->
+<!--            <div style="font-size: 18px; font-weight: bold;">-->
+<!--                Grand Total: <span id="grandTotal">₹0.00</span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </fieldset>-->
+
+<!--    <div style="margin-top: 20px;">-->
+<!--        <button type="submit" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Create Bill</button>-->
+<!--    </div>-->
+<!--</form>-->
+
+<!--<script>-->
+<!--    let productsData = /*[[${products}]]*/ [];-->
+
+<!--    function updateUnitPrice(hiddenFieldId, productId) {-->
+<!--        const product = productsData.find(p => p.id == productId);-->
+<!--        if (product) {-->
+<!--            const index = hiddenFieldId.replace('productIdHidden', '');-->
+<!--            const unitPriceElement = document.getElementById(`unitPrice${index}`);-->
+<!--            if (unitPriceElement) {-->
+<!--                unitPriceElement.textContent = `₹${product.sellingPrice.toFixed(2)}`;-->
+<!--                // Trigger calculation for this item-->
+<!--                const row = document.querySelector(`#productIdHidden${index}`).closest('tr');-->
+<!--                if (row) {-->
+<!--                    const quantityInput = row.querySelector('input[name*="quantity"]');-->
+<!--                    if (quantityInput) {-->
+<!--                        calculateItemTotal(quantityInput);-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+
+<!--    function calculateItemTotal(inputElement) {-->
+<!--        const row = inputElement.closest('tr');-->
+<!--        const container = document.getElementById('items-container');-->
+<!--        const index = Array.from(container.children).indexOf(row);-->
+        
+<!--        const quantity = parseFloat(inputElement.value) || 0;-->
+<!--        const discountInput = row.querySelector('input[name*="discountPercent"]');-->
+<!--        const discountPercent = parseFloat(discountInput ? discountInput.value : 0) || 0;-->
+        
+<!--        const unitPriceElement = document.getElementById(`unitPrice${index}`);-->
+<!--        const itemTotalElement = document.getElementById(`itemTotal${index}`);-->
+        
+<!--        if (unitPriceElement && itemTotalElement) {-->
+<!--            const unitPrice = parseFloat(unitPriceElement.textContent.replace('₹', '')) || 0;-->
+<!--            const grossTotal = quantity * unitPrice;-->
+<!--            const discountAmount = grossTotal * (discountPercent / 100);-->
+<!--            const netTotal = grossTotal - discountAmount;-->
+            
+<!--            itemTotalElement.textContent = `₹${netTotal.toFixed(2)}`;-->
+<!--        }-->
+        
+<!--        calculateGrandTotal();-->
+<!--    }-->
+
+<!--    function calculateGrandTotal() {-->
+<!--        const itemTotals = document.querySelectorAll('.item-total');-->
+<!--        let grandTotal = 0;-->
+        
+<!--        itemTotals.forEach(element => {-->
+<!--            const value = parseFloat(element.textContent.replace('₹', '')) || 0;-->
+<!--            grandTotal += value;-->
+<!--        });-->
+        
+<!--        const grandTotalElement = document.getElementById('grandTotal');-->
+<!--        if (grandTotalElement) {-->
+<!--            grandTotalElement.textContent = `₹${grandTotal.toFixed(2)}`;-->
+<!--        }-->
+<!--    }-->
+
+<!--    function setupDropdown(dropdownId, hiddenFieldId) {-->
+<!--        const dropdown = document.getElementById(dropdownId);-->
+<!--        if (!dropdown) {-->
+<!--            console.error(`Dropdown with id ${dropdownId} not found`);-->
+<!--            return;-->
+<!--        }-->
+        
+<!--        const input = dropdown.querySelector("input");-->
+<!--        const list = dropdown.querySelector(".dropdown-list");-->
+<!--        const hiddenField = document.getElementById(hiddenFieldId);-->
+        
+<!--        if (!input || !list || !hiddenField) {-->
+<!--            console.error(`Required elements not found for dropdown ${dropdownId}`);-->
+<!--            return;-->
+<!--        }-->
+
+<!--        // Remove any existing event listeners by cloning the input-->
+<!--        const newInput = input.cloneNode(true);-->
+<!--        input.parentNode.replaceChild(newInput, input);-->
+
+<!--        newInput.addEventListener("input", function () {-->
+<!--            const filter = newInput.value.toLowerCase();-->
+<!--            const items = list.querySelectorAll("div");-->
+<!--            let visible = false;-->
+<!--            items.forEach(item => {-->
+<!--                if (item.textContent.toLowerCase().includes(filter)) {-->
+<!--                    item.style.display = "block";-->
+<!--                    visible = true;-->
+<!--                } else {-->
+<!--                    item.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+<!--            list.style.display = visible ? "block" : "none";-->
+<!--        });-->
+
+<!--               list.querySelectorAll("div").forEach(item => {-->
+<!--                   item.addEventListener("click", function () {-->
+<!--                       newInput.value = item.textContent;-->
+<!--                       hiddenField.value = item.dataset.value;-->
+<!--                       list.style.display = "none";-->
+                       
+<!--                       // Update unit price when product is selected-->
+<!--                       updateUnitPrice(hiddenFieldId, item.dataset.value);-->
+<!--                   });-->
+<!--               });-->
+
+<!--        // Add click outside to close functionality-->
+<!--        const closeHandler = function (e) {-->
+<!--            if (!dropdown.contains(e.target)) {-->
+<!--                list.style.display = "none";-->
+<!--            }-->
+<!--        };-->
+        
+<!--        // Remove existing listener and add new one-->
+<!--        document.removeEventListener("click", closeHandler);-->
+<!--        document.addEventListener("click", closeHandler);-->
+<!--    }-->
+
+<!--    function addItem() {-->
+<!--        const container = document.getElementById("items-container");-->
+<!--        const index = container.children.length;-->
+<!--        const newRow = document.createElement("tr");-->
+<!--        newRow.className = "product-row";-->
+        
+<!--        // Get products from the first PRODUCT dropdown specifically-->
+<!--        const firstProductDropdown = document.querySelector('#productDropdown0 .dropdown-list');-->
+<!--        let productsHtml = '';-->
+<!--        if (firstProductDropdown) {-->
+<!--            productsHtml = firstProductDropdown.innerHTML;-->
+<!--        } else if (productsData && productsData.length > 0) {-->
+<!--            productsHtml = productsData.map(p => `<div data-value="${p.id}">${p.name}</div>`).join('');-->
+<!--        } else {-->
+<!--            // Fallback: get products from the original Thymeleaf template-->
+<!--            const originalProducts = /*[[${products}]]*/ [];-->
+<!--            productsHtml = originalProducts.map(p => `<div data-value="${p.id}">${p.name}</div>`).join('');-->
+<!--        }-->
+        
+<!--        newRow.innerHTML = `-->
+<!--            <td>-->
+<!--                <div class="dropdown" id="productDropdown${index}">-->
+<!--                    <input type="text" placeholder="Search product..." autocomplete="off">-->
+<!--                    <div class="dropdown-list">-->
+<!--                        ${productsHtml}-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <input type="hidden" name="items[${index}].productId" id="productIdHidden${index}"/>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <select name="items[${index}].unitType">-->
+<!--                    <option value="PCS">PCS</option>-->
+<!--                    <option value="DOZEN">DOZEN</option>-->
+<!--                    <option value="HALF_DOZEN">HALF_DOZEN</option>-->
+<!--                    <option value="BOX">BOX</option>-->
+<!--                </select>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <input name="items[${index}].quantity" type="number" step="1" value="1" min="1" style="width: 80px;" onchange="calculateItemTotal(this)"/>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <span id="unitPrice${index}" class="unit-price">₹0.00</span>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <input name="items[${index}].discountPercent" type="number" step="0.01" value="0" style="width: 80px;" onchange="calculateItemTotal(this)"/>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <span id="itemTotal${index}" class="item-total">₹0.00</span>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button>-->
+<!--            </td>-->
+<!--        `;-->
+<!--        container.appendChild(newRow);-->
+        
+<!--        // Setup the new dropdown after a small delay to ensure DOM is ready-->
+<!--        setTimeout(() => {-->
+<!--            setupDropdown(`productDropdown${index}`, `productIdHidden${index}`);-->
+            
+<!--            // Add event listeners for quantity and discount changes-->
+<!--            const quantityInput = newRow.querySelector('input[name*="quantity"]');-->
+<!--            const discountInput = newRow.querySelector('input[name*="discountPercent"]');-->
+            
+<!--            if (quantityInput) {-->
+<!--                quantityInput.addEventListener('input', function() {-->
+<!--                    calculateItemTotal(this);-->
+<!--                });-->
+<!--            }-->
+            
+<!--            if (discountInput) {-->
+<!--                discountInput.addEventListener('input', function() {-->
+<!--                    calculateItemTotal(this);-->
+<!--                });-->
+<!--            }-->
+<!--        }, 10);-->
+<!--    }-->
+
+<!--    function deleteRow(button) {-->
+<!--        const row = button.closest('tr');-->
+<!--        const container = document.getElementById("items-container");-->
+
+<!--        if (container.children.length <= 1) {-->
+<!--            alert('Cannot delete the last product. At least one product is required.');-->
+<!--            return;-->
+<!--        }-->
+
+<!--        if (confirm('Are you sure you want to delete this product from the bill?')) {-->
+<!--            row.remove();-->
+<!--            calculateGrandTotal(); // Recalculate grand total after deletion-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Initialize dropdowns when page loads-->
+<!--    window.onload = function () {-->
+<!--        // Ensure productsData is populated-->
+<!--        if (!productsData || productsData.length === 0) {-->
+<!--            const originalProducts = /*[[${products}]]*/ [];-->
+<!--            productsData = originalProducts;-->
+<!--        }-->
+        
+<!--        console.log("Products data loaded:", productsData.length, "products");-->
+        
+<!--        setupDropdown("customerDropdown", "customerIdHidden");-->
+<!--        setupDropdown("salesmanDropdown", "salesmanIdHidden");-->
+<!--        setupDropdown("productDropdown0", "productIdHidden0");-->
+        
+<!--        // Add event listeners for the first row-->
+<!--        const firstQuantityInput = document.querySelector('input[name="items[0].quantity"]');-->
+<!--        const firstDiscountInput = document.querySelector('input[name="items[0].discountPercent"]');-->
+        
+<!--        if (firstQuantityInput) {-->
+<!--            firstQuantityInput.addEventListener('input', function() {-->
+<!--                calculateItemTotal(this);-->
+<!--            });-->
+<!--        }-->
+        
+<!--        if (firstDiscountInput) {-->
+<!--            firstDiscountInput.addEventListener('input', function() {-->
+<!--                calculateItemTotal(this);-->
+<!--            });-->
+<!--        }-->
+<!--    };-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Create Bill</title>-->
+<!--    <style>-->
+<!--        .form-group { margin-bottom: 15px; }-->
+<!--        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }-->
+<!--        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }-->
+<!--        .error-message { color: red; font-weight: bold; margin-top: 10px; }-->
+<!--        .items-table { width: 100%; border-collapse: collapse; margin-top: 10px; }-->
+<!--        .items-table th, .items-table td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: top; }-->
+<!--        .items-table th { background-color: #f2f2f2; }-->
+<!--        .delete-btn { background-color: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }-->
+<!--        .delete-btn:hover { background-color: #c82333; }-->
+<!--        .dropdown { position: relative; width: 100%; display: inline-block; }-->
+<!--        .dropdown input { width: 100%; }-->
+<!--        .dropdown-list { position: absolute; border: 1px solid #ddd; border-top: none; max-height: 150px; overflow-y: auto; background: white; display: none; z-index: 1000; width: 100%; box-sizing: border-box; }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2>Create Bill</h2>-->
+
+<!--<div th:if="${error}" class="error-message">-->
+<!--    <p th:text="${error}"></p>-->
+<!--</div>-->
+
+<!--<form th:action="@{/billing/create}" th:object="${request}" method="post">-->
+
+<!--    <div class="form-group">-->
+<!--        <label>Customer</label>-->
+<!--        <div class="dropdown" id="customerDropdown">-->
+<!--            <input type="text" placeholder="Search customer..." autocomplete="off">-->
+<!--            <div class="dropdown-list">-->
+<!--                <div th:each="c : ${customers}" th:text="${c.name}" th:attr="data-value=${c.id}"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <input type="hidden" th:field="*{customerId}" id="customerIdHidden"/>-->
+<!--    </div>-->
+
+<!--    <div class="form-group">-->
+<!--        <label>Salesman</label>-->
+<!--        <div class="dropdown" id="salesmanDropdown">-->
+<!--            <input type="text" placeholder="Search salesman..." autocomplete="off">-->
+<!--            <div class="dropdown-list">-->
+<!--                <div th:each="s : ${salesmen}" th:text="${s.name}" th:attr="data-value=${s.id}"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <input type="hidden" th:field="*{salesmanId}" id="salesmanIdHidden"/>-->
+<!--    </div>-->
+
+<!--    <div class="form-group">-->
+<!--        <label>Payment Against Previous Due</label>-->
+<!--        <input th:field="*{paymentAgainstPreviousDue}" type="number" step="0.01" value="0"/>-->
+<!--    </div>-->
+
+<!--    <fieldset>-->
+<!--        <legend>Items</legend>-->
+<!--        <table class="items-table">-->
+<!--            <thead>-->
+<!--                <tr>-->
+<!--                    <th>Product</th>-->
+<!--                    <th>Unit Type</th>-->
+<!--                    <th>Quantity</th>-->
+<!--                    <th>Unit Price</th>-->
+<!--                    <th>Discount %</th>-->
+<!--                    <th>Item Total</th>-->
+<!--                    <th>Action</th>-->
+<!--                </tr>-->
+<!--            </thead>-->
+<!--            <tbody id="items-container">-->
+<!--                <tr class="product-row">-->
+<!--                    <td>-->
+<!--                        <div class="dropdown" id="productDropdown0">-->
+<!--                            <input type="text" placeholder="Search product..." autocomplete="off">-->
+<!--                            <div class="dropdown-list">-->
+<!--                                <div th:each="p : ${products}" th:text="${p.name}" th:attr="data-value=${p.id}"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" th:field="*{items[0].productId}" id="productIdHidden0"/>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <select th:field="*{items[0].unitType}">-->
+<!--                            <option value="PCS">PCS</option>-->
+<!--                            <option value="DOZEN">DOZEN</option>-->
+<!--                            <option value="HALF_DOZEN">HALF_DOZEN</option>-->
+<!--                            <option value="BOX">BOX</option>-->
+<!--                        </select>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <input th:field="*{items[0].quantity}" type="number" step="1" value="1" min="1" style="width: 80px;"/>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <span class="unit-price">₹0.00</span>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <input th:field="*{items[0].discountPercent}" type="number" step="0.01" value="0" style="width: 80px;"/>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <span class="item-total">₹0.00</span>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+
+<!--        <button type="button" onclick="addItem()">+ Add Item</button>-->
+        
+<!--        <div style="margin-top: 20px; text-align: right;">-->
+<!--            <div style="font-size: 18px; font-weight: bold;">-->
+<!--                Grand Total: <span id="grandTotal">₹0.00</span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </fieldset>-->
+
+<!--    <div style="margin-top: 20px;">-->
+<!--        <button type="submit" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Create Bill</button>-->
+<!--    </div>-->
+<!--</form>-->
+
+<!--<script th:inline="javascript">-->
+<!--    /*<![CDATA[*/-->
+<!--    let productsData = /*[[${products}]]*/ [];-->
+<!--    /*]]>*/-->
+
+<!--    /**-->
+<!--     * Calculates the total for a single row and updates the grand total.-->
+<!--     */-->
+<!--    /**function calculateRowTotal(row) {-->
+<!--        const quantityInput = row.querySelector('input[name*="quantity"]');-->
+<!--        const discountInput = row.querySelector('input[name*="discountPercent"]');-->
+<!--        const unitPriceSpan = row.querySelector('.unit-price');-->
+<!--        const itemTotalSpan = row.querySelector('.item-total');-->
+
+<!--        if (!quantityInput || !unitPriceSpan || !itemTotalSpan) return;-->
+
+<!--        const quantity = parseFloat(quantityInput.value) || 0;-->
+<!--        const discountPercent = parseFloat(discountInput ? discountInput.value : 0) || 0;-->
+<!--        const unitPrice = parseFloat(unitPriceSpan.textContent.replace('₹', '')) || 0;-->
+
+<!--        const grossTotal = quantity * unitPrice;-->
+<!--        const discountAmount = grossTotal * (discountPercent / 100);-->
+<!--        const netTotal = grossTotal - discountAmount;-->
+
+<!--        itemTotalSpan.textContent = `₹${netTotal.toFixed(2)}`;-->
+<!--        calculateGrandTotal();-->
+<!--    }*/-->
+<!--	/**-->
+<!--	 * Calculates the total for a single row based on unit type and updates the grand total.-->
+<!--	 */-->
+<!--	function calculateRowTotal(row) {-->
+<!--	    // --- 1. Get all necessary elements from the row ----->
+<!--	    const quantityInput = row.querySelector('input[name*="quantity"]');-->
+<!--	    const discountInput = row.querySelector('input[name*="discountPercent"]');-->
+<!--	    const unitPriceSpan = row.querySelector('.unit-price');-->
+<!--	    const itemTotalSpan = row.querySelector('.item-total');-->
+<!--	    const unitSelect = row.querySelector('select[name*="unitType"]');-->
+<!--	    const hiddenField = row.querySelector('input[name*="productId"]');-->
+
+<!--	    if (!quantityInput || !unitPriceSpan || !itemTotalSpan || !unitSelect || !hiddenField) return;-->
+
+<!--	    // --- 2. Get the selected product's data ----->
+<!--	    const productId = hiddenField.value;-->
+<!--	    const product = productsData.find(p => p.id == productId);-->
+
+<!--	    const quantity = parseFloat(quantityInput.value) || 0;-->
+<!--	    const unitPrice = parseFloat(unitPriceSpan.textContent.replace('₹', '')) || 0;-->
+<!--	    const selectedUnit = unitSelect.value;-->
+	    
+<!--	    let effectiveQuantity = quantity; // Default to the input quantity-->
+
+<!--	    // --- 3. Calculate the effective quantity based on the product and unit type ----->
+<!--	    if (product) {-->
+<!--	        // Logic for PCS-based products-->
+<!--	        if (product.unitType === 'PCS') {-->
+<!--	            switch (selectedUnit) {-->
+<!--	                case 'DOZEN':-->
+<!--	                    effectiveQuantity = quantity * 12;-->
+<!--	                    break;-->
+<!--	                case 'HALF_DOZEN':-->
+<!--	                    effectiveQuantity = quantity * 6;-->
+<!--	                    break;-->
+<!--	                case 'BOX':-->
+<!--	                    const unitsPerBox = parseInt(product.unitsPerBox) || 0;-->
+<!--	                    effectiveQuantity = quantity * unitsPerBox;-->
+<!--	                    break;-->
+<!--	                // For 'PCS', effectiveQuantity is already correct-->
+<!--	            }-->
+<!--	        } -->
+<!--	        // Logic for KG-based products (as per your request)-->
+<!--	        else if (product.unitType === 'KG') {-->
+<!--	            const weightPerItem = parseFloat(product.weightPerItem) || 0;-->
+<!--	            if (weightPerItem > 0) { // Avoid division by zero-->
+<!--	                switch (selectedUnit) {-->
+<!--	                    case 'KG':-->
+<!--	                        // Formula: (quantity_in_kg / weight_per_item) to get piece count-->
+<!--	                        effectiveQuantity = quantity / weightPerItem;-->
+<!--	                        break;-->
+<!--	                    case 'BAG':-->
+<!--	                        // Formula: (total_weight_of_bags / weight_per_item) to get piece count-->
+<!--	                        const totalBagWeight = parseFloat(product.totalBagWeight) || 0;-->
+<!--	                        const itemsPerBag = totalBagWeight / weightPerItem;-->
+<!--	                        effectiveQuantity = quantity * itemsPerBag;-->
+<!--	                        break;-->
+<!--	                    // For 'PCS', effectiveQuantity is already correct-->
+<!--	                }-->
+<!--	            } else {-->
+<!--	                effectiveQuantity = 0; // Cannot calculate if weight per item is zero-->
+<!--	            }-->
+<!--	        }-->
+<!--	    }-->
+
+<!--	    // --- 4. Calculate the final total using the effective quantity ----->
+<!--	    const discountPercent = parseFloat(discountInput ? discountInput.value : 0) || 0;-->
+	    
+<!--	    // The price is always per-piece, so we use the effectiveQuantity-->
+<!--	    const grossTotal = effectiveQuantity * unitPrice; -->
+<!--	    const discountAmount = grossTotal * (discountPercent / 100);-->
+<!--	    const netTotal = grossTotal - discountAmount;-->
+
+<!--	    itemTotalSpan.textContent = `₹${netTotal.toFixed(2)}`;-->
+<!--	    calculateGrandTotal();-->
+<!--	}-->
+
+<!--    /**-->
+<!--     * Calculates the grand total from all item totals.-->
+<!--     */-->
+<!--    function calculateGrandTotal() {-->
+<!--        const itemTotals = document.querySelectorAll('.item-total');-->
+<!--        let grandTotal = 0;-->
+<!--        itemTotals.forEach(element => {-->
+<!--            grandTotal += parseFloat(element.textContent.replace('₹', '')) || 0;-->
+<!--        });-->
+<!--        document.getElementById('grandTotal').textContent = `₹${grandTotal.toFixed(2)}`;-->
+<!--    }-->
+    
+<!--    /**-->
+<!--     * Updates the unit type dropdown based on the selected product's type (PCS or KG).-->
+<!--     */-->
+<!--    function updateUnitOptions(row, product) {-->
+<!--        const unitSelect = row.querySelector('select[name*="unitType"]');-->
+<!--        if (!unitSelect) return;-->
+
+<!--        if (product.unitType === 'PCS') {-->
+<!--            unitSelect.innerHTML = `-->
+<!--                <option value="PCS">PCS</option>-->
+<!--                <option value="DOZEN">DOZEN</option>-->
+<!--                <option value="HALF_DOZEN">HALF_DOZEN</option>-->
+<!--                <option value="BOX">BOX</option>-->
+<!--            `;-->
+<!--        } else if (product.unitType === 'KG') {-->
+<!--            unitSelect.innerHTML = `-->
+<!--                <option value="KG">KG</option>-->
+<!--                <option value="BAG">BAG</option>-->
+<!--                <option value="PCS">PCS</option>-->
+<!--            `;-->
+<!--        }-->
+<!--    }-->
+
+<!--    /**-->
+<!--     * Updates the unit price, unit options, and recalculates the total for a row when a product is selected.-->
+<!--     */-->
+<!--    function updateProductDetails(row) {-->
+<!--        const hiddenField = row.querySelector('input[name*="productId"]');-->
+<!--        const unitPriceSpan = row.querySelector('.unit-price');-->
+<!--        const productId = hiddenField.value;-->
+<!--        const product = productsData.find(p => p.id == productId);-->
+
+<!--        if (product && unitPriceSpan) {-->
+<!--            unitPriceSpan.textContent = `₹${product.sellingPrice.toFixed(2)}`;-->
+<!--            updateUnitOptions(row, product);-->
+<!--        } else if (unitPriceSpan) {-->
+<!--            unitPriceSpan.textContent = '₹0.00';-->
+<!--        }-->
+<!--        calculateRowTotal(row); // Always recalculate-->
+<!--    }-->
+    
+<!--    /**-->
+<!--     * Sets up the search and selection functionality for a dropdown.-->
+<!--     */-->
+<!--    function setupDropdown(dropdownId, hiddenFieldId) {-->
+<!--        const dropdown = document.getElementById(dropdownId);-->
+<!--        if (!dropdown) return;-->
+
+<!--        const input = dropdown.querySelector("input[type='text']");-->
+<!--        const list = dropdown.querySelector(".dropdown-list");-->
+<!--        const hiddenField = document.getElementById(hiddenFieldId);-->
+        
+<!--        input.addEventListener("input", () => {-->
+<!--            const filter = input.value.toLowerCase();-->
+<!--            const items = list.querySelectorAll("div");-->
+<!--            let visible = false;-->
+<!--            items.forEach(item => {-->
+<!--                const match = item.textContent.toLowerCase().includes(filter);-->
+<!--                item.style.display = match ? "block" : "none";-->
+<!--                if (match) visible = true;-->
+<!--            });-->
+<!--            list.style.display = visible ? "block" : "none";-->
+<!--        });-->
+
+<!--        list.querySelectorAll("div").forEach(item => {-->
+<!--            item.addEventListener("click", () => {-->
+<!--                input.value = item.textContent;-->
+<!--                hiddenField.value = item.dataset.value;-->
+<!--                list.style.display = "none";-->
+                
+<!--                if (dropdownId.startsWith("productDropdown")) {-->
+<!--                    const row = hiddenField.closest('tr');-->
+<!--                    updateProductDetails(row);-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+
+<!--        document.addEventListener("click", (e) => {-->
+<!--            if (!dropdown.contains(e.target)) {-->
+<!--                list.style.display = "none";-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--    /**-->
+<!--     * Adds a new product row to the table.-->
+<!--     */-->
+<!--    function addItem() {-->
+<!--        const container = document.getElementById("items-container");-->
+<!--        const index = container.children.length;-->
+<!--        const newRow = document.createElement("tr");-->
+<!--        newRow.className = "product-row";-->
+
+<!--        const productsHtml = productsData.map(p => `<div data-value="${p.id}">${p.name}</div>`).join('');-->
+
+<!--        newRow.innerHTML = `-->
+<!--            <td>-->
+<!--                <div class="dropdown" id="productDropdown${index}">-->
+<!--                    <input type="text" placeholder="Search product..." autocomplete="off">-->
+<!--                    <div class="dropdown-list">${productsHtml}</div>-->
+<!--                </div>-->
+<!--                <input type="hidden" name="items[${index}].productId" id="productIdHidden${index}"/>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <select name="items[${index}].unitType">-->
+<!--                    <option value="PCS">PCS</option>-->
+<!--                    <option value="DOZEN">DOZEN</option>-->
+<!--                    <option value="HALF_DOZEN">HALF_DOZEN</option>-->
+<!--                    <option value="BOX">BOX</option>-->
+<!--                </select>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <input name="items[${index}].quantity" type="number" step="1" value="1" min="1" style="width: 80px;"/>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <span class="unit-price">₹0.00</span>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <input name="items[${index}].discountPercent" type="number" step="0.01" value="0" style="width: 80px;"/>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <span class="item-total">₹0.00</span>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button>-->
+<!--            </td>-->
+<!--        `;-->
+<!--        container.appendChild(newRow);-->
+
+<!--        setupDropdown(`productDropdown${index}`, `productIdHidden${index}`);-->
+<!--        attachRowEventListeners(newRow);-->
+<!--    }-->
+
+<!--    /**-->
+<!--     * Deletes a product row.-->
+<!--     */-->
+<!--    function deleteRow(button) {-->
+<!--        const container = document.getElementById("items-container");-->
+<!--        if (container.children.length <= 1) {-->
+<!--            alert('At least one product is required.');-->
+<!--            return;-->
+<!--        }-->
+<!--        button.closest('tr').remove();-->
+<!--        calculateGrandTotal();-->
+<!--    }-->
+    
+<!--    /**-->
+<!--     * Attaches input event listeners to a row's quantity and discount fields.-->
+<!--     */-->
+<!--    function attachRowEventListeners(row) {-->
+<!--        const quantityInput = row.querySelector('input[name*="quantity"]');-->
+<!--        const discountInput = row.querySelector('input[name*="discountPercent"]');-->
+        
+<!--        if (quantityInput) {-->
+<!--            quantityInput.addEventListener('input', () => calculateRowTotal(row));-->
+<!--        }-->
+<!--        if (discountInput) {-->
+<!--            discountInput.addEventListener('input', () => calculateRowTotal(row));-->
+<!--        }-->
+<!--    }-->
+
+<!--    /**-->
+<!--     * Initializes all event listeners when the page loads.-->
+<!--     */-->
+<!--    window.onload = function () {-->
+<!--        setupDropdown("customerDropdown", "customerIdHidden");-->
+<!--        setupDropdown("salesmanDropdown", "salesmanIdHidden");-->
+<!--        setupDropdown("productDropdown0", "productIdHidden0");-->
+        
+<!--        document.querySelectorAll('.product-row').forEach(attachRowEventListeners);-->
+<!--    };-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Bill</title>
+    <style>
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .error-message { color: red; font-weight: bold; margin-top: 10px; }
+        .items-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .items-table th, .items-table td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: top; }
+        .items-table th { background-color: #f2f2f2; }
+        .delete-btn { background-color: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
+        .delete-btn:hover { background-color: #c82333; }
+        .dropdown { position: relative; width: 100%; display: inline-block; }
+        .dropdown input { width: 100%; }
+        .dropdown-list { position: absolute; border: 1px solid #ddd; border-top: none; max-height: 150px; overflow-y: auto; background: white; display: none; z-index: 1000; width: 100%; box-sizing: border-box; }
+        .dropdown-list div { padding: 8px; cursor: pointer; }
+        .dropdown-list div:hover { background-color: #f1f1f1; }
+    </style>
+</head>
+<body>
+<h2>Create Bill</h2>
+
+<div th:if="${error}" class="error-message">
+    <p th:text="${error}"></p>
+</div>
+
+<form th:action="@{/billing/create}" th:object="${request}" method="post">
+
+    <div class="form-group">
+        <label>Customer</label>
+        <div class="dropdown" id="customerDropdown">
+            <input type="text" placeholder="Search customer..." autocomplete="off">
+            <div class="dropdown-list">
+                <div th:each="c : ${customers}" th:text="${c.name}" th:attr="data-value=${c.id}"></div>
+            </div>
+        </div>
+        <input type="hidden" th:field="*{customerId}" id="customerIdHidden"/>
+    </div>
+
+    <div class="form-group">
+        <label>Salesman</label>
+        <div class="dropdown" id="salesmanDropdown">
+            <input type="text" placeholder="Search salesman..." autocomplete="off">
+            <div class="dropdown-list">
+                <div th:each="s : ${salesmen}" th:text="${s.name}" th:attr="data-value=${s.id}"></div>
+            </div>
+        </div>
+        <input type="hidden" th:field="*{salesmanId}" id="salesmanIdHidden"/>
+    </div>
+
+    <div class="form-group">
+        <label>Payment Against Previous Due</label>
+        <input th:field="*{paymentAgainstPreviousDue}" type="number" step="0.01" value="0"/>
+    </div>
+
+    <fieldset>
+        <legend>Items</legend>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Unit Type</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Discount %</th>
+                    <th>Item Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="items-container">
+                <tr class="product-row">
+                    <td>
+                        <div class="dropdown" id="productDropdown0">
+                            <input type="text" placeholder="Search product..." autocomplete="off">
+                            <div class="dropdown-list">
+                                <div th:each="p : ${products}" th:text="${p.name}" th:attr="data-value=${p.id}"></div>
+                            </div>
+                        </div>
+                        <input type="hidden" th:field="*{items[0].productId}" id="productIdHidden0"/>
+                    </td>
+                    <td>
+                        <select th:field="*{items[0].unitType}">
+                            <option value="PCS">PCS</option>
+                            <option value="DOZEN">DOZEN</option>
+                            <option value="HALF_DOZEN">HALF_DOZEN</option>
+                            <option value="BOX">BOX</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input th:field="*{items[0].quantity}" type="number" step="1" value="1" min="1" style="width: 80px;"/>
+                    </td>
+                    <td>
+                        <span class="unit-price">₹0.00</span>
+                    </td>
+                    <td>
+                        <input th:field="*{items[0].discountPercent}" type="number" step="0.01" value="0" style="width: 80px;"/>
+                    </td>
+                    <td>
+                        <span class="item-total">₹0.00</span>
+                    </td>
+                    <td>
+                        <button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" onclick="addItem()">+ Add Item</button>
+        
+        <div style="margin-top: 20px; text-align: right;">
+            <div style="font-size: 18px; font-weight: bold;">
+                Grand Total: <span id="grandTotal">₹0.00</span>
+            </div>
+        </div>
+    </fieldset>
+
+    <div style="margin-top: 20px;">
+        <button type="submit" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Create Bill</button>
+    </div>
+</form>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let productsData = /*[[${products}]]*/ [];
+    /*]]>*/
+
+    /**
+     * Calculates the total for a single row based on unit type and updates the grand total.
+     */
+    function calculateRowTotal(row) {
+        const quantityInput = row.querySelector('input[name*="quantity"]');
+        const discountInput = row.querySelector('input[name*="discountPercent"]');
+        const unitPriceSpan = row.querySelector('.unit-price');
+        const itemTotalSpan = row.querySelector('.item-total');
+        const unitSelect = row.querySelector('select[name*="unitType"]');
+        const hiddenField = row.querySelector('input[name*="productId"]');
+
+        if (!quantityInput || !unitPriceSpan || !itemTotalSpan || !unitSelect || !hiddenField) return;
+
+        const productId = hiddenField.value;
+        const product = productsData.find(p => p.id == productId);
+        const quantity = parseFloat(quantityInput.value) || 0;
+        const unitPrice = parseFloat(unitPriceSpan.textContent.replace('₹', '')) || 0;
+        const selectedUnit = unitSelect.value;
+        let effectiveQuantity = quantity;
+
+        if (product) {
+            if (product.unitType === 'PCS') {
+                switch (selectedUnit) {
+                    case 'DOZEN': effectiveQuantity = quantity * 12; break;
+                    case 'HALF_DOZEN': effectiveQuantity = quantity * 6; break;
+                    case 'BOX':
+                        const unitsPerBox = parseInt(product.unitsPerBox) || 0;
+                        effectiveQuantity = quantity * unitsPerBox;
+                        break;
+                }
+            } else if (product.unitType === 'KG') {
+                const weightPerItem = parseFloat(product.weightPerItem) || 0;
+                if (weightPerItem > 0) {
+                    switch (selectedUnit) {
+                        case 'KG': effectiveQuantity = quantity / weightPerItem; break;
+                        case 'BAG':
+                            const totalBagWeight = parseFloat(product.totalBagWeight) || 0;
+                            const itemsPerBag = totalBagWeight / weightPerItem;
+                            effectiveQuantity = quantity * itemsPerBag;
+                            break;
+                    }
+                } else {
+                    effectiveQuantity = 0;
+                }
+            }
+        }
+
+        const discountPercent = parseFloat(discountInput ? discountInput.value : 0) || 0;
+        const grossTotal = effectiveQuantity * unitPrice;
+        const discountAmount = grossTotal * (discountPercent / 100);
+        const netTotal = grossTotal - discountAmount;
+        itemTotalSpan.textContent = `₹${netTotal.toFixed(2)}`;
+        calculateGrandTotal();
+    }
+
+    function calculateGrandTotal() {
+        const itemTotals = document.querySelectorAll('.item-total');
+        let grandTotal = 0;
+        itemTotals.forEach(element => {
+            grandTotal += parseFloat(element.textContent.replace('₹', '')) || 0;
+        });
+        document.getElementById('grandTotal').textContent = `₹${grandTotal.toFixed(2)}`;
+    }
+
+    function updateUnitOptions(row, product) {
+        const unitSelect = row.querySelector('select[name*="unitType"]');
+        if (!unitSelect) return;
+        if (product.unitType === 'PCS') {
+            unitSelect.innerHTML = `
+                <option value="PCS">PCS</option>
+                <option value="DOZEN">DOZEN</option>
+                <option value="HALF_DOZEN">HALF_DOZEN</option>
+                <option value="BOX">BOX</option>
+            `;
+        } else if (product.unitType === 'KG') {
+            unitSelect.innerHTML = `
+                <option value="KG">KG</option>
+                <option value="BAG">BAG</option>
+                <option value="PCS">PCS</option>
+            `;
+        }
+    }
+
+    function updateProductDetails(row) {
+        const hiddenField = row.querySelector('input[name*="productId"]');
+        const unitPriceSpan = row.querySelector('.unit-price');
+        const productId = hiddenField.value;
+        const product = productsData.find(p => p.id == productId);
+        if (product && unitPriceSpan) {
+            unitPriceSpan.textContent = `₹${product.sellingPrice.toFixed(2)}`;
+            updateUnitOptions(row, product);
+        } else if (unitPriceSpan) {
+            unitPriceSpan.textContent = '₹0.00';
+        }
+        calculateRowTotal(row);
+    }
+
+    function setupDropdown(dropdownId, hiddenFieldId) {
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown) return;
+        const input = dropdown.querySelector("input[type='text']");
+        const list = dropdown.querySelector(".dropdown-list");
+        const hiddenField = document.getElementById(hiddenFieldId);
+        input.addEventListener("input", () => {
+            const filter = input.value.toLowerCase();
+            const items = list.querySelectorAll("div");
+            let visible = false;
+            items.forEach(item => {
+                const match = item.textContent.toLowerCase().includes(filter);
+                item.style.display = match ? "block" : "none";
+                if (match) visible = true;
+            });
+            list.style.display = visible ? "block" : "none";
+        });
+        list.querySelectorAll("div").forEach(item => {
+            item.addEventListener("click", () => {
+                input.value = item.textContent;
+                hiddenField.value = item.dataset.value;
+                list.style.display = "none";
+                if (dropdownId.startsWith("productDropdown")) {
+                    const row = hiddenField.closest('tr');
+                    updateProductDetails(row);
+                }
+            });
+        });
+        document.addEventListener("click", (e) => {
+            if (!dropdown.contains(e.target)) {
+                list.style.display = "none";
+            }
+        });
+    }
+
+    function addItem() {
+        const container = document.getElementById("items-container");
+        const index = container.children.length;
+        const newRow = document.createElement("tr");
+        newRow.className = "product-row";
+        const productsHtml = productsData.map(p => `<div data-value="${p.id}">${p.name}</div>`).join('');
+        newRow.innerHTML = `
+            <td>
+                <div class="dropdown" id="productDropdown${index}">
+                    <input type="text" placeholder="Search product..." autocomplete="off">
+                    <div class="dropdown-list">${productsHtml}</div>
+                </div>
+                <input type="hidden" name="items[${index}].productId" id="productIdHidden${index}"/>
+            </td>
+            <td>
+                <select name="items[${index}].unitType">
+                    <option value="PCS">PCS</option>
+                    <option value="DOZEN">DOZEN</option>
+                    <option value="HALF_DOZEN">HALF_DOZEN</option>
+                    <option value="BOX">BOX</option>
+                </select>
+            </td>
+            <td><input name="items[${index}].quantity" type="number" step="1" value="1" min="1" style="width: 80px;"/></td>
+            <td><span class="unit-price">₹0.00</span></td>
+            <td><input name="items[${index}].discountPercent" type="number" step="0.01" value="0" style="width: 80px;"/></td>
+            <td><span class="item-total">₹0.00</span></td>
+            <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+        `;
+        container.appendChild(newRow);
+        setupDropdown(`productDropdown${index}`, `productIdHidden${index}`);
+        attachRowEventListeners(newRow);
+    }
+
+    function deleteRow(button) {
+        const container = document.getElementById("items-container");
+        if (container.children.length <= 1) {
+            alert('At least one product is required.');
+            return;
+        }
+        button.closest('tr').remove();
+        calculateGrandTotal();
+    }
+
+    /**
+     * THIS IS THE CORRECTED FUNCTION
+     * It now listens for changes on the Unit Type dropdown as well.
+     */
+    function attachRowEventListeners(row) {
+        const quantityInput = row.querySelector('input[name*="quantity"]');
+        const discountInput = row.querySelector('input[name*="discountPercent"]');
+        const unitSelect = row.querySelector('select[name*="unitType"]');
+        
+        const recalculate = () => calculateRowTotal(row);
+
+        if (quantityInput) {
+            quantityInput.addEventListener('input', recalculate);
+        }
+        if (discountInput) {
+            discountInput.addEventListener('input', recalculate);
+        }
+        // This listener is crucial and was missing
+        if (unitSelect) {
+            unitSelect.addEventListener('change', recalculate);
+        }
+    }
+
+    window.onload = function () {
+        setupDropdown("customerDropdown", "customerIdHidden");
+        setupDropdown("salesmanDropdown", "salesmanIdHidden");
+        setupDropdown("productDropdown0", "productIdHidden0");
+        document.querySelectorAll('.product-row').forEach(attachRowEventListeners);
+    };
+</script>
+</body>
+</html>

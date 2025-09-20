@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Vendor</title>
+</head>
+<body>
+	<h2>Vendor</h2>
+	<form th:action="${vendor.id} != null ? @{|/vendors/${vendor.id}|} : @{/vendors}" th:object="${vendor}" method="post">
+		<div><label>Name</label><input th:field="*{name}" /></div>
+		<div><label>Address</label><input th:field="*{address}" /></div>
+		<div><label>Phone</label><input th:field="*{phone}" /></div>
+		<div><label>GST</label><input th:field="*{gst}" /></div>
+		<div><label>Email</label><input th:field="*{email}" /></div>
+		<div><label>Credit Limit</label><input th:field="*{creditLimit}" type="number" step="0.01" /></div>
+		<div><label>Due</label><input th:field="*{due}" type="number" step="0.01" /></div>
+		<div><label>Landmark</label><input th:field="*{landmark}" /></div>
+		<div><label>House Address</label><input th:field="*{houseAddress}" /></div>
+		<div><label>Party Code</label><input th:field="*{partyCode}" /></div>
+		<div><button type="submit">Save</button></div>
+	</form>
+</body>
+</html> 
