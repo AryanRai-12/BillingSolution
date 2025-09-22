@@ -29,6 +29,22 @@ public class BillingController {
         this.customerRepository = customerRepository;
         this.salesmanRepository = salesmanRepository;
     }
+    
+    @ExceptionHandler({
+        BillingService.CreditLimitExceededException.class,
+        BillingService.InsufficientStockException.class,
+        BillingService.InsufficientProfitException.class,
+        IllegalArgumentException.class 
+    })
+    public String handleBillingException(RuntimeException ex, RedirectAttributes redirectAttributes) {
+        // Add the exception's message as a flash attribute to show on the next page
+        redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        
+        // Redirect the user back to the create bill form
+        return "redirect:/billing/create";
+    }
+
+    
 
     @GetMapping("/create")
     public String showCreateBillForm(Model model) {
