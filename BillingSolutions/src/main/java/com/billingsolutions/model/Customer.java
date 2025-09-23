@@ -10,7 +10,11 @@ public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
+	
+	@NotBlank
+	@Column(nullable=false)
+	private String CounterName;
 	@NotBlank
 	@Column(nullable = false)
 	private String name;
@@ -42,6 +46,9 @@ public class Customer {
 	@NotBlank
 	@Column(unique = true)
 	private String partyCode;
+	
+	
+	private String customerGroup;
 
 	public Customer() {}
 
@@ -67,4 +74,21 @@ public class Customer {
 	public void setHouseAddress(String houseAddress) { this.houseAddress = houseAddress; }
 	public String getPartyCode() { return partyCode; }
 	public void setPartyCode(String partyCode) { this.partyCode = partyCode; }
+
+	public String getCounterName() {
+		return CounterName;
+	}
+
+	public void setCounterName(String counterName) {
+		CounterName = counterName;
+	}
+
+	public String getCustomerGroup() {
+		return customerGroup;
+	}
+
+	public void setCustomerGroup(String group) {
+		customerGroup = group;
+	}
+	
 } 

@@ -60,6 +60,8 @@ public class CustomerController {
 	    customer.setHouseAddress(form.getHouseAddress());
 	    customer.setPartyCode(form.getPartyCode());
 	    customer.setDue(form.getDue());
+	    customer.setCounterName(form.getCounterName());
+	    customer.setCustomerGroup(form.getCustomerGroup());
 	    customerService.save(customer);
 	    return "redirect:/customers";
 	}

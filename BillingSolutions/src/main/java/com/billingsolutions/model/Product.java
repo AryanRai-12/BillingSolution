@@ -19,7 +19,7 @@ public class Product {
 
     @Column(unique = true)
     private String sku;
-
+    
     @NotNull
     @DecimalMin("0.00")
     @Column(precision = 18, scale = 2, nullable = false)
@@ -64,6 +64,9 @@ public class Product {
     @DecimalMax("100.00")
     @Column(precision = 5, scale = 2, nullable = false)
     private BigDecimal gstRate = BigDecimal.ZERO;
+    
+    
+    private String ProductGroup;
 
     public Product() {}
 
@@ -194,4 +197,13 @@ public class Product {
     public void setGstRate(BigDecimal gstRate) {
         this.gstRate = gstRate;
     }
+
+	public String getGroup() {
+		return ProductGroup;
+	}
+
+	public void setGroup(String group) {
+		ProductGroup = group;
+	}
+    
 }

@@ -10,7 +10,15 @@ public class Vendor {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
+	
+	@NotBlank
+	@Column(nullable=false)
+	private String CompanyName;
+	
+	
+	private String Vendorgroup;
+	
 	@NotBlank
 	@Column(nullable = false)
 	private String name;
@@ -67,4 +75,21 @@ public class Vendor {
 	public void setHouseAddress(String houseAddress) { this.houseAddress = houseAddress; }
 	public String getPartyCode() { return partyCode; }
 	public void setPartyCode(String partyCode) { this.partyCode = partyCode; }
+
+	public String getCompanyName() {
+		return CompanyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		CompanyName = companyName;
+	}
+
+	public String getVendorGroup() {
+		return Vendorgroup;
+	}
+
+	public void setVendorGroup(String group) {
+		this.Vendorgroup = group;
+	}
+	
 } 

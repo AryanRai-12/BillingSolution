@@ -60,6 +60,8 @@ public class VendorController {
 	    vendor.setHouseAddress(form.getHouseAddress());
 	    vendor.setPartyCode(form.getPartyCode());
 	    vendor.setDue(form.getDue());
+	    vendor.setCompanyName(form.getCompanyName());
+	    vendor.setVendorGroup(form.getVendorGroup());
 	    vendorService.save(vendor);
 	    return "redirect:/vendors";
 	}

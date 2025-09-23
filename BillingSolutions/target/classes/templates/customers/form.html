@@ -24,6 +24,7 @@
 <!--	</form>-->
 <form th:action="${customer.id} != null ? @{|/customers/${customer.id}|} : @{/customers}" 
       th:object="${customer}" method="post">
+	  	<div><label>Counter Name</label><input th:field="*{CounterName}" /></div>
 		<div><label>Name</label><input th:field="*{name}" /></div>
 		<div><label>Address</label><input th:field="*{address}" /></div>
 		<div><label>Phone</label><input th:field="*{phone}" /></div>
@@ -34,6 +35,7 @@
 		<div><label>Landmark</label><input th:field="*{landmark}" /></div>
 		<div><label>House Address</label><input th:field="*{houseAddress}" /></div>
 		<div><label>Party Code</label><input th:field="*{partyCode}" /></div>
+		<div><label>Group</label><input th:field="*{customerGroup}" /></div>
 		<div><button type="submit">Save</button></div>
 	</form>
 </body>
