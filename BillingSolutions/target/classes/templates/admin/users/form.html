@@ -1,36 +1,120 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--	<meta charset="UTF-8">-->
+<!--	<title>User Form</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--	<h2 th:text="${user.id != null ? 'Edit User' : 'New User'}"></h2>-->
+<!--	<form th:action="${user.id != null ? @{|/admin/users/${user.id}|} : @{/admin/users}" th:object="${user}" method="post">-->
+<!--		<div>-->
+<!--			<label>Username</label>-->
+<!--			<input th:field="*{username}" />-->
+<!--		</div>-->
+<!--		<div>-->
+<!--			<label>Password</label>-->
+<!--			<input th:field="*{password}" type="password" th:placeholder="${user.id != null ? 'Leave blank to keep current' : 'Enter password'}" />-->
+<!--		</div>-->
+<!--		<div>-->
+<!--			<label>Roles</label>-->
+<!--			<div th:each="role : ${availableRoles}">-->
+<!--				<input type="checkbox" name="roles" th:value="${role}" -->
+<!--					   th:checked="${user.roles != null and user.roles.contains(role)}" />-->
+<!--				<label th:text="${role}"></label>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--		<div>-->
+<!--			<label>Enabled</label>-->
+<!--			<input th:field="*{enabled}" type="checkbox" />-->
+<!--		</div>-->
+<!--		<div>-->
+<!--			<button type="submit">Save</button>-->
+<!--			<a th:href="@{/admin/users}">Cancel</a>-->
+<!--		</div>-->
+<!--	</form>-->
+<!--</body>-->
+<!--</html> -->
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>User Form</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h2 th:text="${user.id != null ? 'Edit User' : 'New User'}"></h2>-->
+    
+<!--    <form th:action="@{${user.id != null ? '/admin/users/' + user.id : '/admin/users'}}" th:object="${user}" method="post">-->
+<!--        <div>-->
+<!--            <label>Username</label>-->
+<!--            <input th:field="*{username}" />-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <label>Email</label>-->
+<!--            <input th:field="*{email}" type="email" />-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <label>Password</label>-->
+<!--            <input th:field="*{password}" type="password" th:placeholder="${user.id != null ? 'Leave blank to keep current' : 'Enter password'}" />-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <label>Roles</label>-->
+<!--            <div th:each="role : ${availableRoles}">-->
+<!--                <input type="checkbox" name="roles" th:value="${role}" -->
+<!--                       th:checked="${user.roles != null and user.roles.contains(role)}" />-->
+<!--                <label th:text="${role}"></label>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <label>Enabled</label>-->
+<!--            <input th:field="*{enabled}" type="checkbox" />-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <button type="submit">Save</button>-->
+<!--            <a th:href="@{/admin/users}">Cancel</a>-->
+<!--        </div>-->
+<!--    </form>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<title>User Form</title>
+    <meta charset="UTF-8">
+    <title>User Form</title>
 </head>
 <body>
-	<h2 th:text="${user.id != null ? 'Edit User' : 'New User'}"></h2>
-	<form th:action="${user.id != null ? @{|/admin/users/${user.id}|} : @{/admin/users}" th:object="${user}" method="post">
-		<div>
-			<label>Username</label>
-			<input th:field="*{username}" />
-		</div>
-		<div>
-			<label>Password</label>
-			<input th:field="*{password}" type="password" th:placeholder="${user.id != null ? 'Leave blank to keep current' : 'Enter password'}" />
-		</div>
-		<div>
-			<label>Roles</label>
-			<div th:each="role : ${availableRoles}">
-				<input type="checkbox" name="roles" th:value="${role}" 
-					   th:checked="${user.roles != null and user.roles.contains(role)}" />
-				<label th:text="${role}"></label>
-			</div>
-		</div>
-		<div>
-			<label>Enabled</label>
-			<input th:field="*{enabled}" type="checkbox" />
-		</div>
-		<div>
-			<button type="submit">Save</button>
-			<a th:href="@{/admin/users}">Cancel</a>
-		</div>
-	</form>
+    <h2 th:text="${user.id != null ? 'Edit User' : 'New User'}"></h2>
+    
+    <!-- THIS IS THE CORRECTED LINE -->
+    <form th:action="@{${user.id != null ? '/admin/users/' + user.id : '/admin/users'}}" th:object="${user}" method="post">
+        <div>
+            <label>Username</label>
+            <input th:field="*{username}" />
+        </div>
+        <div>
+            <label>Email</label>
+            <input th:field="*{email}" type="email" />
+        </div>
+        <div>
+            <label>Password</label>
+            <input th:field="*{password}" type="password" th:placeholder="${user.id != null ? 'Leave blank to keep current' : 'Enter password'}" />
+        </div>
+        <div>
+            <label>Roles</label>
+            <div th:each="role : ${availableRoles}">
+                <input type="checkbox" name="roles" th:value="${role}" 
+                       th:checked="${user.roles != null and user.roles.contains(role)}" />
+                <label th:text="${role}"></label>
+            </div>
+        </div>
+        <div>
+            <label>Enabled</label>
+            <input th:field="*{enabled}" type="checkbox" />
+        </div>
+        <div>
+            <button type="submit">Save</button>
+            <a th:href="@{/admin/users}">Cancel</a>
+        </div>
+    </form>
 </body>
-</html> 
+</html>

@@ -83,133 +83,485 @@
 
 
 
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Product Details</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            margin: 20px;-->
+<!--        }-->
+<!--        h1 {-->
+<!--            color: #333;-->
+<!--        }-->
+<!--        table {-->
+<!--            width: 50%;-->
+<!--            border-collapse: collapse;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        table, th, td {-->
+<!--            border: 1px solid #ddd;-->
+<!--        }-->
+<!--        th, td {-->
+<!--            padding: 8px 12px;-->
+<!--            text-align: left;-->
+<!--        }-->
+<!--        th {-->
+<!--            background: #f2f2f2;-->
+<!--        }-->
+<!--        .actions {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--        .actions a, .actions button {-->
+<!--            display: inline-block;-->
+<!--            padding: 8px 14px;-->
+<!--            margin-right: 10px;-->
+<!--            border: none;-->
+<!--            border-radius: 4px;-->
+<!--            text-decoration: none;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 14px;-->
+<!--        }-->
+<!--        .edit-btn {-->
+<!--            background: #4CAF50;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .delete-btn {-->
+<!--            background: #f44336;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        .back-btn {-->
+<!--            background: #777;-->
+<!--            color: white;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Product Details</h1>-->
+
+<!--<table>-->
+<!--    <tr>-->
+<!--        <th>ID</th>-->
+<!--        <td th:text="${product.id}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Name</th>-->
+<!--        <td th:text="${product.name}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>SKU</th>-->
+<!--        <td th:text="${product.sku}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Vendor</th>-->
+<!--        <td th:text="${product.vendor}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Cost Price</th>-->
+<!--        <td th:text="${product.costPrice}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Selling Price</th>-->
+<!--        <td th:text="${product.sellingPrice}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Unit Type</th>-->
+<!--        <td th:text="${product.unitType}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Units Per Box</th>-->
+<!--        <td th:text="${product.unitsPerBox}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Number of Boxes</th>-->
+<!--        <td th:text="${product.numberOfBoxes}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Pcs</th>-->
+<!--        <td th:text="${product.pcs}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Total Bags</th>-->
+<!--        <td th:text="${product.totalBags}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Weight Per Item</th>-->
+<!--        <td th:text="${product.weightPerItem}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th>Total Bag Weight</th>-->
+<!--        <td th:text="${product.totalBagWeight}"></td>-->
+<!--    </tr>-->
+<!--</table>-->
+
+<!--<div class="actions">-->
+<!--     Edit Button -->
+<!--    <a th:href="@{/products/{id}/edit(id=${product.id})}" class="edit-btn">Edit</a>-->
+
+<!--     Delete Button -->
+<!--    <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" style="display:inline;">-->
+<!--        <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this product?');">-->
+<!--            Delete-->
+<!--        </button>-->
+<!--    </form>-->
+
+<!--     Back Button -->
+<!--    <a th:href="@{/products}" class="back-btn">Back to List</a>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Product Details</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--        }-->
+<!--        .details-card {-->
+<!--            margin-top: 4rem;-->
+<!--        }-->
+<!--        .details-header {-->
+<!--            background-color: #e9ecef;-->
+<!--            border-bottom: 1px solid #dee2e6;-->
+<!--        }-->
+<!--        .details-header h1 {-->
+<!--            margin-bottom: 0;-->
+<!--        }-->
+<!--        .details-table th {-->
+<!--            width: 35%;-->
+<!--            background-color: #f8f9fa;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     You can include your main navigation bar here if you have it as a fragment -->
+
+<!--    <div class="container">-->
+<!--        <div class="card details-card">-->
+<!--            <div class="card-header details-header d-flex justify-content-between align-items-center py-3">-->
+<!--                <h1 class="h4"><i class="fas fa-box-open me-2"></i>Product Details</h1>-->
+<!--                <a th:href="@{/products}" class="btn btn-secondary btn-sm">-->
+<!--                    <i class="fas fa-arrow-left me-1"></i>Back to List-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <div class="card-body p-0">-->
+<!--                <table class="table table-bordered table-striped details-table mb-0">-->
+<!--                    <tbody>-->
+<!--                        <tr><th>ID</th><td th:text="${product.id}"></td></tr>-->
+<!--                        <tr><th>Name</th><td th:text="${product.name}" class="fw-bold"></td></tr>-->
+<!--                        <tr><th>SKU</th><td th:text="${product.sku}"></td></tr>-->
+<!--                        <tr><th>Vendor</th><td th:text="${product.vendor}"></td></tr>-->
+<!--                        <tr><th>Cost Price</th><td th:text="${product.costPrice}"></td></tr>-->
+<!--                        <tr><th>Selling Price</th><td th:text="${product.sellingPrice}"></td></tr>-->
+<!--                        <tr><th>Unit Type</th><td th:text="${product.unitType}"></td></tr>-->
+                        
+<!--                         THE FIX: Only show these rows if Unit Type is NOT 'KG' -->
+<!--                        <tr th:if="${product.unitType != 'KG'}"><th>Units Per Box</th><td th:text="${product.unitsPerBox}"></td></tr>-->
+<!--                        <tr th:if="${product.unitType != 'KG'}"><th>Number of Boxes</th><td th:text="${product.numberOfBoxes}"></td></tr>-->
+                        
+<!--                        <tr><th>Pcs</th><td th:text="${product.pcs}"></td></tr>-->
+
+<!--                         THE FIX: Only show these rows if Unit Type is NOT 'PCS' -->
+<!--                        <tr th:if="${product.unitType != 'PCS'}"><th>Total Bags</th><td th:text="${product.totalBags}"></td></tr>-->
+<!--                        <tr th:if="${product.unitType != 'PCS'}"><th>Weight Per Item</th><td th:text="${product.weightPerItem}"></td></tr>-->
+<!--                        <tr th:if="${product.unitType != 'PCS'}"><th>Total Bag Weight</th><td th:text="${product.totalBagWeight}"></td></tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--            <div class="card-footer text-end">-->
+<!--                 Edit Button -->
+<!--                <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-warning">-->
+<!--                    <i class="fas fa-edit me-1"></i>Edit-->
+<!--                </a>-->
+
+<!--                 Delete Button -->
+<!--                <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?');">-->
+<!--                    <button type="submit" class="btn btn-danger">-->
+<!--                        <i class="fas fa-trash-alt me-1"></i>Delete-->
+<!--                    </button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--     Bootstrap 5 JS Bundle -->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Product Details</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--        }-->
+<!--        .details-card {-->
+<!--            margin-top: 4rem;-->
+<!--        }-->
+<!--        .details-header {-->
+<!--            background-color: #e9ecef;-->
+<!--            border-bottom: 1px solid #dee2e6;-->
+<!--        }-->
+<!--        .details-header h1 {-->
+<!--            margin-bottom: 0;-->
+<!--        }-->
+<!--        .details-table th {-->
+<!--            width: 35%;-->
+<!--            background-color: #f8f9fa;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     You can include your main navigation bar here if you have it as a fragment -->
+
+<!--    <div class="container">-->
+<!--        <div class="card details-card">-->
+<!--            <div class="card-header details-header d-flex justify-content-between align-items-center py-3">-->
+<!--                <h1 class="h4"><i class="fas fa-box-open me-2"></i>Product Details</h1>-->
+<!--                <a th:href="@{/products}" class="btn btn-secondary btn-sm">-->
+<!--                    <i class="fas fa-arrow-left me-1"></i>Back to List-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <div class="card-body p-0">-->
+<!--                <table class="table table-bordered table-striped details-table mb-0">-->
+<!--                    <tbody>-->
+<!--                        <tr><th>ID</th><td th:text="${product.id}"></td></tr>-->
+<!--                        <tr><th>Name</th><td th:text="${product.name}" class="fw-bold"></td></tr>-->
+<!--                        <tr><th>SKU</th><td th:text="${product.sku}"></td></tr>-->
+<!--                        <tr><th>Vendor</th><td th:text="${product.vendor?.name}"></td></tr>-->
+<!--                        <tr><th>Cost Price</th><td th:text="${product.costPrice}"></td></tr>-->
+<!--                        <tr><th>Selling Price</th><td th:text="${product.sellingPrice}"></td></tr>-->
+<!--                        <tr><th>Unit Type</th><td th:text="${product.unitType}"></td></tr>-->
+                        
+<!--                         THE FIX: Use .name() to get the String value of the enum before comparing -->
+<!--                        <tr th:if="${!product.unitType.name().equalsIgnoreCase('KG')}"><th>Units Per Box</th><td th:text="${product.unitsPerBox}"></td></tr>-->
+<!--                        <tr th:if="${!product.unitType.name().equalsIgnoreCase('KG')}"><th>Number of Boxes</th><td th:text="${product.numberOfBoxes}"></td></tr>-->
+                        
+<!--                        <tr><th>Pcs</th><td th:text="${product.pcs}"></td></tr>-->
+
+<!--                         THE FIX: Use .name() to get the String value of the enum before comparing -->
+<!--                        <tr th:if="${!product.unitType.name().equalsIgnoreCase('PCS')}"><th>Total Bags</th><td th:text="${product.totalBags}"></td></tr>-->
+<!--                        <tr th:if="${!product.unitType.name().equalsIgnoreCase('PCS')}"><th>Weight Per Item</th><td th:text="${product.weightPerItem}"></td></tr>-->
+<!--                        <tr th:if="${!product.unitType.name().equalsIgnoreCase('PCS')}"><th>Total Bag Weight</th><td th:text="${product.totalBagWeight}"></td></tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--            <div class="card-footer text-end">-->
+<!--				<a th:href="@{/}" class="btn btn-info me-2"><i class="fas fa-home me-1"></i> Home</a>-->
+<!--                 Edit Button -->
+<!--                <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-warning">-->
+<!--                    <i class="fas fa-edit me-1"></i>Edit-->
+<!--                </a>-->
+
+<!--                 Delete Button -->
+<!--                <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?');">-->
+<!--                    <button type="submit" class="btn btn-danger">-->
+<!--                        <i class="fas fa-trash-alt me-1"></i>Delete-->
+<!--                    </button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--     Bootstrap 5 JS Bundle -->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: #f8f9fa;
+            padding-top: 70px; /* Added padding for fixed navbar */
         }
-        h1 {
-            color: #333;
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
         }
-        table {
-            width: 50%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+        .details-card, .error-card {
+            margin-top: 2rem;
+            margin-bottom: 4rem;
         }
-        table, th, td {
-            border: 1px solid #ddd;
+        .details-header {
+            background-color: #e9ecef;
+            border-bottom: 1px solid #dee2e6;
         }
-        th, td {
-            padding: 8px 12px;
-            text-align: left;
+        .details-header h1 {
+            margin-bottom: 0;
         }
-        th {
-            background: #f2f2f2;
+        .details-table th {
+            width: 35%;
+            background-color: #f8f9fa;
         }
-        .actions {
-            margin-top: 20px;
+        .user-info .nav-link {
+            display: flex;
+            align-items: center;
         }
-        .actions a, .actions button {
-            display: inline-block;
-            padding: 8px 14px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .edit-btn {
-            background: #4CAF50;
-            color: white;
-        }
-        .delete-btn {
-            background: #f44336;
-            color: white;
-        }
-        .back-btn {
-            background: #777;
-            color: white;
+        .user-info .fa-user-circle {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
         }
     </style>
 </head>
 <body>
-<h1>Product Details</h1>
 
-<table>
-    <tr>
-        <th>ID</th>
-        <td th:text="${product.id}"></td>
-    </tr>
-    <tr>
-        <th>Name</th>
-        <td th:text="${product.name}"></td>
-    </tr>
-    <tr>
-        <th>SKU</th>
-        <td th:text="${product.sku}"></td>
-    </tr>
-    <tr>
-        <th>Vendor</th>
-        <td th:text="${product.vendor}"></td>
-    </tr>
-    <tr>
-        <th>Cost Price</th>
-        <td th:text="${product.costPrice}"></td>
-    </tr>
-    <tr>
-        <th>Selling Price</th>
-        <td th:text="${product.sellingPrice}"></td>
-    </tr>
-    <tr>
-        <th>Unit Type</th>
-        <td th:text="${product.unitType}"></td>
-    </tr>
-    <tr>
-        <th>Units Per Box</th>
-        <td th:text="${product.unitsPerBox}"></td>
-    </tr>
-    <tr>
-        <th>Number of Boxes</th>
-        <td th:text="${product.numberOfBoxes}"></td>
-    </tr>
-    <tr>
-        <th>Pcs</th>
-        <td th:text="${product.pcs}"></td>
-    </tr>
-    <tr>
-        <th>Total Bags</th>
-        <td th:text="${product.totalBags}"></td>
-    </tr>
-    <tr>
-        <th>Weight Per Item</th>
-        <td th:text="${product.weightPerItem}"></td>
-    </tr>
-    <tr>
-        <th>Total Bag Weight</th>
-        <td th:text="${product.totalBagWeight}"></td>
-    </tr>
-</table>
+    <!-- Consistent Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" th:href="@{/}">
+                <i class="fas fa-file-invoice-dollar"></i>
+                BillingSolutions
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
+                        <a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/billing/create}"><i class="fas fa-plus-circle me-1"></i>Create Bill</a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-shield me-1"></i>Admin
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="navbar-nav user-info">
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            <i class="fas fa-user-circle"></i>
+                            <span sec:authentication="name">Username</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <form th:action="@{/logout}" method="post" class="d-flex">
+                            <button class="btn btn-outline-danger btn-sm" type="submit">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-<div class="actions">
-    <!-- Edit Button -->
-    <a th:href="@{/products/{id}/edit(id=${product.id})}" class="edit-btn">Edit</a>
+    <div class="container">
+        <!-- THIS IS THE FIX: This block only renders if the product object exists. -->
+        <div th:if="${product != null}" class="card details-card">
+            <div class="card-header details-header d-flex justify-content-between align-items-center py-3">
+                <h1 class="h4"><i class="fas fa-box-open me-2"></i>Product Details</h1>
+                <a th:href="@{/products}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Back to List
+                </a>
+            </div>
+            <div class="card-body p-4">
+                <!-- General Details Section -->
+                <h5 class="card-title mb-3"><i class="fas fa-info-circle me-2 text-primary"></i>General Information</h5>
+                <table class="table table-bordered table-striped details-table mb-4">
+                    <tbody>
+                        <tr><th>ID</th><td th:text="${product.id}"></td></tr>
+                        <tr><th>Name</th><td th:text="${product.name}" class="fw-bold"></td></tr>
+                        <tr><th>SKU</th><td th:text="${product.sku}"></td></tr>
+                        <tr><th>Vendor</th><td th:text="${product.vendor?.name}"></td></tr>
+                    </tbody>
+                </table>
 
-    <!-- Delete Button -->
-    <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" style="display:inline;">
-        <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this product?');">
-            Delete
-        </button>
-    </form>
+                <!-- Pricing Section -->
+                <h5 class="card-title mb-3"><i class="fas fa-tags me-2 text-success"></i>Pricing</h5>
+                <table class="table table-bordered table-striped details-table mb-4">
+                    <tbody>
+                        <tr><th>Cost Price</th><td th:text="${'₹' + #numbers.formatDecimal(product.costPrice, 1, 2, 'COMMA')}"></td></tr>
+                        <tr><th>Selling Price</th><td th:text="${'₹' + #numbers.formatDecimal(product.sellingPrice, 1, 2, 'COMMA')}"></td></tr>
+                    </tbody>
+                </table>
 
-    <!-- Back Button -->
-    <a th:href="@{/products}" class="back-btn">Back to List</a>
-</div>
+                <!-- Inventory Section -->
+                <h5 class="card-title mb-3"><i class="fas fa-boxes-stacked me-2 text-warning"></i>Inventory & Units</h5>
+                <table class="table table-bordered table-striped details-table mb-0">
+                    <tbody>
+                        <tr><th>Unit Type</th><td th:text="${product.unitType}"></td></tr>
+                        
+                        <tr th:if="${product.unitType != null and !product.unitType.name().equalsIgnoreCase('KG')}"><th>Units Per Box</th><td th:text="${product.unitsPerBox}"></td></tr>
+                        <tr th:if="${product.unitType != null and !product.unitType.name().equalsIgnoreCase('KG')}"><th>Number of Boxes</th><td th:text="${product.numberOfBoxes}"></td></tr>
+                        
+                        <tr><th>Available Pcs</th><td th:text="${product.pcs}" class="fw-bold"></td></tr>
 
+                        <tr th:if="${product.unitType != null and !product.unitType.name().equalsIgnoreCase('PCS')}"><th>Total Bags</th><td th:text="${product.totalBags}"></td></tr>
+                        <tr th:if="${product.unitType != null and !product.unitType.name().equalsIgnoreCase('PCS')}"><th>Weight Per Item (Kg)</th><td th:text="${product.weightPerItem}"></td></tr>
+                        <tr th:if="${product.unitType != null and !product.unitType.name().equalsIgnoreCase('PCS')}"><th>Total Bag Weight (Kg)</th><td th:text="${product.totalBagWeight}"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-end">
+				<a th:href="@{/}" class="btn btn-info me-2"><i class="fas fa-home me-1"></i> Home</a>
+                <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-warning">
+                    <i class="fas fa-edit me-1"></i>Edit
+                </a>
+                <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-1"></i>Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- ADDED: This block renders a user-friendly message if the product is null -->
+        <div th:if="${product == null}" class="card error-card text-center">
+             <div class="card-body p-5">
+                 <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                 <h3 class="card-title">Product Not Found</h3>
+                 <p class="card-text">The product you are looking for does not exist or may have been deleted.</p>
+                 <a th:href="@{/products}" class="btn btn-primary mt-2">
+                     <i class="fas fa-arrow-left me-1"></i>Return to Product List
+                 </a>
+             </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

@@ -1,6 +1,7 @@
 package com.billingsolutions.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
@@ -19,6 +20,11 @@ public class User {
 	@Column(nullable = false)
 	private String password;
 
+	@NotBlank
+    @Email
+    @Column(unique = true, nullable = false)
+    private String email;
+	
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
 	@Column(name = "role")
@@ -44,4 +50,14 @@ public class User {
 	public void setRoles(Set<String> roles) { this.roles = roles; }
 	public boolean isEnabled() { return enabled; }
 	public void setEnabled(boolean enabled) { this.enabled = enabled; }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	
 } 

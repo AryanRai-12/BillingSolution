@@ -1,17 +1,299 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--	<meta charset="UTF-8">-->
+<!--	<title>BillingSolutions</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--	<h1>BillingSolutions</h1>-->
+<!--	<nav>-->
+<!--		<a th:href="@{/customers}">Customers</a> |-->
+<!--		<a th:href="@{/vendors}">Vendors</a> |-->
+<!--		<a th:href="@{/products}">Products</a> |-->
+<!--		<a th:href="@{/billing/create}">Create Bill</a>-->
+<!--		<span sec:authorize="hasRole('ADMIN')"> | <a th:href="@{/admin/dashboard}">Admin Dashboard</a></span>-->
+<!--	</nav>-->
+<!--</body>-->
+<!--</html> -->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>BillingSolutions - Home</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--        }-->
+<!--        .navbar {-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,.1);-->
+<!--        }-->
+<!--        .main-content {-->
+<!--            padding-top: 4rem;-->
+<!--            padding-bottom: 4rem;-->
+<!--        }-->
+<!--        .feature-card {-->
+<!--            transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;-->
+<!--            text-decoration: none;-->
+<!--            color: inherit;-->
+<!--            display: block;-->
+<!--        }-->
+<!--        .feature-card:hover {-->
+<!--            transform: translateY(-5px);-->
+<!--            box-shadow: 0 8px 24px rgba(0,0,0,.15);-->
+<!--        }-->
+<!--        .feature-card .card-body i {-->
+<!--            font-size: 2.5rem;-->
+<!--            margin-bottom: 1rem;-->
+<!--            color: #0d6efd;-->
+<!--        }-->
+<!--        .user-info .nav-link {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .user-info .fa-user-circle {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--        <div class="container-fluid">-->
+<!--            <a class="navbar-brand fw-bold" th:href="@{/}">-->
+<!--                <i class="fas fa-file-invoice-dollar"></i>-->
+<!--                BillingSolutions-->
+<!--            </a>-->
+<!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--            </button>-->
+<!--            <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/billing/create}"><i class="fas fa-plus-circle me-1"></i>Create Bill</a>-->
+<!--                    </li>-->
+<!--                     Admin-only Dropdown -->
+<!--                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">-->
+<!--                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                            <i class="fas fa-user-shield me-1"></i>Admin-->
+<!--                        </a>-->
+<!--                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+<!--                </ul>-->
+
+<!--                 User Info and Logout on the right -->
+<!--                <ul class="navbar-nav user-info">-->
+<!--                    <li class="nav-item">-->
+<!--                        <span class="nav-link">-->
+<!--                            <i class="fas fa-user-circle"></i>-->
+<!--                            <span sec:authentication="name">Username</span>-->
+<!--                        </span>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                        <form th:action="@{/logout}" method="post" class="d-flex">-->
+<!--                            <button class="btn btn-outline-danger btn-sm" type="submit">Logout</button>-->
+<!--                        </form>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </nav>-->
+
+<!--     Main Content Area -->
+<!--    <div class="container main-content">-->
+<!--        <div class="text-center mb-5">-->
+<!--            <h1 class="display-5">Welcome to Your Dashboard</h1>-->
+<!--            <p class="lead">Quickly access all your billing functionalities from here.</p>-->
+<!--        </div>-->
+
+<!--        <div class="row g-4">-->
+<!--            <div class="col-md-4">-->
+<!--                <a th:href="@{/customers}" class="feature-card card h-100 text-center">-->
+<!--                    <div class="card-body">-->
+<!--                        <i class="fas fa-users"></i>-->
+<!--                        <h5 class="card-title">Manage Customers</h5>-->
+<!--                        <p class="card-text">View, add, or edit your customer profiles.</p>-->
+<!--                    </div>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <div class="col-md-4">-->
+<!--                <a th:href="@{/vendors}" class="feature-card card h-100 text-center">-->
+<!--                    <div class="card-body">-->
+<!--                        <i class="fas fa-store"></i>-->
+<!--                        <h5 class="card-title">Manage Vendors</h5>-->
+<!--                        <p class="card-text">Keep track of all your vendor information.</p>-->
+<!--                    </div>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <div class="col-md-4">-->
+<!--                <a th:href="@{/products}" class="feature-card card h-100 text-center">-->
+<!--                    <div class="card-body">-->
+<!--                        <i class="fas fa-box-open"></i>-->
+<!--                        <h5 class="card-title">Manage Products</h5>-->
+<!--                        <p class="card-text">Organize your product catalog and inventory.</p>-->
+<!--                    </div>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--     Bootstrap 5 JS Bundle -->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-	<meta charset="UTF-8">
-	<title>BillingSolutions</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BillingSolutions - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+        .main-content {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+        }
+        .feature-card {
+            transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,.15);
+        }
+        .feature-card .card-body i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0d6efd;
+        }
+        .user-info .nav-link {
+            display: flex;
+            align-items: center;
+        }
+        .user-info .fa-user-circle {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+    </style>
 </head>
 <body>
-	<h1>BillingSolutions</h1>
-	<nav>
-		<a th:href="@{/customers}">Customers</a> |
-		<a th:href="@{/vendors}">Vendors</a> |
-		<a th:href="@{/products}">Products</a> |
-		<a th:href="@{/billing/create}">Create Bill</a>
-		<span sec:authorize="hasRole('ADMIN')"> | <a th:href="@{/admin/dashboard}">Admin Dashboard</a></span>
-	</nav>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" th:href="@{/}">
+                <i class="fas fa-file-invoice-dollar"></i>
+                BillingSolutions
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
+                        <a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/billing/create}"><i class="fas fa-plus-circle me-1"></i>Create Bill</a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-shield me-1"></i>Admin
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav user-info">
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            <i class="fas fa-user-circle"></i>
+                            <span sec:authentication="name">Username</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <form th:action="@{/logout}" method="post" class="d-flex">
+                            <button class="btn btn-outline-danger btn-sm" type="submit">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <div class="text-center mb-5">
+            <h1 class="display-5">Welcome to Your Dashboard</h1>
+            <p class="lead">Quickly access all your billing functionalities from here.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a th:href="@{/customers}" class="feature-card card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-users"></i>
+                        <h5 class="card-title">Manage Customers</h5>
+                        <p class="card-text">View, add, or edit your customer profiles.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
+                <a th:href="@{/vendors}" class="feature-card card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-store"></i>
+                        <h5 class="card-title">Manage Vendors</h5>
+                        <p class="card-text">Keep track of all your vendor information.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a th:href="@{/products}" class="feature-card card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-box-open"></i>
+                        <h5 class="card-title">Manage Products</h5>
+                        <p class="card-text">Organize your product catalog and inventory.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

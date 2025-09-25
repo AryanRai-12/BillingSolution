@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public interface VendorRepository extends JpaRepository<Vendor, Long> {
@@ -12,4 +13,7 @@ public interface VendorRepository extends JpaRepository<Vendor, Long> {
 
 	@Query("select coalesce(sum(v.due), 0) from Vendor v")
 	BigDecimal sumAllPayables();
+	
+	 Optional<Vendor> findByNameIgnoreCase(String name);
+	 List<Vendor> findByNameContainingIgnoreCase(String name);
 } 

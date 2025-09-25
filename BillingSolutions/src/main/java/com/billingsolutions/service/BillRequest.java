@@ -14,6 +14,12 @@ public class BillRequest {
     private Long salesmanId;
     private BigDecimal paymentAgainstPreviousDue;
     private List<ItemRequest> items = new ArrayList<>();
+    
+    private String financialYear;
+    
+    // ADDED: Getter and setter for the new financialYear field.
+    public String getFinancialYear() { return financialYear; }
+    public void setFinancialYear(String financialYear) { this.financialYear = financialYear; }
 
     public Long getCustomerId() {
         return customerId;

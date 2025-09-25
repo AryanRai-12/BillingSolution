@@ -524,12 +524,15 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.HashMap;
 
 @Service
@@ -537,16 +540,17 @@ public class BillingService {
     private final BillRepository billRepository;
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
-    private final SalesmanRepository salesmanRepository;
+//    private final SalesmanRepository salesmanRepository;
+    private final UserRepository userRepository;
 
     public BillingService(BillRepository billRepository,
                           ProductRepository productRepository,
                           CustomerRepository customerRepository,
-                          SalesmanRepository salesmanRepository) {
+                          UserRepository userRepository) {
         this.billRepository = billRepository;
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
-        this.salesmanRepository = salesmanRepository;
+        this.userRepository = userRepository;
     }
 
     public Bill getBillById(Long id) {
@@ -566,14 +570,67 @@ public class BillingService {
     @Transactional
     public Bill createBill(BillRequest request) {
         // STEP 1: Fetch all required entities first
+    	
+    	
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Customer ID: " + request.getCustomerId()));
-        Salesman salesman = salesmanRepository.findById(request.getSalesmanId().intValue())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Salesman ID: " + request.getSalesmanId()));
+        User salesmanUser = null; // Salesman can be optional
+        
+        
+        String selectedFinancialYear = request.getFinancialYear();
+//        if (selectedFinancialYear == null || selectedFinancialYear.isBlank()) {
+//            throw new IllegalArgumentException("Financial Year must be selected.");
+//        }
+        long nextBillNumber = billRepository.findTopByFinancialYearOrderByIdDesc(selectedFinancialYear)
+                .map(latestBill -> { // Use the Optional's map function for cleaner logic
+                    String lastBillNo = latestBill.getBillNo();
+                    try {
+                        // 2. Parse the number from the last bill (e.g., "GST-1" -> 1)
+                        long lastNumber = Long.parseLong(lastBillNo.substring(lastBillNo.lastIndexOf('-') + 1));
+                        // 3. Increment to get the next number
+                        return lastNumber + 1;
+                    } catch (Exception e) {
+                        // If parsing fails for any reason, safely reset to 1
+                        return 1L; 
+                    }
+                })
+                // 4. If no bill is found for that year, default to 1.
+                .orElse(1L);
+        
+        if (request.getSalesmanId() != null) {
+            salesmanUser = userRepository.findById(request.getSalesmanId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Salesman ID: " + request.getSalesmanId()));
+        }
 
         Bill bill = new Bill();
         bill.setCustomer(customer);
-        bill.setSalesman(salesman);
+        bill.setSalesman(salesmanUser);
+        bill.setFinancialYear(selectedFinancialYear);
+//        Optional<Bill> latestBillOpt = billRepository.findTopByOrderByIdDesc();
+//        long nextBillNumber = 1;
+//
+//        if (latestBillOpt.isPresent()) {
+//            // 2. If a bill exists, parse its number (e.g., get 1 from "GST-1").
+//            String lastBillNo = latestBillOpt.get().getBillNo();
+//            try {
+//                long lastNumber = Long.parseLong(lastBillNo.replace("GST-", ""));
+//                // 3. Increment it to get the next number.
+//                nextBillNumber = lastNumber + 1;
+//            } catch (NumberFormatException e) {
+//                // This is a fallback in case a bill number is in an unexpected format.
+//                nextBillNumber = billRepository.count() + 1;
+//            }
+//        }
+        
+        // 4. Set the new bill's number with the "GST-" prefix.
+        bill.setBillNo("GST-" + nextBillNumber);
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            // Set the username of the currently logged-in user on the bill.
+            bill.setCreatedBy(authentication.getName());
+        }
+        
         bill.setCustomerNameSnapshot(customer.getName());
         bill.setCustomerPhoneSnapshot(customer.getPhone());
         bill.setCustomerAddressSnapshot(customer.getAddress());

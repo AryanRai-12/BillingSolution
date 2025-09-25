@@ -8,11 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "bills")
+@Table(name = "bills", uniqueConstraints = {
+	    @UniqueConstraint(columnNames = {"billNo", "financialYear"})
+	})
 public class Bill {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@Column(nullable = false, updatable = false)
+	private String financialYear;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id")
@@ -47,7 +52,9 @@ public class Bill {
 	@NotNull
 	@Column(precision = 18, scale = 2)
 	private BigDecimal total = BigDecimal.ZERO;
-
+	
+	
+	
 	@NotNull
 	@Column(precision = 18, scale = 2)
 	private BigDecimal previousDue = BigDecimal.ZERO;
@@ -64,17 +71,50 @@ public class Bill {
 	@Column(precision = 18, scale = 2)
 	private BigDecimal totalCostBasis = BigDecimal.ZERO;
 	
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "salesman_id")
-	private Salesman salesman;
+//	@NotNull
+//	@ManyToOne
+//	@JoinColumn(name = "salesman_id")
+//	private Salesman salesman;
+	
+	@Column(nullable = false, updatable = false)
+	private String createdBy;
+	
+	@Column(nullable = false)
+    private String billNo;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "salesman_user_id") // A new column in the bills table
+	private User salesman;
+	
+	public String getFinancialYear() { 
+		return financialYear; 
+	}
+	public void setFinancialYear(String financialYear) { 
+		this.financialYear = financialYear; 
+	}
+	
+	public String getBillNo() {
+        return billNo;
+    }
 
-	public Salesman getSalesman() {
+    public void setBillNo(String billNo) {
+        this.billNo = billNo;
+    }
+	
+	public User getSalesman() {
 		return salesman;
 	}
 
-	public void setSalesman(Salesman salesman) {
+	public void setSalesman(User salesman) {
 		this.salesman = salesman;
+	}
+	
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Bill() {}

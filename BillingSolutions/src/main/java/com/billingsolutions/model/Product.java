@@ -198,11 +198,11 @@ public class Product {
         this.gstRate = gstRate;
     }
 
-	public String getGroup() {
+	public String getProductGroup() {
 		return ProductGroup;
 	}
 
-	public void setGroup(String group) {
+	public void setProductGroup(String group) {
 		ProductGroup = group;
 	}
     
