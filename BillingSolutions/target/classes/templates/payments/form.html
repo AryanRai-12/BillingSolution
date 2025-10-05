@@ -1,0 +1,2141 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Record New Payment</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            padding-top: 70px; /* Padding for fixed navbar */-->
+<!--        }-->
+<!--        .navbar {-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,.1);-->
+<!--        }-->
+<!--        .form-card {-->
+<!--            margin-top: 2rem;-->
+<!--            margin-bottom: 4rem;-->
+<!--        }-->
+<!--        .user-info .nav-link {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .user-info .fa-user-circle {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+<!--        .dropdown-list { -->
+<!--            position: absolute; -->
+<!--            border: 1px solid #ddd; -->
+<!--            border-top: none; -->
+<!--            max-height: 200px; -->
+<!--            overflow-y: auto; -->
+<!--            background: white; -->
+<!--            display: none; -->
+<!--            z-index: 1000; -->
+<!--            width: 100%; -->
+<!--            box-sizing: border-box; -->
+<!--            box-shadow: 0 4px 8px rgba(0,0,0,0.1); -->
+<!--        }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Consistent Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--        <div class="container-fluid">-->
+<!--            <a class="navbar-brand fw-bold" th:href="@{/}">-->
+<!--                <i class="fas fa-file-invoice-dollar"></i>-->
+<!--                BillingSolutions-->
+<!--            </a>-->
+<!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--            </button>-->
+<!--            <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a></li>-->
+<!--                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"><a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/billing}"><i class="fas fa-history me-1"></i>Bill History</a></li>-->
+<!--                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">-->
+<!--                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user-shield me-1"></i>Admin</a>-->
+<!--                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--                <ul class="navbar-nav user-info">-->
+<!--                    <li class="nav-item"><span class="nav-link"><i class="fas fa-user-circle"></i> <span sec:authentication="name">Username</span></span></li>-->
+<!--                    <li class="nav-item"><form th:action="@{/logout}" method="post" class="d-flex"><button class="btn btn-outline-danger btn-sm" type="submit">Logout</button></form></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </nav>-->
+
+<!--     Main Content -->
+<!--    <div class="container">-->
+<!--        <div class="card form-card">-->
+<!--            <div class="card-header bg-light py-3">-->
+<!--                <h1 class="h4 mb-0"><i class="fas fa-plus-circle me-2"></i>Record New Payment</h1>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                <form th:action="@{/payments/new}" method="post">-->
+<!--                     Bill Selection -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="billInput" class="form-label">Select Bill</label>-->
+<!--                        <div class="position-relative" id="billDropdown">-->
+<!--                            <input type="text" id="billInput" class="form-control" placeholder="Search by Bill No. or Customer Name..." autocomplete="off" required>-->
+<!--                            <div class="dropdown-list">-->
+<!--                                <div th:each="bill : ${bills}" th:text="${bill.billNo + ' - ' + bill.customerNameSnapshot}" th:attr="data-value=${bill.id}"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" name="billId" id="billIdHidden"/>-->
+<!--                    </div>-->
+
+<!--                     Amount -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="amount" class="form-label">Payment Amount</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <span class="input-group-text">₹</span>-->
+<!--                            <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <hr class="my-4">-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <a th:href="@{/payments}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Record Payment</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            const dropdown = document.getElementById("billDropdown");-->
+<!--            if (!dropdown) return;-->
+<!--            const input = dropdown.querySelector("input[type='text']");-->
+<!--            const list = dropdown.querySelector(".dropdown-list");-->
+<!--            const hiddenField = document.getElementById("billIdHidden");-->
+
+<!--            input.addEventListener("input", () => {-->
+<!--                const filter = input.value.toLowerCase();-->
+<!--                const items = list.querySelectorAll("div");-->
+<!--                let visible = false;-->
+<!--                items.forEach(item => {-->
+<!--                    const match = item.textContent.toLowerCase().includes(filter);-->
+<!--                    item.style.display = match ? "block" : "none";-->
+<!--                    if (match) visible = true;-->
+<!--                });-->
+<!--                list.style.display = visible ? "block" : "none";-->
+<!--            });-->
+
+<!--            list.querySelectorAll("div").forEach(item => {-->
+<!--                item.addEventListener("click", () => {-->
+<!--                    input.value = item.textContent;-->
+<!--                    hiddenField.value = item.dataset.value;-->
+<!--                    list.style.display = "none";-->
+<!--                });-->
+<!--            });-->
+
+<!--            document.addEventListener("click", (e) => {-->
+<!--                if (!dropdown.contains(e.target)) {-->
+<!--                    list.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Record New Payment</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            padding-top: 70px; /* Padding for fixed navbar */-->
+<!--        }-->
+<!--        .navbar {-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,.1);-->
+<!--        }-->
+<!--        .form-card {-->
+<!--            margin-top: 2rem;-->
+<!--            margin-bottom: 4rem;-->
+<!--        }-->
+<!--        .user-info .nav-link {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .user-info .fa-user-circle {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+<!--        .dropdown-list { -->
+<!--            position: absolute; -->
+<!--            border: 1px solid #ddd; -->
+<!--            border-top: none; -->
+<!--            max-height: 200px; -->
+<!--            overflow-y: auto; -->
+<!--            background: white; -->
+<!--            display: none; -->
+<!--            z-index: 1000; -->
+<!--            width: 100%; -->
+<!--            box-sizing: border-box; -->
+<!--            box-shadow: 0 4px 8px rgba(0,0,0,0.1); -->
+<!--        }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--        #bill-details-container {-->
+<!--            display: none; /* Initially hidden */-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Consistent Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--         ... (navbar content remains the same) ... -->
+<!--    </nav>-->
+
+<!--     Main Content -->
+<!--    <div class="container">-->
+<!--        <div class="card form-card">-->
+<!--            <div class="card-header bg-light py-3">-->
+<!--                <h1 class="h4 mb-0"><i class="fas fa-plus-circle me-2"></i>Record New Payment</h1>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                <form th:action="@{/payments/new}" method="post">-->
+<!--                     Bill Selection -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="billInput" class="form-label">Select Bill</label>-->
+<!--                        <div class="position-relative" id="billDropdown">-->
+<!--                            <input type="text" id="billInput" class="form-control" placeholder="Search by Bill No. or Customer Name..." autocomplete="off" required>-->
+<!--                            <div class="dropdown-list">-->
+<!--                                 MODIFIED: The text now includes the financial year -->
+<!--                                <div th:each="bill : ${bills}" th:text="${bill.billNo + ' (' + bill.financialYear + ') - ' + bill.customerNameSnapshot}" th:attr="data-value=${bill.id}"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" name="billId" id="billIdHidden"/>-->
+<!--                    </div>-->
+                    
+<!--                     ADDED: Container for dynamically loaded bill details -->
+<!--                    <div id="bill-details-container" class="card bg-light mb-3">-->
+<!--                        <div class="card-body">-->
+<!--                            <h6 class="card-title">Bill Summary</h6>-->
+<!--                            <ul class="list-group list-group-flush">-->
+<!--                                <li class="list-group-item d-flex justify-content-between"><span>Total Amount:</span> <span id="bill-total"></span></li>-->
+<!--                                <li class="list-group-item d-flex justify-content-between"><span>Amount Paid:</span> <span id="bill-paid"></span></li>-->
+<!--                                <li class="list-group-item d-flex justify-content-between fw-bold"><span>Remaining Due:</span> <span id="bill-due" class="text-danger"></span></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                     Amount -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="amount" class="form-label">Payment Amount</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <span class="input-group-text">₹</span>-->
+<!--                            <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <hr class="my-4">-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <a th:href="@{/payments}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Record Payment</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            const dropdown = document.getElementById("billDropdown");-->
+<!--            if (!dropdown) return;-->
+<!--            const input = dropdown.querySelector("input[type='text']");-->
+<!--            const list = dropdown.querySelector(".dropdown-list");-->
+<!--            const hiddenField = document.getElementById("billIdHidden");-->
+            
+<!--            // ADDED: References to the new details container-->
+<!--            const detailsContainer = document.getElementById('bill-details-container');-->
+<!--            const billTotalSpan = document.getElementById('bill-total');-->
+<!--            const billPaidSpan = document.getElementById('bill-paid');-->
+<!--            const billDueSpan = document.getElementById('bill-due');-->
+<!--            const amountInput = document.getElementById('amount');-->
+
+<!--            // ADDED: Function to fetch and display bill details-->
+<!--            async function fetchBillDetails(billId) {-->
+<!--                try {-->
+<!--                    const response = await fetch(`/payments/bill-details/${billId}`);-->
+<!--                    if (!response.ok) {-->
+<!--                        throw new Error('Bill not found');-->
+<!--                    }-->
+<!--                    const data = await response.json();-->
+                    
+<!--                    // Populate the details card with the fetched data-->
+<!--                    const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });-->
+<!--                    billTotalSpan.textContent = currencyFormatter.format(data.total);-->
+<!--                    billPaidSpan.textContent = currencyFormatter.format(data.amountPaid);-->
+<!--                    billDueSpan.textContent = currencyFormatter.format(data.remainingDue);-->
+                    
+<!--                    // Suggest the remaining due as the payment amount-->
+<!--                    amountInput.value = data.remainingDue.toFixed(2);-->
+<!--                    amountInput.max = data.remainingDue.toFixed(2); // Prevent overpayment-->
+
+<!--                    detailsContainer.style.display = 'block'; // Show the details-->
+<!--                } catch (error) {-->
+<!--                    console.error('Error fetching bill details:', error);-->
+<!--                    detailsContainer.style.display = 'none'; // Hide if there's an error-->
+<!--                }-->
+<!--            }-->
+
+<!--            input.addEventListener("input", () => {-->
+<!--                const filter = input.value.toLowerCase();-->
+<!--                const items = list.querySelectorAll("div");-->
+<!--                let visible = false;-->
+<!--                items.forEach(item => {-->
+<!--                    const match = item.textContent.toLowerCase().includes(filter);-->
+<!--                    item.style.display = match ? "block" : "none";-->
+<!--                    if (match) visible = true;-->
+<!--                });-->
+<!--                list.style.display = visible ? "block" : "none";-->
+<!--            });-->
+
+<!--            list.querySelectorAll("div").forEach(item => {-->
+<!--                item.addEventListener("click", () => {-->
+<!--                    input.value = item.textContent;-->
+<!--                    const billId = item.dataset.value;-->
+<!--                    hiddenField.value = billId;-->
+<!--                    list.style.display = "none";-->
+                    
+<!--                    // When a bill is selected, fetch its details-->
+<!--                    fetchBillDetails(billId);-->
+<!--                });-->
+<!--            });-->
+
+<!--            document.addEventListener("click", (e) => {-->
+<!--                if (!dropdown.contains(e.target)) {-->
+<!--                    list.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Record New Payment</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            padding-top: 70px; /* Padding for fixed navbar */-->
+<!--        }-->
+<!--        .navbar {-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,.1);-->
+<!--        }-->
+<!--        .form-card {-->
+<!--            margin-top: 2rem;-->
+<!--            margin-bottom: 4rem;-->
+<!--        }-->
+<!--        .user-info .nav-link {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .user-info .fa-user-circle {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+<!--        .dropdown-list { -->
+<!--            position: absolute; -->
+<!--            border: 1px solid #ddd; -->
+<!--            border-top: none; -->
+<!--            max-height: 200px; -->
+<!--            overflow-y: auto; -->
+<!--            background: white; -->
+<!--            display: none; -->
+<!--            z-index: 1000; -->
+<!--            width: 100%; -->
+<!--            box-sizing: border-box; -->
+<!--            box-shadow: 0 4px 8px rgba(0,0,0,0.1); -->
+<!--        }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--        #bill-details-container {-->
+<!--            display: none; /* Initially hidden */-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Consistent Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--        <div class="container-fluid">-->
+<!--            <a class="navbar-brand fw-bold" th:href="@{/}">-->
+<!--                <i class="fas fa-file-invoice-dollar"></i>-->
+<!--                BillingSolutions-->
+<!--            </a>-->
+<!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--            </button>-->
+<!--            <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a></li>-->
+<!--                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"><a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/billing}"><i class="fas fa-history me-1"></i>Bill History</a></li>-->
+<!--                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">-->
+<!--                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user-shield me-1"></i>Admin</a>-->
+<!--                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--                <ul class="navbar-nav user-info">-->
+<!--                    <li class="nav-item"><span class="nav-link"><i class="fas fa-user-circle"></i> <span sec:authentication="name">Username</span></span></li>-->
+<!--                    <li class="nav-item"><form th:action="@{/logout}" method="post" class="d-flex"><button class="btn btn-outline-danger btn-sm" type="submit">Logout</button></form></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </nav>-->
+
+<!--     Main Content -->
+<!--    <div class="container">-->
+<!--        <div class="card form-card">-->
+<!--            <div class="card-header bg-light py-3">-->
+<!--                <h1 class="h4 mb-0"><i class="fas fa-plus-circle me-2"></i>Record New Payment</h1>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                <form th:action="@{/payments/new}" method="post">-->
+<!--                    <div class="row g-3 align-items-center mb-3">-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="financialYearFilter" class="form-label">Filter Bills by Financial Year</label>-->
+<!--                            <select id="financialYearFilter" class="form-select">-->
+<!--                                <option th:each="year : ${financialYears}"-->
+<!--                                        th:value="${year}"-->
+<!--                                        th:text="${year}"-->
+<!--                                        th:selected="${year == selectedFinancialYear}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                    <hr>-->
+
+<!--                     Bill Selection -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="billInput" class="form-label">Select Bill</label>-->
+<!--                        <div class="position-relative" id="billDropdown">-->
+<!--                            <input type="text" id="billInput" class="form-control" placeholder="Search by Bill No. or Customer Name..." autocomplete="off" required>-->
+<!--                            <div class="dropdown-list">-->
+<!--                                <div th:each="bill : ${bills}" th:text="${bill.billNo + ' - ' + bill.customerNameSnapshot}" th:attr="data-value=${bill.id}"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" name="billId" id="billIdHidden"/>-->
+<!--                    </div>-->
+                    
+<!--                     Container for dynamically loaded bill details -->
+<!--                    <div id="bill-details-container" class="card bg-light mb-3">-->
+<!--                        <div class="card-body">-->
+<!--                            <h6 class="card-title">Bill Summary</h6>-->
+<!--                            <ul class="list-group list-group-flush">-->
+<!--                                <li class="list-group-item d-flex justify-content-between"><span>Total Amount:</span> <span id="bill-total"></span></li>-->
+<!--                                <li class="list-group-item d-flex justify-content-between"><span>Amount Paid:</span> <span id="bill-paid"></span></li>-->
+<!--                                <li class="list-group-item d-flex justify-content-between fw-bold"><span>Remaining Due:</span> <span id="bill-due" class="text-danger"></span></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                     Amount -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="amount" class="form-label">Payment Amount</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <span class="input-group-text">₹</span>-->
+<!--                            <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <hr class="my-4">-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <a th:href="@{/payments}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Record Payment</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            const dropdown = document.getElementById("billDropdown");-->
+<!--            if (!dropdown) return;-->
+<!--            const input = dropdown.querySelector("input[type='text']");-->
+<!--            const list = dropdown.querySelector(".dropdown-list");-->
+<!--            const hiddenField = document.getElementById("billIdHidden");-->
+            
+<!--            const detailsContainer = document.getElementById('bill-details-container');-->
+<!--            const billTotalSpan = document.getElementById('bill-total');-->
+<!--            const billPaidSpan = document.getElementById('bill-paid');-->
+<!--            const billDueSpan = document.getElementById('bill-due');-->
+<!--            const amountInput = document.getElementById('amount');-->
+            
+<!--            const yearFilter = document.getElementById('financialYearFilter');-->
+<!--            yearFilter.addEventListener('change', function() {-->
+<!--                const selectedYear = this.value;-->
+<!--                window.location.href = '/payments/new?financialYear=' + encodeURIComponent(selectedYear);-->
+<!--            });-->
+
+<!--            async function fetchBillDetails(billId) {-->
+<!--                try {-->
+<!--                    const response = await fetch(`/payments/bill-details/${billId}`);-->
+<!--                    if (!response.ok) throw new Error('Bill not found');-->
+                    
+<!--                    const data = await response.json();-->
+                    
+<!--                    const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });-->
+<!--                    billTotalSpan.textContent = currencyFormatter.format(data.total);-->
+<!--                    billPaidSpan.textContent = currencyFormatter.format(data.amountPaid);-->
+<!--                    billDueSpan.textContent = currencyFormatter.format(data.remainingDue);-->
+                    
+<!--                    amountInput.value = data.remainingDue.toFixed(2);-->
+<!--                    amountInput.max = data.remainingDue.toFixed(2);-->
+
+<!--                    detailsContainer.style.display = 'block';-->
+<!--                } catch (error) {-->
+<!--                    console.error('Error fetching bill details:', error);-->
+<!--                    detailsContainer.style.display = 'none';-->
+<!--                }-->
+<!--            }-->
+
+<!--            input.addEventListener("input", () => {-->
+<!--                const filter = input.value.toLowerCase();-->
+<!--                const items = list.querySelectorAll("div");-->
+<!--                let visible = false;-->
+<!--                items.forEach(item => {-->
+<!--                    const match = item.textContent.toLowerCase().includes(filter);-->
+<!--                    item.style.display = match ? "block" : "none";-->
+<!--                    if (match) visible = true;-->
+<!--                });-->
+<!--                list.style.display = visible ? "block" : "none";-->
+<!--            });-->
+
+<!--            list.querySelectorAll("div").forEach(item => {-->
+<!--                item.addEventListener("click", () => {-->
+<!--                    input.value = item.textContent;-->
+<!--                    const billId = item.dataset.value;-->
+<!--                    hiddenField.value = billId;-->
+<!--                    list.style.display = "none";-->
+                    
+<!--                    fetchBillDetails(billId);-->
+<!--                });-->
+<!--            });-->
+
+<!--            document.addEventListener("click", (e) => {-->
+<!--                if (!dropdown.contains(e.target)) {-->
+<!--                    list.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Record New Payment</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            padding-top: 70px; /* Padding for fixed navbar */-->
+<!--        }-->
+<!--        .navbar {-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,.1);-->
+<!--        }-->
+<!--        .form-card {-->
+<!--            margin-top: 2rem;-->
+<!--            margin-bottom: 4rem;-->
+<!--        }-->
+<!--        .user-info .nav-link {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .user-info .fa-user-circle {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+<!--        .dropdown-list { -->
+<!--            position: absolute; -->
+<!--            border: 1px solid #ddd; -->
+<!--            border-top: none; -->
+<!--            max-height: 200px; -->
+<!--            overflow-y: auto; -->
+<!--            background: white; -->
+<!--            display: none; -->
+<!--            z-index: 1000; -->
+<!--            width: 100%; -->
+<!--            box-sizing: border-box; -->
+<!--            box-shadow: 0 4px 8px rgba(0,0,0,0.1); -->
+<!--        }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--        #bill-details-container, #payment-history-container {-->
+<!--            display: none; /* Initially hidden */-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Consistent Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--        <div class="container-fluid">-->
+<!--            <a class="navbar-brand fw-bold" th:href="@{/}">-->
+<!--                <i class="fas fa-file-invoice-dollar"></i>-->
+<!--                BillingSolutions-->
+<!--            </a>-->
+<!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--            </button>-->
+<!--            <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a></li>-->
+<!--                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"><a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/billing}"><i class="fas fa-history me-1"></i>Bill History</a></li>-->
+<!--                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">-->
+<!--                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user-shield me-1"></i>Admin</a>-->
+<!--                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--                <ul class="navbar-nav user-info">-->
+<!--                    <li class="nav-item"><span class="nav-link"><i class="fas fa-user-circle"></i> <span sec:authentication="name">Username</span></span></li>-->
+<!--                    <li class="nav-item"><form th:action="@{/logout}" method="post" class="d-flex"><button class="btn btn-outline-danger btn-sm" type="submit">Logout</button></form></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </nav>-->
+
+<!--     Main Content -->
+<!--    <div class="container">-->
+<!--        <div class="card form-card">-->
+<!--            <div class="card-header bg-light py-3">-->
+<!--                <h1 class="h4 mb-0"><i class="fas fa-plus-circle me-2"></i>Record New Payment</h1>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                <form th:action="@{/payments/new}" method="post">-->
+<!--                    <div class="row g-3 align-items-center mb-3">-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="financialYearFilter" class="form-label">Filter Bills by Financial Year</label>-->
+<!--                            <select id="financialYearFilter" class="form-select">-->
+<!--                                <option th:each="year : ${financialYears}"-->
+<!--                                        th:value="${year}"-->
+<!--                                        th:text="${year}"-->
+<!--                                        th:selected="${year == selectedFinancialYear}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                    <hr>-->
+
+<!--                     Bill Selection -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="billInput" class="form-label">Select Bill</label>-->
+<!--                        <div class="position-relative" id="billDropdown">-->
+<!--                            <input type="text" id="billInput" class="form-control" placeholder="Search by Bill No. or Customer Name..." autocomplete="off" required>-->
+<!--                            <div class="dropdown-list">-->
+<!--                                <div th:each="bill : ${bills}" th:text="${bill.billNo + ' - ' + bill.customerNameSnapshot}" th:attr="data-value=${bill.id}"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" name="billId" id="billIdHidden"/>-->
+<!--                    </div>-->
+                    
+<!--                     Container for dynamically loaded bill details -->
+<!--                    <div id="bill-details-container" class="card bg-light mb-3">-->
+<!--                        <div class="card-body">-->
+<!--                            <h6 class="card-title">Bill Summary</h6>-->
+<!--                            <ul class="list-group list-group-flush">-->
+<!--                                <li class="list-group-item d-flex justify-content-between"><span>Total Amount:</span> <span id="bill-total"></span></li>-->
+<!--                                <li class="list-group-item d-flex justify-content-between"><span>Amount Paid:</span> <span id="bill-paid" class="text-success"></span></li>-->
+<!--                                <li class="list-group-item d-flex justify-content-between fw-bold"><span>Remaining Due:</span> <span id="bill-due" class="text-danger"></span></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                     Container for Payment History -->
+<!--                    <div id="payment-history-container" class="mt-4">-->
+<!--                        <h6><i class="fas fa-history me-2"></i>Payment History for this Bill</h6>-->
+<!--                        <div class="table-responsive">-->
+<!--                            <table class="table table-sm table-bordered">-->
+<!--                                <thead class="table-light">-->
+<!--                                    <tr>-->
+<!--                                        <th>Date</th>-->
+<!--                                        <th class="text-end">Amount Paid</th>-->
+<!--                                        <th>Received By</th>-->
+<!--                                    </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody id="payment-history-body">-->
+<!--                                     JavaScript will populate this section -->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                     Amount -->
+<!--                    <div class="mb-3 mt-4">-->
+<!--                        <label for="amount" class="form-label">New Payment Amount</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <span class="input-group-text">₹</span>-->
+<!--                            <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <hr class="my-4">-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <a th:href="@{/payments}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Record Payment</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            const dropdown = document.getElementById("billDropdown");-->
+<!--            if (!dropdown) return;-->
+<!--            const input = dropdown.querySelector("input[type='text']");-->
+<!--            const list = dropdown.querySelector(".dropdown-list");-->
+<!--            const hiddenField = document.getElementById("billIdHidden");-->
+            
+<!--            const detailsContainer = document.getElementById('bill-details-container');-->
+<!--            const billTotalSpan = document.getElementById('bill-total');-->
+<!--            const billPaidSpan = document.getElementById('bill-paid');-->
+<!--            const billDueSpan = document.getElementById('bill-due');-->
+<!--            const amountInput = document.getElementById('amount');-->
+<!--            const paymentHistoryContainer = document.getElementById('payment-history-container');-->
+<!--            const paymentHistoryBody = document.getElementById('payment-history-body');-->
+            
+<!--            const yearFilter = document.getElementById('financialYearFilter');-->
+<!--            yearFilter.addEventListener('change', function() {-->
+<!--                const selectedYear = this.value;-->
+<!--                window.location.href = '/payments/new?financialYear=' + encodeURIComponent(selectedYear);-->
+<!--            });-->
+
+<!--            async function fetchBillDetails(billId) {-->
+<!--                try {-->
+<!--                    const response = await fetch(`/payments/bill-details/${billId}`);-->
+<!--                    if (!response.ok) throw new Error('Bill not found');-->
+                    
+<!--                    const data = await response.json();-->
+                    
+<!--                    const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });-->
+<!--                    billTotalSpan.textContent = currencyFormatter.format(data.total);-->
+<!--                    billPaidSpan.textContent = currencyFormatter.format(data.amountPaid);-->
+<!--                    billDueSpan.textContent = currencyFormatter.format(data.remainingDue);-->
+                    
+<!--                    amountInput.value = data.remainingDue > 0 ? data.remainingDue.toFixed(2) : '';-->
+<!--                    amountInput.max = data.remainingDue.toFixed(2);-->
+
+<!--                    paymentHistoryBody.innerHTML = ''; -->
+<!--                    if (data.previousPayments && data.previousPayments.length > 0) {-->
+<!--                        data.previousPayments.forEach(payment => {-->
+<!--                            const tr = document.createElement('tr');-->
+<!--                            const date = new Date(payment.paymentDate);-->
+<!--                            const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });-->
+<!--                            const formattedAmount = currencyFormatter.format(payment.amount);-->
+
+<!--                            tr.innerHTML = `-->
+<!--                                <td>${formattedDate}</td>-->
+<!--                                <td class="text-end">${formattedAmount}</td>-->
+<!--                                <td>${payment.receivedBy}</td>-->
+<!--                            `;-->
+<!--                            paymentHistoryBody.appendChild(tr);-->
+<!--                        });-->
+<!--                        paymentHistoryContainer.style.display = 'block';-->
+<!--                    } else {-->
+<!--                        paymentHistoryContainer.style.display = 'none';-->
+<!--                    }-->
+
+<!--                    detailsContainer.style.display = 'block';-->
+<!--                } catch (error) {-->
+<!--                    console.error('Error fetching bill details:', error);-->
+<!--                    detailsContainer.style.display = 'none';-->
+<!--                    paymentHistoryContainer.style.display = 'none';-->
+<!--                }-->
+<!--            }-->
+
+<!--            input.addEventListener("input", () => {-->
+<!--                const filter = input.value.toLowerCase();-->
+<!--                const items = list.querySelectorAll("div");-->
+<!--                let visible = false;-->
+<!--                items.forEach(item => {-->
+<!--                    const match = item.textContent.toLowerCase().includes(filter);-->
+<!--                    item.style.display = match ? "block" : "none";-->
+<!--                    if (match) visible = true;-->
+<!--                });-->
+<!--                list.style.display = visible ? "block" : "none";-->
+<!--            });-->
+
+<!--            list.querySelectorAll("div").forEach(item => {-->
+<!--                item.addEventListener("click", () => {-->
+<!--                    input.value = item.textContent;-->
+<!--                    const billId = item.dataset.value;-->
+<!--                    hiddenField.value = billId;-->
+<!--                    list.style.display = "none";-->
+                    
+<!--                    fetchBillDetails(billId);-->
+<!--                });-->
+<!--            });-->
+
+<!--            document.addEventListener("click", (e) => {-->
+<!--                if (!dropdown.contains(e.target)) {-->
+<!--                    list.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Record New Payment</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            padding-top: 70px; /* Padding for fixed navbar */-->
+<!--        }-->
+<!--        .navbar {-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,.1);-->
+<!--        }-->
+<!--        .form-card {-->
+<!--            margin-top: 2rem;-->
+<!--            margin-bottom: 4rem;-->
+<!--        }-->
+<!--        .user-info .nav-link {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .user-info .fa-user-circle {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+<!--        .dropdown-list { -->
+<!--            position: absolute; -->
+<!--            border: 1px solid #ddd; -->
+<!--            border-top: none; -->
+<!--            max-height: 200px; -->
+<!--            overflow-y: auto; -->
+<!--            background: white; -->
+<!--            display: none; -->
+<!--            z-index: 1000; -->
+<!--            width: 100%; -->
+<!--            box-sizing: border-box; -->
+<!--            box-shadow: 0 4px 8px rgba(0,0,0,0.1); -->
+<!--        }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--        #bill-details-container, #payment-history-container {-->
+<!--            display: none; /* Initially hidden */-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Consistent Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--         ... (navbar content remains the same) ... -->
+<!--    </nav>-->
+
+<!--     Main Content -->
+<!--    <div class="container">-->
+<!--        <div class="card form-card">-->
+<!--            <div class="card-header bg-light py-3">-->
+<!--                <h1 class="h4 mb-0"><i class="fas fa-plus-circle me-2"></i>Record New Payment</h1>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                <form th:action="@{/payments/new}" method="post">-->
+<!--                    <div class="row g-3 align-items-center mb-3">-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="financialYearFilter" class="form-label">Financial Year</label>-->
+<!--                            <select id="financialYearFilter" class="form-select">-->
+<!--                                <option th:each="year : ${financialYears}"-->
+<!--                                        th:value="${year}"-->
+<!--                                        th:text="${year}"-->
+<!--                                        th:selected="${year == selectedFinancialYear}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                    <hr>-->
+
+<!--                     Bill Selection -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="billInput" class="form-label">Search and Select Bill</label>-->
+<!--                        <div class="position-relative" id="billDropdown">-->
+<!--                            <input type="text" id="billInput" class="form-control" placeholder="Start typing a Bill No. or Customer Name..." autocomplete="off" required>-->
+<!--                             The dropdown list is now built by JavaScript -->
+<!--                            <div class="dropdown-list"></div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" name="billId" id="billIdHidden"/>-->
+<!--                    </div>-->
+                    
+<!--                    <div id="bill-details-container" class="card bg-light mb-3">-->
+<!--                         ... (bill details content) ... -->
+<!--                    </div>-->
+
+<!--                    <div id="payment-history-container" class="mt-4">-->
+<!--                         ... (payment history content) ... -->
+<!--                    </div>-->
+
+<!--                     Amount -->
+<!--                    <div class="mb-3 mt-4">-->
+<!--                        <label for="amount" class="form-label">New Payment Amount</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <span class="input-group-text">₹</span>-->
+<!--                            <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <hr class="my-4">-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <a th:href="@{/payments}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Record Payment</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            const billInput = document.getElementById("billInput");-->
+<!--            const billList = billDropdown.querySelector(".dropdown-list");-->
+<!--            const billIdHidden = document.getElementById("billIdHidden");-->
+<!--            const yearFilter = document.getElementById('financialYearFilter');-->
+<!--            let debounceTimer;-->
+
+<!--            // --- THIS IS THE NEW LIVE SEARCH LOGIC ----->
+<!--            async function performBillSearch() {-->
+<!--                const query = billInput.value;-->
+<!--                const financialYear = yearFilter.value;-->
+
+<!--                if (query.length < 1) {-->
+<!--                    billList.innerHTML = '';-->
+<!--                    billList.style.display = 'none';-->
+<!--                    return;-->
+<!--                }-->
+
+<!--                try {-->
+<!--                    const searchUrl = new URL('/payments/search-bills', window.location.origin);-->
+<!--                    searchUrl.searchParams.append('query', query);-->
+<!--                    searchUrl.searchParams.append('financialYear', financialYear);-->
+
+<!--                    const response = await fetch(searchUrl);-->
+<!--                    const bills = await response.json(); // Expect JSON data-->
+
+<!--                    billList.innerHTML = ''; // Clear old results-->
+<!--                    if (bills && bills.length > 0) {-->
+<!--                        bills.forEach(bill => {-->
+<!--                            const item = document.createElement('div');-->
+<!--                            item.textContent = `${bill.billNo} - ${bill.customerNameSnapshot}`;-->
+<!--                            item.dataset.value = bill.id;-->
+<!--                            item.addEventListener('click', () => {-->
+<!--                                billInput.value = item.textContent;-->
+<!--                                billIdHidden.value = bill.id;-->
+<!--                                billList.style.display = 'none';-->
+<!--                                fetchBillDetails(bill.id);-->
+<!--                            });-->
+<!--                            billList.appendChild(item);-->
+<!--                        });-->
+<!--                        billList.style.display = 'block';-->
+<!--                    } else {-->
+<!--                         billList.style.display = 'none';-->
+<!--                    }-->
+<!--                } catch (error) {-->
+<!--                    console.error('Error searching for bills:', error);-->
+<!--                }-->
+<!--            }-->
+            
+<!--            billInput.addEventListener("input", () => {-->
+<!--                clearTimeout(debounceTimer);-->
+<!--                debounceTimer = setTimeout(performBillSearch, 300); // Debounce to reduce server requests-->
+<!--            });-->
+
+<!--            // Re-run the search if the financial year is changed-->
+<!--            yearFilter.addEventListener('change', performBillSearch);-->
+
+<!--            document.addEventListener("click", (e) => {-->
+<!--                if (!billDropdown.contains(e.target)) {-->
+<!--                    billList.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+
+<!--            // --- The rest of your JavaScript (fetchBillDetails, etc.) remains the same ----->
+<!--            const detailsContainer = document.getElementById('bill-details-container');-->
+<!--            async function fetchBillDetails(billId) { /* ... implementation ... */ }-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Record New Payment</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            padding-top: 70px; /* Padding for fixed navbar */-->
+<!--        }-->
+<!--        .navbar {-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,.1);-->
+<!--        }-->
+<!--        .form-card {-->
+<!--            margin-top: 2rem;-->
+<!--            margin-bottom: 4rem;-->
+<!--        }-->
+<!--        .user-info .nav-link {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .user-info .fa-user-circle {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+<!--        .dropdown-list { -->
+<!--            position: absolute; -->
+<!--            border: 1px solid #ddd; -->
+<!--            border-top: none; -->
+<!--            max-height: 200px; -->
+<!--            overflow-y: auto; -->
+<!--            background: white; -->
+<!--            display: none; -->
+<!--            z-index: 1000; -->
+<!--            width: 100%; -->
+<!--            box-sizing: border-box; -->
+<!--            box-shadow: 0 4px 8px rgba(0,0,0,0.1); -->
+<!--        }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--        #bill-details-container, #payment-history-container {-->
+<!--            display: none; /* Initially hidden */-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Consistent Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--         ... (navbar content remains the same) ... -->
+<!--    </nav>-->
+
+<!--     Main Content -->
+<!--    <div class="container">-->
+<!--        <div class="card form-card">-->
+<!--            <div class="card-header bg-light py-3">-->
+<!--                <h1 class="h4 mb-0"><i class="fas fa-plus-circle me-2"></i>Record New Payment</h1>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                <form id="payment-form" th:action="@{/payments/new}" method="post">-->
+<!--                    <div class="row g-3 align-items-center mb-3">-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="financialYearFilter" class="form-label">Financial Year</label>-->
+<!--                            <select id="financialYearFilter" class="form-select">-->
+<!--                                <option th:each="year : ${financialYears}"-->
+<!--                                        th:value="${year}"-->
+<!--                                        th:text="${year}"-->
+<!--                                        th:selected="${year == selectedFinancialYear}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                    <hr>-->
+
+<!--                     Bill Selection -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="billInput" class="form-label">Search and Select Bill</label>-->
+<!--                        <div class="position-relative" id="billDropdown">-->
+<!--                            <input type="text" id="billInput" class="form-control" placeholder="Start typing a Bill No. or Customer Name..." autocomplete="off" required>-->
+<!--                            <div class="dropdown-list"></div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" name="billId" id="billIdHidden"/>-->
+<!--                         ADDED: Error message for invalid selection -->
+<!--                        <div id="bill-selection-error" class="text-danger small mt-1" style="display: none;">-->
+<!--                            Please select a valid bill from the list.-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                     ... (details, history, and amount fields remain the same) ... -->
+
+<!--                    <hr class="my-4">-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <a th:href="@{/payments}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Record Payment</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            const paymentForm = document.getElementById('payment-form');-->
+<!--            const billInput = document.getElementById("billInput");-->
+<!--            const billList = billDropdown.querySelector(".dropdown-list");-->
+<!--            const billIdHidden = document.getElementById("billIdHidden");-->
+<!--            const yearFilter = document.getElementById('financialYearFilter');-->
+<!--            const billSelectionError = document.getElementById('bill-selection-error');-->
+<!--            let debounceTimer;-->
+
+<!--            // --- THIS IS THE NEW LIVE SEARCH LOGIC ----->
+<!--            async function performBillSearch() {-->
+<!--                const query = billInput.value;-->
+<!--                const financialYear = yearFilter.value;-->
+
+<!--                if (query.length < 1) {-->
+<!--                    billList.innerHTML = '';-->
+<!--                    billList.style.display = 'none';-->
+<!--                    return;-->
+<!--                }-->
+
+<!--                try {-->
+<!--                    const searchUrl = new URL('/payments/search-bills', window.location.origin);-->
+<!--                    searchUrl.searchParams.append('query', query);-->
+<!--                    searchUrl.searchParams.append('financialYear', financialYear);-->
+
+<!--                    const response = await fetch(searchUrl);-->
+<!--                    const bills = await response.json();-->
+
+<!--                    billList.innerHTML = '';-->
+<!--                    if (bills && bills.length > 0) {-->
+<!--                        bills.forEach(bill => {-->
+<!--                            const item = document.createElement('div');-->
+<!--                            item.textContent = `${bill.billNo} - ${bill.customerNameSnapshot}`;-->
+<!--                            item.dataset.value = bill.id;-->
+<!--                            item.addEventListener('click', () => {-->
+<!--                                billInput.value = item.textContent;-->
+<!--                                billIdHidden.value = bill.id;-->
+<!--                                billList.style.display = 'none';-->
+<!--                                billSelectionError.style.display = 'none'; // Hide error on valid selection-->
+<!--                                fetchBillDetails(bill.id);-->
+<!--                            });-->
+<!--                            billList.appendChild(item);-->
+<!--                        });-->
+<!--                        billList.style.display = 'block';-->
+<!--                    } else {-->
+<!--                         billList.style.display = 'none';-->
+<!--                    }-->
+<!--                } catch (error) {-->
+<!--                    console.error('Error searching for bills:', error);-->
+<!--                }-->
+<!--            }-->
+            
+<!--            billInput.addEventListener("input", () => {-->
+<!--                // THE FIX: When the user types, invalidate the previous selection.-->
+<!--                billIdHidden.value = ''; -->
+<!--                billSelectionError.style.display = 'none';-->
+<!--                detailsContainer.style.display = 'none';-->
+<!--                paymentHistoryContainer.style.display = 'none';-->
+
+<!--                clearTimeout(debounceTimer);-->
+<!--                debounceTimer = setTimeout(performBillSearch, 300);-->
+<!--            });-->
+
+<!--            yearFilter.addEventListener('change', performBillSearch);-->
+
+<!--            document.addEventListener("click", (e) => {-->
+<!--                if (!billDropdown.contains(e.target)) {-->
+<!--                    billList.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+
+<!--            // THE FIX: Add a submit listener to validate the selection before sending.-->
+<!--            paymentForm.addEventListener('submit', function(event) {-->
+<!--                if (!billIdHidden.value) {-->
+<!--                    event.preventDefault(); // Stop the form submission-->
+<!--                    billSelectionError.style.display = 'block'; // Show the error message-->
+<!--                }-->
+<!--            });-->
+
+<!--            // --- The rest of your JavaScript (fetchBillDetails, etc.) remains the same ----->
+<!--            const detailsContainer = document.getElementById('bill-details-container');-->
+<!--            async function fetchBillDetails(billId) { /* ... implementation ... */ }-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Record New Payment</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            padding-top: 70px; /* Padding for fixed navbar */-->
+<!--        }-->
+<!--        .navbar {-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,.1);-->
+<!--        }-->
+<!--        .form-card {-->
+<!--            margin-top: 2rem;-->
+<!--            margin-bottom: 4rem;-->
+<!--        }-->
+<!--        .user-info .nav-link {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .user-info .fa-user-circle {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+<!--        .dropdown-list { -->
+<!--            position: absolute; -->
+<!--            border: 1px solid #ddd; -->
+<!--            border-top: none; -->
+<!--            max-height: 200px; -->
+<!--            overflow-y: auto; -->
+<!--            background: white; -->
+<!--            display: none; -->
+<!--            z-index: 1000; -->
+<!--            width: 100%; -->
+<!--            box-sizing: border-box; -->
+<!--            box-shadow: 0 4px 8px rgba(0,0,0,0.1); -->
+<!--        }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--        #bill-details-container, #payment-history-container {-->
+<!--            display: none; /* Initially hidden */-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Consistent Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--        <div class="container-fluid">-->
+<!--            <a class="navbar-brand fw-bold" th:href="@{/}">-->
+<!--                <i class="fas fa-file-invoice-dollar"></i>-->
+<!--                BillingSolutions-->
+<!--            </a>-->
+<!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--            </button>-->
+<!--            <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a></li>-->
+<!--                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"><a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/billing}"><i class="fas fa-history me-1"></i>Bill History</a></li>-->
+<!--                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">-->
+<!--                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user-shield me-1"></i>Admin</a>-->
+<!--                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--                <ul class="navbar-nav user-info">-->
+<!--                    <li class="nav-item"><span class="nav-link"><i class="fas fa-user-circle"></i> <span sec:authentication="name">Username</span></span></li>-->
+<!--                    <li class="nav-item"><form th:action="@{/logout}" method="post" class="d-flex"><button class="btn btn-outline-danger btn-sm" type="submit">Logout</button></form></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </nav>-->
+
+<!--     Main Content -->
+<!--    <div class="container">-->
+<!--        <div class="card form-card">-->
+<!--            <div class="card-header bg-light py-3">-->
+<!--                <h1 class="h4 mb-0"><i class="fas fa-plus-circle me-2"></i>Record New Payment</h1>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                <form id="payment-form" th:action="@{/payments/new}" method="post">-->
+<!--                    <div class="row g-3 align-items-center mb-3">-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="financialYearFilter" class="form-label">Financial Year</label>-->
+<!--                            <select id="financialYearFilter" class="form-select">-->
+<!--                                <option th:each="year : ${financialYears}"-->
+<!--                                        th:value="${year}"-->
+<!--                                        th:text="${year}"-->
+<!--                                        th:selected="${year == selectedFinancialYear}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                    <hr>-->
+
+<!--                    <div class="mb-3">-->
+<!--                        <label for="billInput" class="form-label">Search and Select Bill</label>-->
+<!--                        <div class="position-relative" id="billDropdown">-->
+<!--                            <input type="text" id="billInput" class="form-control" placeholder="Start typing a Bill No. or Customer Name..." autocomplete="off" required>-->
+<!--                            <div class="dropdown-list"></div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" name="billId" id="billIdHidden"/>-->
+<!--                        <div id="bill-selection-error" class="text-danger small mt-1" style="display: none;">-->
+<!--                            Please select a valid bill from the list.-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                    <div id="bill-details-container" class="card bg-light mb-3">-->
+<!--                        <div class="card-body">-->
+<!--                             <h6 class="card-title">Bill Summary</h6>-->
+<!--                             <ul class="list-group list-group-flush">-->
+<!--                                 <li class="list-group-item d-flex justify-content-between"><span>Total Amount:</span> <span id="bill-total"></span></li>-->
+<!--                                 <li class="list-group-item d-flex justify-content-between"><span>Amount Paid:</span> <span id="bill-paid" class="text-success"></span></li>-->
+<!--                                 <li class="list-group-item d-flex justify-content-between fw-bold"><span>Remaining Due:</span> <span id="bill-due" class="text-danger"></span></li>-->
+<!--                             </ul>-->
+<!--                         </div>-->
+<!--                    </div>-->
+
+<!--                    <div id="payment-history-container" class="mt-4">-->
+<!--                         <h6><i class="fas fa-history me-2"></i>Payment History for this Bill</h6>-->
+<!--                         <div class="table-responsive">-->
+<!--                             <table class="table table-sm table-bordered">-->
+<!--                                 <thead class="table-light">-->
+<!--                                     <tr>-->
+<!--                                         <th>Date</th>-->
+<!--                                         <th class="text-end">Amount Paid</th>-->
+<!--                                         <th>Received By</th>-->
+<!--                                     </tr>-->
+<!--                                 </thead>-->
+<!--                                 <tbody id="payment-history-body"></tbody>-->
+<!--                             </table>-->
+<!--                         </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="mb-3 mt-4">-->
+<!--                        <label for="amount" class="form-label">New Payment Amount</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <span class="input-group-text">₹</span>-->
+<!--                            <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <hr class="my-4">-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <a th:href="@{/payments}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Record Payment</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            const paymentForm = document.getElementById('payment-form');-->
+<!--            // THE FIX: Correctly get the parent dropdown element first.-->
+<!--            const billDropdown = document.getElementById("billDropdown");-->
+<!--            const billInput = document.getElementById("billInput");-->
+<!--            const billList = billDropdown.querySelector(".dropdown-list");-->
+<!--            const billIdHidden = document.getElementById("billIdHidden");-->
+<!--            const yearFilter = document.getElementById('financialYearFilter');-->
+<!--            const billSelectionError = document.getElementById('bill-selection-error');-->
+<!--            const detailsContainer = document.getElementById('bill-details-container');-->
+<!--            const paymentHistoryContainer = document.getElementById('payment-history-container');-->
+<!--            const paymentHistoryBody = document.getElementById('payment-history-body');-->
+<!--            const billTotalSpan = document.getElementById('bill-total');-->
+<!--            const billPaidSpan = document.getElementById('bill-paid');-->
+<!--            const billDueSpan = document.getElementById('bill-due');-->
+<!--            const amountInput = document.getElementById('amount');-->
+<!--            let debounceTimer;-->
+
+<!--            async function performBillSearch() {-->
+<!--                const query = billInput.value;-->
+<!--                const financialYear = yearFilter.value;-->
+
+<!--                if (query.length < 1) {-->
+<!--                    billList.innerHTML = '';-->
+<!--                    billList.style.display = 'none';-->
+<!--                    return;-->
+<!--                }-->
+
+<!--                try {-->
+<!--                    const searchUrl = new URL('/payments/search-bills', window.location.origin);-->
+<!--                    searchUrl.searchParams.append('query', query);-->
+<!--                    searchUrl.searchParams.append('financialYear', financialYear);-->
+
+<!--                    const response = await fetch(searchUrl);-->
+<!--                    const bills = await response.json();-->
+
+<!--                    billList.innerHTML = '';-->
+<!--                    if (bills && bills.length > 0) {-->
+<!--                        bills.forEach(bill => {-->
+<!--                            const item = document.createElement('div');-->
+<!--                            item.textContent = `${bill.billNo} - ${bill.customerNameSnapshot}`;-->
+<!--                            item.dataset.value = bill.id;-->
+<!--                            item.addEventListener('click', () => {-->
+<!--                                billInput.value = item.textContent;-->
+<!--                                billIdHidden.value = bill.id;-->
+<!--                                billList.style.display = 'none';-->
+<!--                                billSelectionError.style.display = 'none';-->
+<!--                                fetchBillDetails(bill.id);-->
+<!--                            });-->
+<!--                            billList.appendChild(item);-->
+<!--                        });-->
+<!--                        billList.style.display = 'block';-->
+<!--                    } else {-->
+<!--                         billList.style.display = 'none';-->
+<!--                    }-->
+<!--                } catch (error) {-->
+<!--                    console.error('Error searching for bills:', error);-->
+<!--                }-->
+<!--            }-->
+            
+<!--            billInput.addEventListener("input", () => {-->
+<!--                billIdHidden.value = ''; -->
+<!--                billSelectionError.style.display = 'none';-->
+<!--                detailsContainer.style.display = 'none';-->
+<!--                paymentHistoryContainer.style.display = 'none';-->
+
+<!--                clearTimeout(debounceTimer);-->
+<!--                debounceTimer = setTimeout(performBillSearch, 300);-->
+<!--            });-->
+
+<!--            yearFilter.addEventListener('change', performBillSearch);-->
+
+<!--            document.addEventListener("click", (e) => {-->
+<!--                if (!billDropdown.contains(e.target)) {-->
+<!--                    billList.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+
+<!--            paymentForm.addEventListener('submit', function(event) {-->
+<!--                if (!billIdHidden.value) {-->
+<!--                    event.preventDefault();-->
+<!--                    billSelectionError.style.display = 'block';-->
+<!--                }-->
+<!--            });-->
+
+<!--            // THE FIX: The full implementation of this function was restored.-->
+<!--            async function fetchBillDetails(billId) {-->
+<!--                 try {-->
+<!--                    const response = await fetch(`/payments/bill-details/${billId}`);-->
+<!--                    if (!response.ok) throw new Error('Bill not found');-->
+                    
+<!--                    const data = await response.json();-->
+                    
+<!--                    const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });-->
+<!--                    billTotalSpan.textContent = currencyFormatter.format(data.total);-->
+<!--                    billPaidSpan.textContent = currencyFormatter.format(data.amountPaid);-->
+<!--                    billDueSpan.textContent = currencyFormatter.format(data.remainingDue);-->
+                    
+<!--                    amountInput.value = data.remainingDue > 0 ? data.remainingDue.toFixed(2) : '';-->
+<!--                    amountInput.max = data.remainingDue.toFixed(2);-->
+
+<!--                    paymentHistoryBody.innerHTML = ''; -->
+<!--                    if (data.previousPayments && data.previousPayments.length > 0) {-->
+<!--                        data.previousPayments.forEach(payment => {-->
+<!--                            const tr = document.createElement('tr');-->
+<!--                            const date = new Date(payment.paymentDate);-->
+<!--                            const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });-->
+<!--                            const formattedAmount = currencyFormatter.format(payment.amount);-->
+
+<!--                            tr.innerHTML = `-->
+<!--                                <td>${formattedDate}</td>-->
+<!--                                <td class="text-end">${formattedAmount}</td>-->
+<!--                                <td>${payment.receivedBy}</td>-->
+<!--                            `;-->
+<!--                            paymentHistoryBody.appendChild(tr);-->
+<!--                        });-->
+<!--                        paymentHistoryContainer.style.display = 'block';-->
+<!--                    } else {-->
+<!--                        paymentHistoryContainer.style.display = 'none';-->
+<!--                    }-->
+
+<!--                    detailsContainer.style.display = 'block';-->
+<!--                } catch (error) {-->
+<!--                    console.error('Error fetching bill details:', error);-->
+<!--                    detailsContainer.style.display = 'none';-->
+<!--                    paymentHistoryContainer.style.display = 'none';-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Record New Payment</title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            padding-top: 70px; /* Padding for fixed navbar */-->
+<!--        }-->
+<!--        .navbar {-->
+<!--            box-shadow: 0 2px 4px rgba(0,0,0,.1);-->
+<!--        }-->
+<!--        .form-card {-->
+<!--            margin-top: 2rem;-->
+<!--            margin-bottom: 4rem;-->
+<!--        }-->
+<!--        .user-info .nav-link {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+<!--        .user-info .fa-user-circle {-->
+<!--            font-size: 1.5rem;-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+<!--        .dropdown-list { -->
+<!--            position: absolute; -->
+<!--            border: 1px solid #ddd; -->
+<!--            border-top: none; -->
+<!--            max-height: 200px; -->
+<!--            overflow-y: auto; -->
+<!--            background: white; -->
+<!--            display: none; -->
+<!--            z-index: 1000; -->
+<!--            width: 100%; -->
+<!--            box-sizing: border-box; -->
+<!--            box-shadow: 0 4px 8px rgba(0,0,0,0.1); -->
+<!--        }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--        #bill-details-container, #payment-history-container {-->
+<!--            display: none; /* Initially hidden */-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Consistent Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--        <div class="container-fluid">-->
+<!--            <a class="navbar-brand fw-bold" th:href="@{/}">-->
+<!--                <i class="fas fa-file-invoice-dollar"></i>-->
+<!--                BillingSolutions-->
+<!--            </a>-->
+<!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--            </button>-->
+<!--            <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a></li>-->
+<!--                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"><a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/billing}"><i class="fas fa-history me-1"></i>Bill History</a></li>-->
+<!--                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">-->
+<!--                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user-shield me-1"></i>Admin</a>-->
+<!--                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--                <ul class="navbar-nav user-info">-->
+<!--                    <li class="nav-item"><span class="nav-link"><i class="fas fa-user-circle"></i> <span sec:authentication="name">Username</span></span></li>-->
+<!--                    <li class="nav-item"><form th:action="@{/logout}" method="post" class="d-flex"><button class="btn btn-outline-danger btn-sm" type="submit">Logout</button></form></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </nav>-->
+
+<!--     Main Content -->
+<!--    <div class="container">-->
+<!--        <div class="card form-card">-->
+<!--            <div class="card-header bg-light py-3">-->
+<!--                <h1 class="h4 mb-0"><i class="fas fa-plus-circle me-2"></i>Record New Payment</h1>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                <form id="payment-form" th:action="@{/payments/new}" method="post">-->
+<!--                    <div class="row g-3 align-items-center mb-3">-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="financialYearFilter" class="form-label">Financial Year</label>-->
+<!--                            <select id="financialYearFilter" class="form-select">-->
+<!--                                <option th:each="year : ${financialYears}"-->
+<!--                                        th:value="${year}"-->
+<!--                                        th:text="${year}"-->
+<!--                                        th:selected="${year == selectedFinancialYear}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                    <hr>-->
+
+<!--                    <div class="mb-3">-->
+<!--                        <label for="billInput" class="form-label">Search and Select Bill</label>-->
+<!--                        <div class="position-relative" id="billDropdown">-->
+<!--                            <input type="text" id="billInput" class="form-control" placeholder="Start typing a Bill No. or Customer Name..." autocomplete="off" required>-->
+<!--                            <div class="dropdown-list"></div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" name="billId" id="billIdHidden"/>-->
+<!--                        <div id="bill-selection-error" class="text-danger small mt-1" style="display: none;">-->
+<!--                            Please select a valid bill from the list before submitting.-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                    <div id="bill-details-container" class="card bg-light mb-3">-->
+<!--                         <div class="card-body">-->
+<!--                             <h6 class="card-title">Bill Summary</h6>-->
+<!--                             <ul class="list-group list-group-flush">-->
+<!--                                 <li class="list-group-item d-flex justify-content-between"><span>Total Amount:</span> <span id="bill-total"></span></li>-->
+<!--                                 <li class="list-group-item d-flex justify-content-between"><span>Amount Paid:</span> <span id="bill-paid" class="text-success"></span></li>-->
+<!--                                 <li class="list-group-item d-flex justify-content-between fw-bold"><span>Remaining Due:</span> <span id="bill-due" class="text-danger"></span></li>-->
+<!--                             </ul>-->
+<!--                         </div>-->
+<!--                    </div>-->
+
+<!--                    <div id="payment-history-container" class="mt-4">-->
+<!--                         <h6><i class="fas fa-history me-2"></i>Payment History for this Bill</h6>-->
+<!--                         <div class="table-responsive">-->
+<!--                             <table class="table table-sm table-bordered">-->
+<!--                                 <thead class="table-light">-->
+<!--                                     <tr>-->
+<!--                                         <th>Date</th>-->
+<!--                                         <th class="text-end">Amount Paid</th>-->
+<!--                                         <th>Received By</th>-->
+<!--                                     </tr>-->
+<!--                                 </thead>-->
+<!--                                 <tbody id="payment-history-body"></tbody>-->
+<!--                             </table>-->
+<!--                         </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="mb-3 mt-4">-->
+<!--                        <label for="amount" class="form-label">New Payment Amount</label>-->
+<!--                        <div class="input-group">-->
+<!--                            <span class="input-group-text">₹</span>-->
+<!--                            <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <hr class="my-4">-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <a th:href="@{/payments}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Record Payment</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            const paymentForm = document.getElementById('payment-form');-->
+<!--            const billDropdown = document.getElementById("billDropdown");-->
+<!--            const billInput = document.getElementById("billInput");-->
+<!--            const billList = billDropdown.querySelector(".dropdown-list");-->
+<!--            const billIdHidden = document.getElementById("billIdHidden");-->
+<!--            const yearFilter = document.getElementById('financialYearFilter');-->
+<!--            const billSelectionError = document.getElementById('bill-selection-error');-->
+<!--            const detailsContainer = document.getElementById('bill-details-container');-->
+<!--            const paymentHistoryContainer = document.getElementById('payment-history-container');-->
+<!--            const paymentHistoryBody = document.getElementById('payment-history-body');-->
+<!--            const billTotalSpan = document.getElementById('bill-total');-->
+<!--            const billPaidSpan = document.getElementById('bill-paid');-->
+<!--            const billDueSpan = document.getElementById('bill-due');-->
+<!--            const amountInput = document.getElementById('amount');-->
+<!--            let debounceTimer;-->
+
+<!--            async function performBillSearch() {-->
+<!--                const query = billInput.value;-->
+<!--                const financialYear = yearFilter.value;-->
+
+<!--                if (query.length < 1) {-->
+<!--                    billList.innerHTML = '';-->
+<!--                    billList.style.display = 'none';-->
+<!--                    return;-->
+<!--                }-->
+
+<!--                try {-->
+<!--                    const searchUrl = new URL('/payments/search-bills', window.location.origin);-->
+<!--                    searchUrl.searchParams.append('query', query);-->
+<!--                    searchUrl.searchParams.append('financialYear', financialYear);-->
+
+<!--                    const response = await fetch(searchUrl);-->
+<!--                    const bills = await response.json();-->
+
+<!--                    billList.innerHTML = '';-->
+<!--                    if (bills && bills.length > 0) {-->
+<!--                        bills.forEach(bill => {-->
+<!--                            const item = document.createElement('div');-->
+<!--                            item.textContent = `${bill.billNo} - ${bill.customerNameSnapshot}`;-->
+<!--                            item.dataset.value = bill.id;-->
+                            
+<!--                            item.addEventListener('click', () => {-->
+<!--                                billInput.value = item.textContent;-->
+<!--                                billIdHidden.value = bill.id;-->
+<!--                                billList.style.display = 'none';-->
+<!--                                billSelectionError.style.display = 'none';-->
+<!--                                fetchBillDetails(bill.id);-->
+<!--                            });-->
+<!--                            billList.appendChild(item);-->
+<!--                        });-->
+<!--                        billList.style.display = 'block';-->
+<!--                    } else {-->
+<!--                         billList.style.display = 'none';-->
+<!--                    }-->
+<!--                } catch (error) {-->
+<!--                    console.error('Error searching for bills:', error);-->
+<!--                }-->
+<!--            }-->
+            
+<!--            billInput.addEventListener("input", () => {-->
+<!--                billIdHidden.value = ''; -->
+<!--                billSelectionError.style.display = 'none';-->
+<!--                detailsContainer.style.display = 'none';-->
+<!--                paymentHistoryContainer.style.display = 'none';-->
+
+<!--                clearTimeout(debounceTimer);-->
+<!--                debounceTimer = setTimeout(performBillSearch, 300);-->
+<!--            });-->
+            
+<!--            yearFilter.addEventListener('change', () => {-->
+<!--                billInput.value = '';-->
+<!--                billIdHidden.value = '';-->
+<!--                billList.innerHTML = '';-->
+<!--                billList.style.display = 'none';-->
+<!--                detailsContainer.style.display = 'none';-->
+<!--                paymentHistoryContainer.style.display = 'none';-->
+<!--                billSelectionError.style.display = 'none';-->
+<!--            });-->
+
+<!--            document.addEventListener("click", (e) => {-->
+<!--                if (!billDropdown.contains(e.target)) {-->
+<!--                    billList.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+
+<!--            paymentForm.addEventListener('submit', function(event) {-->
+<!--                if (!billIdHidden.value) {-->
+<!--                    event.preventDefault();-->
+<!--                    billSelectionError.style.display = 'block';-->
+<!--                }-->
+<!--            });-->
+
+<!--            // THE FIX: The full, correct implementation of this function is now included.-->
+<!--            async function fetchBillDetails(billId) {-->
+<!--                 try {-->
+<!--                    const response = await fetch(`/payments/bill-details/${billId}`);-->
+<!--                    if (!response.ok) throw new Error('Bill not found');-->
+                    
+<!--                    const data = await response.json();-->
+                    
+<!--                    const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });-->
+<!--                    billTotalSpan.textContent = currencyFormatter.format(data.total);-->
+<!--                    billPaidSpan.textContent = currencyFormatter.format(data.amountPaid);-->
+<!--                    billDueSpan.textContent = currencyFormatter.format(data.remainingDue);-->
+                    
+<!--                    amountInput.value = data.remainingDue > 0 ? data.remainingDue.toFixed(2) : '';-->
+<!--                    amountInput.max = data.remainingDue.toFixed(2);-->
+
+<!--                    paymentHistoryBody.innerHTML = ''; -->
+<!--                    if (data.previousPayments && data.previousPayments.length > 0) {-->
+<!--                        data.previousPayments.forEach(payment => {-->
+<!--                            const tr = document.createElement('tr');-->
+<!--                            const date = new Date(payment.paymentDate);-->
+<!--                            const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });-->
+<!--                            const formattedAmount = currencyFormatter.format(payment.amount);-->
+
+<!--                            tr.innerHTML = `-->
+<!--                                <td>${formattedDate}</td>-->
+<!--                                <td class="text-end">${formattedAmount}</td>-->
+<!--                                <td>${payment.receivedBy}</td>-->
+<!--                            `;-->
+<!--                            paymentHistoryBody.appendChild(tr);-->
+<!--                        });-->
+<!--                        paymentHistoryContainer.style.display = 'block';-->
+<!--                    } else {-->
+<!--                        paymentHistoryContainer.style.display = 'none';-->
+<!--                    }-->
+
+<!--                    detailsContainer.style.display = 'block';-->
+<!--                } catch (error) {-->
+<!--                    console.error('Error fetching bill details:', error);-->
+<!--                    detailsContainer.style.display = 'none';-->
+<!--                    paymentHistoryContainer.style.display = 'none';-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record New Payment</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 70px; /* Padding for fixed navbar */
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+        .form-card {
+            margin-top: 2rem;
+            margin-bottom: 4rem;
+        }
+        .user-info .nav-link {
+            display: flex;
+            align-items: center;
+        }
+        .user-info .fa-user-circle {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        .dropdown-list { 
+            position: absolute; 
+            border: 1px solid #ddd; 
+            border-top: none; 
+            max-height: 200px; 
+            overflow-y: auto; 
+            background: white; 
+            display: none; 
+            z-index: 1000; 
+            width: 100%; 
+            box-sizing: border-box; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .dropdown-list div { padding: 8px; cursor: pointer; }
+        .dropdown-list div:hover { background-color: #f1f1f1; }
+        #bill-details-container, #payment-history-container {
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Consistent Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" th:href="@{/}">
+                <i class="fas fa-file-invoice-dollar"></i>
+                BillingSolutions
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a></li>
+                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"><a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/billing}"><i class="fas fa-history me-1"></i>Bill History</a></li>
+                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user-shield me-1"></i>Admin</a>
+                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="navbar-nav user-info">
+                    <li class="nav-item"><span class="nav-link"><i class="fas fa-user-circle"></i> <span sec:authentication="name">Username</span></span></li>
+                    <li class="nav-item"><form th:action="@{/logout}" method="post" class="d-flex"><button class="btn btn-outline-danger btn-sm" type="submit">Logout</button></form></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="card form-card">
+            <div class="card-header bg-light py-3">
+                <h1 class="h4 mb-0"><i class="fas fa-plus-circle me-2"></i>Record New Payment</h1>
+            </div>
+            <div class="card-body p-4">
+                <form id="payment-form" th:action="@{/payments/new}" method="post">
+                    <div class="row g-3 align-items-center mb-3">
+                        <div class="col-md-5">
+                            <label for="financialYearFilter" class="form-label">Financial Year</label>
+                            <select id="financialYearFilter" class="form-select">
+                                <option th:each="year : ${financialYears}"
+                                        th:value="${year}"
+                                        th:text="${year}"
+                                        th:selected="${year == selectedFinancialYear}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <hr>
+
+                    <div class="mb-3">
+                        <label for="billInput" class="form-label">Search and Select Bill</label>
+                        <div class="position-relative" id="billDropdown">
+                            <input type="text" id="billInput" class="form-control" placeholder="Start typing a Bill No. or Customer Name..." autocomplete="off" required>
+                            <div class="dropdown-list"></div>
+                        </div>
+                        <input type="hidden" name="billId" id="billIdHidden"/>
+                        <div id="bill-selection-error" class="text-danger small mt-1" style="display: none;">
+                            Please select a valid bill from the list before submitting.
+                        </div>
+                    </div>
+                    
+                    <div id="bill-details-container" class="card bg-light mb-3">
+                         <div class="card-body">
+                             <h6 class="card-title">Bill Summary</h6>
+                             <ul class="list-group list-group-flush">
+                                 <li class="list-group-item d-flex justify-content-between"><span>Total Amount:</span> <span id="bill-total"></span></li>
+                                 <li class="list-group-item d-flex justify-content-between"><span>Amount Paid:</span> <span id="bill-paid" class="text-success"></span></li>
+                                 <li class="list-group-item d-flex justify-content-between fw-bold"><span>Remaining Due:</span> <span id="bill-due" class="text-danger"></span></li>
+                             </ul>
+                         </div>
+                    </div>
+
+                    <div id="payment-history-container" class="mt-4">
+                         <h6><i class="fas fa-history me-2"></i>Payment History for this Bill</h6>
+                         <div class="table-responsive">
+                             <table class="table table-sm table-bordered">
+                                 <thead class="table-light">
+                                     <tr>
+                                         <th>Date</th>
+                                         <th class="text-end">Amount Paid</th>
+                                         <th>Received By</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="payment-history-body"></tbody>
+                             </table>
+                         </div>
+                    </div>
+
+                    <div class="mb-3 mt-4">
+                        <label for="amount" class="form-label">New Payment Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" id="amount" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    <div class="d-flex justify-content-end">
+                        <a th:href="@{/payments}" class="btn btn-secondary me-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Record Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const paymentForm = document.getElementById('payment-form');
+            const billDropdown = document.getElementById("billDropdown");
+            const billInput = document.getElementById("billInput");
+            const billList = billDropdown.querySelector(".dropdown-list");
+            const billIdHidden = document.getElementById("billIdHidden");
+            const yearFilter = document.getElementById('financialYearFilter');
+            const billSelectionError = document.getElementById('bill-selection-error');
+            const detailsContainer = document.getElementById('bill-details-container');
+            const paymentHistoryContainer = document.getElementById('payment-history-container');
+            const paymentHistoryBody = document.getElementById('payment-history-body');
+            const billTotalSpan = document.getElementById('bill-total');
+            const billPaidSpan = document.getElementById('bill-paid');
+            const billDueSpan = document.getElementById('bill-due');
+            const amountInput = document.getElementById('amount');
+            let debounceTimer;
+
+            async function performBillSearch() {
+                const query = billInput.value;
+                const financialYear = yearFilter.value;
+
+                if (query.length < 1) {
+                    billList.innerHTML = '';
+                    billList.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    const searchUrl = new URL('/payments/search-bills', window.location.origin);
+                    searchUrl.searchParams.append('query', query);
+                    searchUrl.searchParams.append('financialYear', financialYear);
+
+                    const response = await fetch(searchUrl);
+                    const bills = await response.json();
+
+                    billList.innerHTML = '';
+                    if (bills && bills.length > 0) {
+                        bills.forEach(bill => {
+                            const item = document.createElement('div');
+                            item.textContent = `${bill.billNo} - ${bill.customerNameSnapshot}`;
+                            item.dataset.value = bill.id;
+                            
+                            item.addEventListener('click', () => {
+                                // THE FIX: Set the input value to only the bill number.
+                                billInput.value = bill.billNo;
+                                billIdHidden.value = bill.id;
+                                billList.style.display = 'none';
+                                billSelectionError.style.display = 'none';
+                                fetchBillDetails(bill.id);
+                            });
+                            billList.appendChild(item);
+                        });
+                        billList.style.display = 'block';
+                    } else {
+                         billList.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Error searching for bills:', error);
+                }
+            }
+            
+            billInput.addEventListener("input", () => {
+                billIdHidden.value = ''; 
+                billSelectionError.style.display = 'none';
+                detailsContainer.style.display = 'none';
+                paymentHistoryContainer.style.display = 'none';
+
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(performBillSearch, 300);
+            });
+            
+            yearFilter.addEventListener('change', () => {
+                billInput.value = '';
+                billIdHidden.value = '';
+                billList.innerHTML = '';
+                billList.style.display = 'none';
+                detailsContainer.style.display = 'none';
+                paymentHistoryContainer.style.display = 'none';
+                billSelectionError.style.display = 'none';
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!billDropdown.contains(e.target)) {
+                    billList.style.display = "none";
+                }
+            });
+
+            paymentForm.addEventListener('submit', function(event) {
+                if (!billIdHidden.value) {
+                    event.preventDefault();
+                    billSelectionError.style.display = 'block';
+                }
+            });
+
+            async function fetchBillDetails(billId) {
+                 try {
+                    const response = await fetch(`/payments/bill-details/${billId}`);
+                    if (!response.ok) throw new Error('Bill not found');
+                    
+                    const data = await response.json();
+                    
+                    const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });
+                    billTotalSpan.textContent = currencyFormatter.format(data.total);
+                    billPaidSpan.textContent = currencyFormatter.format(data.amountPaid);
+                    billDueSpan.textContent = currencyFormatter.format(data.remainingDue);
+                    
+                    amountInput.value = data.remainingDue > 0 ? data.remainingDue.toFixed(2) : '';
+                    amountInput.max = data.remainingDue.toFixed(2);
+
+                    paymentHistoryBody.innerHTML = ''; 
+                    if (data.previousPayments && data.previousPayments.length > 0) {
+                        data.previousPayments.forEach(payment => {
+                            const tr = document.createElement('tr');
+                            const date = new Date(payment.paymentDate);
+                            const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                            const formattedAmount = currencyFormatter.format(payment.amount);
+
+                            tr.innerHTML = `
+                                <td>${formattedDate}</td>
+                                <td class="text-end">${formattedAmount}</td>
+                                <td>${payment.receivedBy}</td>
+                            `;
+                            paymentHistoryBody.appendChild(tr);
+                        });
+                        paymentHistoryContainer.style.display = 'block';
+                    } else {
+                        paymentHistoryContainer.style.display = 'none';
+                    }
+
+                    detailsContainer.style.display = 'block';
+                } catch (error) {
+                    console.error('Error fetching bill details:', error);
+                    detailsContainer.style.display = 'none';
+                    paymentHistoryContainer.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+

@@ -26,137 +26,88 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BillingSolutions</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             display: flex;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f7f6;
         }
-        .container {
-            background: white;
-            padding: 2rem 3rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        .login-card {
             width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        h1 {
-            margin-bottom: 1.5rem;
-            color: #343a40;
-        }
-        .form-group {
-            margin-bottom: 1.25rem;
-            text-align: left;
-        }
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #495057;
-            font-weight: 500;
-        }
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-        }
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #80bdff;
-            outline: 0;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #007bff;
-            color: white;
+            max-width: 420px;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid transparent;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-        .alert-danger {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-        }
-        .alert-success {
-            color: #155724;
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-        }
-        .register-link {
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        .register-link a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .register-link a:hover {
-            text-decoration: underline;
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Login</h1>
-
-        <!-- Displays a message for failed login attempts -->
-        <div th:if="${param.error}" class="alert alert-danger">
-            Invalid username or password.
+    <div class="card login-card">
+        <div class="card-header text-center py-4">
+            <h1 class="h3 mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>BillingSolutions</h1>
+            <p class="mb-0">Please sign in to continue</p>
         </div>
-        <!-- Displays a message after a successful logout -->
-        <div th:if="${param.logout}" class="alert alert-success">
-            You have been logged out successfully.
-        </div>
-        <!-- Displays a message after a successful admin registration -->
-        <div th:if="${param.adminRegistered}" class="alert alert-success">
-            Admin registered successfully! Please log in.
-        </div>
+        <div class="card-body p-4 p-md-5">
+            <!-- Login Error Message -->
+            <div th:if="${param.error}" class="alert alert-danger">
+                Invalid username or password.
+            </div>
+            <!-- Logout Success Message -->
+            <div th:if="${param.logout}" class="alert alert-success">
+                You have been logged out successfully.
+            </div>
+             <!-- Business Registration Success Message -->
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
-        <form th:action="@{/login}" method="post">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required />
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required />
-            </div>
-            <div>
-                <button type="submit">Login</button>
-            </div>
-        </form>
 
-        <div class="register-link">
-            <p>First time setup? <a th:href="@{/register-admin}">Register Admin</a></p>
+            <form th:action="@{/login}" method="post">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" required autofocus>
+                    <label for="username">Username</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <label for="password">Password</label>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted">Don't have an account? 
+                    <!-- MODIFIED: This now points to the correct, multi-tenant registration page -->
+                    <a th:href="@{/register-business}">Register Your Business</a>
+                </p>
+            </div>
         </div>
     </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+	        window.addEventListener('pageshow', function (event) {
+	            // The 'persisted' property is true if the page is from the bfcache
+	            if (event.persisted) {
+	                window.location.reload();
+	            }
+	        });
+	    </script>
 </body>
 </html>

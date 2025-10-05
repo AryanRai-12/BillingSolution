@@ -5,13 +5,21 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "users")
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
+	@JsonIgnore
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "business_id")
+    private Business business;
+	
 	@NotBlank
 	@Column(unique = true, nullable = false)
 	private String username;
@@ -40,6 +48,8 @@ public class User {
 		this.roles = roles;
 	}
 
+	public Business getBusiness() { return business; }
+    public void setBusiness(Business business) { this.business = business; }
 	public Long getId() { return id; }
 	public void setId(Long id) { this.id = id; }
 	public String getUsername() { return username; }

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -12,7 +14,12 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @JsonIgnore
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "business_id")
+    private Business business;
+    
     @NotBlank
     @Column(nullable = false)
     private String name;
@@ -86,11 +93,21 @@ public class Product {
     }
 
     // ===== Getters and Setters =====
+    
+    
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public Business getBusiness() {
+		return business;
+	}
+
+	public void setBusiness(Business business) {
+		this.business = business;
+	}
+
+	public void setId(Long id) {
         this.id = id;
     }
 

@@ -4,13 +4,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "bill_items")
 public class BillItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
+	
+	@JsonBackReference
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "bill_id")
 	private Bill bill;

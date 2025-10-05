@@ -40,7 +40,7 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(auth -> auth
 				// ADD THIS LINE to allow public access to the registration flow.
-					.requestMatchers("/register-admin/**", "/css/**", "/js/**", "/images/**", "/login").permitAll()
+					.requestMatchers("/register-business/**", "/css/**", "/js/**", "/images/**", "/login").permitAll()
 					
 					// 2. Define access for the most specific routes first (admin area)
 					.requestMatchers("/admin/**").hasRole("ADMIN")
@@ -49,7 +49,7 @@ public class SecurityConfig {
 					.requestMatchers("/vendors/**").hasAnyRole("ADMIN", "USER")
 					
 					// 4. Define access for common routes shared by everyone
-					.requestMatchers("/", "/billing/**", "/customers/**", "/products/**").hasAnyRole("ADMIN", "USER", "SALESMAN")
+					.requestMatchers("/", "/billing/**", "/customers/**", "/products/**","/payments/**").hasAnyRole("ADMIN", "USER", "SALESMAN")
 					
 					// 5. All other requests must be authenticated (fallback)
 					.anyRequest().authenticated()
@@ -65,6 +65,10 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
             )
+			// ADDED: This section disables caching on secure pages, fixing the back button issue.
+			.headers(headers -> headers
+					.cacheControl(cache -> cache.disable())
+			)
 			.userDetailsService(userDetailsService);
 		return http.build();
 	}

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "vendors")
 public class Vendor {
@@ -11,6 +13,11 @@ public class Vendor {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	
+	@JsonIgnore
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "business_id")
+    private Business business;
 	
 	@NotBlank
 	@Column(nullable=false)
@@ -52,6 +59,20 @@ public class Vendor {
 	private String partyCode;
 
 	public Vendor() {}
+	
+	
+	public Business getBusiness() {
+		return business;
+	}
+
+
+	public void setBusiness(Business business) {
+		this.business = business;
+	}
+
+
+	
+
 
 	public Long getId() { return id; }
 	public void setId(Long id) { this.id = id; }
@@ -81,7 +102,7 @@ public class Vendor {
 	}
 
 	public void setCompanyName(String companyName) {
-		CompanyName = companyName;
+		this.CompanyName = companyName;
 	}
 
 	public String getVendorGroup() {

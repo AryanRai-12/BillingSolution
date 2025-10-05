@@ -7,18 +7,30 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "bills", uniqueConstraints = {
-	    @UniqueConstraint(columnNames = {"billNo", "financialYear"})
+	    // MODIFIED: The unique key now includes business_id.
+	    @UniqueConstraint(columnNames = {"billNo", "financialYear", "business_id"})
 	})
 public class Bill {
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@JsonIgnore
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "business_id")
+	private Business business;
+	
 	@Column(nullable = false, updatable = false)
 	private String financialYear;
 
+	@JsonIgnore
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
@@ -37,7 +49,8 @@ public class Bill {
 
 	@Column(nullable = false)
 	private LocalDateTime createdAt = LocalDateTime.now();
-
+	
+	@JsonManagedReference
 	@OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<BillItem> items = new ArrayList<>();
 
@@ -82,9 +95,52 @@ public class Bill {
 	@Column(nullable = false)
     private String billNo;
 	
+	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "salesman_user_id") // A new column in the bills table
 	private User salesman;
+	
+	
+	// ADDED: A relationship to track all payments made against this specific bill.
+    @JsonManagedReference("bill-payments")
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Payment> payments = new ArrayList<>();
+    
+    
+    /**
+     * THIS IS THE FIX: A new helper method to perform the complex calculation.
+     * It sums all the payments associated with this bill.
+     * @return The total amount paid against this bill.
+     */
+    @Transient // This tells Hibernate not to try and save this as a database column
+    public BigDecimal getAmountPaid() {
+        if (this.payments == null) {
+            return BigDecimal.ZERO;
+        }
+        return this.payments.stream()
+                .map(Payment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /**
+     * THIS IS THE FIX: A second helper method for the remaining due.
+     * It uses the getAmountPaid() method for a clean calculation.
+     * @return The remaining due amount for this specific bill.
+     */
+    @Transient
+    public BigDecimal getRemainingDue() {
+        return this.getTotal().subtract(getAmountPaid());
+    }
+    
+    
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
+    }
 	
 	public String getFinancialYear() { 
 		return financialYear; 
@@ -123,9 +179,19 @@ public class Bill {
 		item.setBill(this);
 		this.items.add(item);
 	}
-
+	
+	
 	public Long getId() { return id; }
 	public void setId(Long id) { this.id = id; }
+	
+	
+	
+	public Business getBusiness() {
+		return business;
+	}
+	public void setBusiness(Business business) {
+		this.business = business;
+	}
 	public Customer getCustomer() { return customer; }
 	public void setCustomer(Customer customer) { this.customer = customer; }
 	public String getCustomerNameSnapshot() { return customerNameSnapshot; }

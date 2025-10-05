@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Your Business</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background-color: #f4f7f6;
+        }
+        .registration-card {
+            max-width: 600px;
+            margin: 4rem auto;
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            border-color: #86b7fe;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card registration-card">
+            <div class="card-header text-center py-4">
+                <h1 class="h3 mb-0"><i class="fas fa-briefcase me-2"></i>Register Your Business</h1>
+                <p class="mb-0">Create an account to get started</p>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <form th:action="@{/register-business}" th:object="${registrationRequest}" method="post">
+                    
+                    <!-- Business Details Section -->
+                    <h5 class="mb-3">Business Information</h5>
+                    <div class="mb-3">
+                        <label for="businessName" class="form-label">Business Name</label>
+                        <input type="text" id="businessName" class="form-control" th:field="*{businessName}" placeholder="e.g., Aryan's Retail Store" required>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('businessName')}" th:errors="*{businessName}"></div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="gstNumber" class="form-label">GST Number</label>
+                        <input type="text" id="gstNumber" class="form-control" th:field="*{gstNumber}" placeholder="Your business GSTIN" required>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('gstNumber')}" th:errors="*{gstNumber}"></div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Admin User Details Section -->
+                    <h5 class="mb-3">Administrator Account</h5>
+                    <div class="mb-3">
+                        <label for="ownerEmail" class="form-label">Owner's Email (for verification)</label>
+                        <input type="email" id="ownerEmail" class="form-control" th:field="*{ownerEmail}" placeholder="you@example.com" required>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('ownerEmail')}" th:errors="*{ownerEmail}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adminUsername" class="form-label">Admin Username</label>
+                        <input type="text" id="adminUsername" class="form-control" th:field="*{adminUsername}" placeholder="Choose a username" required>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('adminUsername')}" th:errors="*{adminUsername}"></div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="adminPassword" class="form-label">Password</label>
+                        <input type="password" id="adminPassword" class="form-control" th:field="*{adminPassword}" placeholder="Min. 8 characters" required>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('adminPassword')}" th:errors="*{adminPassword}"></div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted">Already have an account? <a th:href="@{/login}">Log in here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
