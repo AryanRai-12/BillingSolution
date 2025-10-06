@@ -7,7 +7,7 @@ RUN mvn clean package -DskipTests
 
 # Stage 2: Create the final, lightweight production image
 # This stage takes only the compiled JAR file and the Java runtime.
-FROM openjdk:17-jre-slim
+FROM  eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
 # Copy the JAR file created in the 'build' stage
