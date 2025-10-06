@@ -18,3 +18,5 @@ EXPOSE 8080
 
 # The command to run your application when the container starts
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+#wow
