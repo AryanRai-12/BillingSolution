@@ -1376,6 +1376,7 @@ public class BillingService {
         BigDecimal subTotal = BigDecimal.ZERO;
         BigDecimal totalDiscount = BigDecimal.ZERO;
         BigDecimal totalCostBasis = BigDecimal.ZERO;
+        BigDecimal totalTax = BigDecimal.ZERO; // ADDED: Initialize total tax
 
         for (BillRequest.ItemRequest itemReq : request.getItems()) {
             Product product = productRepository.findByIdAndBusiness(itemReq.getProductId(), currentBusiness)
@@ -1398,8 +1399,23 @@ public class BillingService {
             BigDecimal grossLineTotal = product.getSellingPrice().multiply(effectiveQuantityBD);
             BigDecimal discountAmount = grossLineTotal.multiply(itemReq.getDiscountPercent()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
             BigDecimal netLineTotal = grossLineTotal.subtract(discountAmount);
+
             item.setLineDiscount(discountAmount);
             item.setLineTotal(netLineTotal);
+            
+            // === TAX CALCULATION START ===
+            
+            BigDecimal HUNDRED = new BigDecimal("100");
+            BigDecimal gstRate = product.getGstRate(); 
+            BigDecimal denominator = HUNDRED.add(gstRate);
+
+            item.setGstRateSnapshot(product.getGstRate());
+            BigDecimal lineTax = netLineTotal.multiply(gstRate).divide(denominator, 2, RoundingMode.HALF_UP);
+            		//netLineTotal.multiply(product.getGstRate()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+            item.setLineTax(lineTax);
+            totalTax = totalTax.add(lineTax);
+            // === TAX CALCULATION END ===
+            
             bill.addItem(item);
             subTotal = subTotal.add(grossLineTotal);
             totalDiscount = totalDiscount.add(discountAmount);
@@ -1408,7 +1424,8 @@ public class BillingService {
 
         bill.setSubTotal(subTotal);
         bill.setTotalDiscount(totalDiscount);
-        bill.setTotal(subTotal.subtract(totalDiscount));
+        bill.setTotalTax(totalTax); // ADDED: Set total tax on the bill
+        bill.setTotal(subTotal.subtract(totalDiscount)); // MODIFIED: Final total includes tax
         bill.setTotalCostBasis(totalCostBasis);
         
         // STEP 4: Correctly calculate and set the final due amounts.
@@ -1459,6 +1476,8 @@ public class BillingService {
         BigDecimal subTotal = BigDecimal.ZERO;
         BigDecimal totalDiscount = BigDecimal.ZERO;
         BigDecimal totalCostBasis = BigDecimal.ZERO;
+        BigDecimal totalTax = BigDecimal.ZERO; // ADDED: Initialize total tax
+
 
         for (BillRequest.ItemRequest itemReq : request.getItems()) {
             Product product = productRepository.findByIdAndBusiness(itemReq.getProductId(), getCurrentBusiness()).orElseThrow();
@@ -1489,6 +1508,17 @@ public class BillingService {
             BigDecimal netLineTotal = grossLineTotal.subtract(discountAmount);
             item.setLineDiscount(discountAmount);
             item.setLineTotal(netLineTotal);
+            
+         // === TAX CALCULATION START ===
+            BigDecimal HUNDRED = new BigDecimal("100");
+            BigDecimal gstRate = product.getGstRate(); 
+            BigDecimal denominator = HUNDRED.add(gstRate);
+            item.setGstRateSnapshot(product.getGstRate());
+            BigDecimal lineTax = netLineTotal.multiply(gstRate).divide(denominator, 2, RoundingMode.HALF_UP);
+            item.setLineTax(lineTax);
+            totalTax = totalTax.add(lineTax);
+            // === TAX CALCULATION END ===
+            
             bill.addItem(item);
             
             subTotal = subTotal.add(grossLineTotal);
@@ -1498,7 +1528,8 @@ public class BillingService {
 
         bill.setSubTotal(subTotal);
         bill.setTotalDiscount(totalDiscount);
-        bill.setTotal(subTotal.subtract(totalDiscount));
+        bill.setTotalTax(totalTax); // ADDED: Set total tax on the bill
+        bill.setTotal(subTotal);
         bill.setTotalCostBasis(totalCostBasis);
 
         // Step 3: Correctly update the customer's overall due balance.

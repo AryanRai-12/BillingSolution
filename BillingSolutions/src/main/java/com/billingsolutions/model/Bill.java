@@ -107,6 +107,11 @@ public class Bill {
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> payments = new ArrayList<>();
     
+    @NotNull
+	@Column(precision = 18, scale = 2)
+	private BigDecimal totalTax = BigDecimal.ZERO;
+
+    
     
     /**
      * THIS IS THE FIX: A new helper method to perform the complex calculation.
@@ -220,4 +225,6 @@ public class Bill {
 	public void setNewDue(BigDecimal newDue) { this.newDue = newDue; }
 	public BigDecimal getTotalCostBasis() { return totalCostBasis; }
 	public void setTotalCostBasis(BigDecimal totalCostBasis) { this.totalCostBasis = totalCostBasis; }
-} 
+	public BigDecimal getTotalTax() { return totalTax; }
+	public void setTotalTax(BigDecimal totalTax) { this.totalTax = totalTax; }
+}

@@ -2788,6 +2788,473 @@
 <!--</body>-->
 <!--</html>-->
 
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title th:text="${request.id != null ? 'Edit Bill' : 'Create Bill'}"></title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body { background-color: #f8f9fa; }-->
+<!--        .form-card { margin-top: 2rem; margin-bottom: 4rem; }-->
+<!--        .table-responsive { overflow: visible; }-->
+<!--        .dropdown-list { position: absolute; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; background: white; display: none; z-index: 1000; width: 100%; box-sizing: border-box; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }-->
+<!--        .dropdown-list div { padding: 8px; cursor: pointer; }-->
+<!--        .dropdown-list div:hover { background-color: #f1f1f1; }-->
+<!--        .product-row .dropdown { position: relative; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div th:replace="~{fragments/navbar :: navbar}"></div>-->
+
+<!--<div class="container">-->
+<!--    <div class="card form-card">-->
+<!--        <div class="card-header bg-light py-3">-->
+<!--            <h2 class="h4 mb-0">-->
+<!--                <i th:class="${request.id != null ? 'fas fa-edit me-2' : 'fas fa-plus-circle me-2'}"></i>-->
+<!--                <span th:text="${request.id != null ? 'Edit Bill' : 'Create New Bill'}"></span>-->
+<!--            </h2>-->
+<!--        </div>-->
+<!--        <div class="card-body p-4">-->
+<!--            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>-->
+
+<!--            <form th:action="${request.id != null ? '/billing/' + request.id + '/edit' : '/billing/create'}" th:object="${request}" method="post" id="bill-form">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12 mb-3">-->
+<!--                        <label for="financialYear" class="form-label fw-bold">Financial Year</label>-->
+<!--                        <select id="financialYear" th:field="*{financialYear}" class="form-select">-->
+<!--                            <option th:each="year : ${financialYears}" th:value="${year}" th:text="${year}"></option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="customerInput" class="form-label">Customer</label>-->
+<!--                        <div class="position-relative dropdown" id="customerDropdown">-->
+<!--                            <input type="text" id="customerInput" class="form-control" placeholder="Search customer..." autocomplete="off" th:value="${request.customerName}">-->
+<!--                            <div class="dropdown-list">-->
+<!--                                <div th:each="c : ${customers}" th:text="${c.name}" th:attr="data-value=${c.id}"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" th:field="*{customerId}" id="customerIdHidden"/>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="salesmanInput" class="form-label">Salesman (Credit)</label>-->
+<!--                        <div class="position-relative dropdown" id="salesmanDropdown">-->
+<!--                             <input type="text" id="salesmanInput" class="form-control" placeholder="Search salesman..." autocomplete="off" th:value="${request.salesmanName}">-->
+<!--                            <div class="dropdown-list">-->
+<!--                                <div th:each="s : ${salesmen}" th:text="${s.username}" th:attr="data-value=${s.id}"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <input type="hidden" th:field="*{salesmanId}" id="salesmanIdHidden"/>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div id="payment-section" class="form-group mb-4" th:if="${request.id == null}" style="display: none;">-->
+<!--                    <label class="form-label fw-bold">Pay Against Previous Dues</label>-->
+<!--                    <div id="due-bills-container" class="list-group"></div>-->
+<!--                </div>-->
+
+<!--                <fieldset>-->
+<!--                    <legend class="h5">Items</legend>-->
+<!--                    <div class="table-responsive">-->
+<!--                        <table class="table table-bordered items-table">-->
+<!--                            <thead class="table-light">-->
+<!--                                <tr>-->
+<!--                                    <th>Product</th>-->
+<!--                                    <th>Unit Type</th>-->
+<!--                                    <th>Quantity</th>-->
+<!--                                    <th>Unit Price</th>-->
+<!--                                    <th>Discount %</th>-->
+<!--                                    <th>Item Total</th>-->
+<!--                                    <th>Action</th>-->
+<!--                                </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody id="items-container">-->
+<!--                                <tr th:each="item, iterStat : *{items}" class="product-row">-->
+<!--                                     <td>-->
+<!--                                        <div class="dropdown" th:id="${'productDropdown' + iterStat.index}">-->
+<!--                                            <input type="text" class="form-control" placeholder="Search product..." autocomplete="off" th:value="${item.productName}">-->
+<!--                                            <div class="dropdown-list">-->
+<!--                                                <div th:each="p : ${products}" th:text="${p.name}" th:attr="data-value=${p.id}"></div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <input type="hidden" th:field="*{items[__${iterStat.index}__].productId}" />-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <select th:field="*{items[__${iterStat.index}__].unitType}" class="form-select"></select>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <input th:field="*{items[__${iterStat.index}__].quantity}" type="number" step="any" min="0" class="form-control" style="width: 100px;"/>-->
+<!--                                        <span class="validation-error" style="color: red; font-size: 11px; display: none;"></span>-->
+<!--                                    </td>-->
+<!--                                    <td><span class="unit-price">₹0.00</span></td>-->
+<!--                                    <td><input th:field="*{items[__${iterStat.index}__].discountPercent}" type="number" step="0.01" value="0" class="form-control" style="width: 100px;"/></td>-->
+<!--                                    <td><span class="item-total">₹0.00</span></td>-->
+<!--                                    <td><button type="button" class="btn btn-sm btn-danger delete-btn" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>-->
+<!--                                </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addItem()">-->
+<!--                        <i class="fas fa-plus me-1"></i>Add Item-->
+<!--                    </button>-->
+<!--                </fieldset>-->
+
+<!--                <div class="mt-4 text-end">-->
+<!--                    <div class="h4 fw-bold">-->
+<!--                        Grand Total: <span id="grandTotal">₹0.00</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <hr class="my-4">-->
+<!--                <div class="d-flex justify-content-end">-->
+<!--                    <a th:href="@{/billing}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                    <button type="submit" id="submit-bill-btn" class="btn btn-primary">-->
+<!--                        <i class="fas fa-save me-1"></i> -->
+<!--                        <span th:text="${request.id != null ? 'Save Changes' : 'Create Bill'}"></span>-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div th:replace="~{fragments/navbar :: scripts}"></div>-->
+
+<!--<script th:inline="javascript">-->
+<!--    /*<![CDATA[*/-->
+<!--    let productsData = /*[[${products}]]*/ [];-->
+<!--    let isEditMode = /*[[${request.id != null}]]*/ false;-->
+<!--    /*]]>*/-->
+
+<!--    document.addEventListener('DOMContentLoaded', () => {-->
+<!--        const customerIdHidden = document.getElementById('customerIdHidden');-->
+<!--        const paymentSection = document.getElementById('payment-section');-->
+<!--        const dueBillsContainer = document.getElementById('due-bills-container');-->
+
+<!--        async function fetchCustomerDues(customerId) {-->
+<!--            if (isEditMode || !paymentSection) return;-->
+<!--            paymentSection.style.display = 'none';-->
+<!--            dueBillsContainer.innerHTML = '';-->
+<!--            if (!customerId) return;-->
+<!--            try {-->
+<!--                const response = await fetch(`/billing/customer-dues/${customerId}`);-->
+<!--                if (!response.ok) return;-->
+<!--                const dueBills = await response.json();-->
+<!--                if (dueBills.length > 0) {-->
+<!--                    dueBills.forEach((dueBill, index) => {-->
+<!--                        const itemHtml = `-->
+<!--                            <div class="list-group-item">-->
+<!--                                <div class="d-flex w-100 justify-content-between align-items-center">-->
+<!--                                    <h6 class="mb-0">${dueBill.billNo}</h6>-->
+<!--                                    <span class="text-danger fw-bold">- ₹${dueBill.remainingDue.toFixed(2)}</span>-->
+<!--                                </div>-->
+<!--                                <input type="hidden" name="payments[${index}].billId" value="${dueBill.billId}">-->
+<!--                                <div class="mt-2">-->
+<!--                                    <div class="form-check form-check-inline">-->
+<!--                                        <input class="form-check-input payment-type-radio" type="radio" name="payments[${index}].paymentType" id="noPay${index}" value="none" checked>-->
+<!--                                        <label class="form-check-label" for="noPay${index}">No Payment</label>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-check form-check-inline">-->
+<!--                                        <input class="form-check-input payment-type-radio" type="radio" name="payments[${index}].paymentType" id="fullPay${index}" value="full">-->
+<!--                                        <label class="form-check-label" for="fullPay${index}">Full Payment</label>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-check form-check-inline">-->
+<!--                                        <input class="form-check-input payment-type-radio" type="radio" name="payments[${index}].paymentType" id="partialPay${index}" value="partial">-->
+<!--                                        <label class="form-check-label" for="partialPay${index}">Partial</label>-->
+<!--                                    </div>-->
+<!--                                    <input type="number" name="payments[${index}].partialAmount" class="form-control form-control-sm mt-1 partial-amount-input" style="display:none; width: 150px;" placeholder="Amount" step="0.01" max="${dueBill.remainingDue.toFixed(2)}">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        `;-->
+<!--                        dueBillsContainer.insertAdjacentHTML('beforeend', itemHtml);-->
+<!--                    });-->
+<!--                    paymentSection.style.display = 'block';-->
+<!--                    document.querySelectorAll('.payment-type-radio').forEach(radio => {-->
+<!--                        radio.addEventListener('change', (e) => {-->
+<!--                            const partialInput = e.target.closest('.list-group-item').querySelector('.partial-amount-input');-->
+<!--                            partialInput.style.display = e.target.value === 'partial' ? 'block' : 'none';-->
+<!--                        });-->
+<!--                    });-->
+<!--                }-->
+<!--            } catch (error) {-->
+<!--                console.error('Error fetching customer dues:', error);-->
+<!--            }-->
+<!--        }-->
+
+<!--        // This function is for the Customer and Salesman dropdowns-->
+<!--        function setupGenericDropdown(dropdownId, hiddenFieldId, onSelectCallback) {-->
+<!--            const dropdown = document.getElementById(dropdownId);-->
+<!--            if (!dropdown) return;-->
+<!--            const input = dropdown.querySelector("input[type='text']");-->
+<!--            const list = dropdown.querySelector(".dropdown-list");-->
+<!--            const hiddenField = document.getElementById(hiddenFieldId);-->
+<!--            input.addEventListener("input", () => {-->
+<!--                const filter = input.value.toLowerCase();-->
+<!--                list.querySelectorAll("div").forEach(item => {-->
+<!--                    const match = item.textContent.toLowerCase().includes(filter);-->
+<!--                    item.style.display = match ? "block" : "none";-->
+<!--                });-->
+<!--                list.style.display = "block";-->
+<!--            });-->
+<!--            list.querySelectorAll("div").forEach(item => {-->
+<!--                item.addEventListener("click", () => {-->
+<!--                    input.value = item.textContent;-->
+<!--                    if(hiddenField) hiddenField.value = item.dataset.value;-->
+<!--                    list.style.display = "none";-->
+<!--                    if (onSelectCallback) onSelectCallback(hiddenField.value);-->
+<!--                });-->
+<!--            });-->
+<!--            document.addEventListener("click", (e) => {-->
+<!--                if (!dropdown.contains(e.target)) list.style.display = "none";-->
+<!--            });-->
+<!--        }-->
+        
+<!--        // NEW, ROBUST function specifically for product rows-->
+<!--        function setupProductDropdown(row) {-->
+<!--            const dropdown = row.querySelector(".dropdown");-->
+<!--            const input = row.querySelector("input[type='text']");-->
+<!--            const list = row.querySelector(".dropdown-list");-->
+<!--            const hiddenField = row.querySelector("input[type='hidden'][name*='productId']");-->
+
+<!--            if (!dropdown || !input || !list || !hiddenField) return;-->
+
+<!--            input.addEventListener("input", () => {-->
+<!--                const filter = input.value.toLowerCase();-->
+<!--                list.querySelectorAll("div").forEach(item => {-->
+<!--                    const match = item.textContent.toLowerCase().includes(filter);-->
+<!--                    item.style.display = match ? "block" : "none";-->
+<!--                });-->
+<!--                list.style.display = "block";-->
+<!--            });-->
+
+<!--            list.querySelectorAll("div").forEach(item => {-->
+<!--                item.addEventListener("click", () => {-->
+<!--                    input.value = item.textContent;-->
+<!--                    hiddenField.value = item.dataset.value;-->
+<!--                    list.style.display = "none";-->
+<!--                    updateProductDetails(row); // Important: update details on selection-->
+<!--                });-->
+<!--            });-->
+<!--        }-->
+        
+<!--        function updateSubmitButtonState() {-->
+<!--            const submitBtn = document.getElementById('submit-bill-btn');-->
+<!--            const isInvalid = !!document.querySelector('.validation-error[style*="display: block"]');-->
+<!--            submitBtn.disabled = isInvalid;-->
+<!--        }-->
+
+<!--        function validateRowQuantity(row) { -->
+<!--            const quantityInput = row.querySelector('input[name*="quantity"]');-->
+<!--            const hiddenField = row.querySelector('input[name*="productId"]');-->
+<!--            const unitSelect = row.querySelector('select[name*="unitType"]');-->
+<!--            const errorSpan = row.querySelector('.validation-error');-->
+<!--            if (!quantityInput || !hiddenField || !unitSelect || !errorSpan) return;-->
+<!--            const product = productsData.find(p => p.id == hiddenField.value);-->
+<!--            const quantity = parseFloat(quantityInput.value) || 0;-->
+<!--            const selectedUnit = unitSelect.value;-->
+<!--            quantityInput.style.borderColor = '';-->
+<!--            errorSpan.style.display = 'none';-->
+<!--            errorSpan.textContent = '';-->
+<!--            if (product && product.unitType === 'KG' && selectedUnit === 'KG') {-->
+<!--                const weightPerItem = parseFloat(product.weightPerItem);-->
+<!--                if (!weightPerItem || weightPerItem <= 0) return;-->
+<!--                let errorMessage = '';-->
+<!--                if (quantity > 0 && quantity < weightPerItem) {-->
+<!--                    errorMessage = `Min quantity: ${weightPerItem} KG`;-->
+<!--                } else if (quantity > 0 && Math.abs((quantity / weightPerItem) % 1) > 1e-9) {-->
+<!--                    errorMessage = `Must be multiple of ${weightPerItem} KG`;-->
+<!--                }-->
+<!--                if (errorMessage) {-->
+<!--                    quantityInput.style.borderColor = 'red';-->
+<!--                    errorSpan.textContent = errorMessage;-->
+<!--                    errorSpan.style.display = 'block';-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+        
+<!--        function calculateRowTotal(row) {-->
+<!--            validateRowQuantity(row);-->
+<!--            const quantityInput = row.querySelector('input[name*="quantity"]');-->
+<!--            const discountInput = row.querySelector('input[name*="discountPercent"]');-->
+<!--            const unitPriceSpan = row.querySelector('.unit-price');-->
+<!--            const itemTotalSpan = row.querySelector('.item-total');-->
+<!--            const unitSelect = row.querySelector('select[name*="unitType"]');-->
+<!--            const hiddenField = row.querySelector('input[name*="productId"]');-->
+<!--            if (!quantityInput || !unitPriceSpan || !itemTotalSpan || !unitSelect || !hiddenField) return;-->
+<!--            const productId = hiddenField.value;-->
+<!--            const product = productsData.find(p => p.id == productId);-->
+<!--            const quantity = parseFloat(quantityInput.value) || 0;-->
+<!--            const unitPrice = parseFloat(unitPriceSpan.textContent.replace('₹', '')) || 0;-->
+<!--            const selectedUnit = unitSelect.value;-->
+<!--            let effectiveQuantity = quantity;-->
+<!--            if (product) {-->
+<!--                if (product.unitType === 'PCS') {-->
+<!--                    switch (selectedUnit) {-->
+<!--                        case 'DOZEN': effectiveQuantity = quantity * 12; break;-->
+<!--                        case 'HALF_DOZEN': effectiveQuantity = quantity * 6; break;-->
+<!--                        case 'BOX':-->
+<!--                            const unitsPerBox = parseInt(product.unitsPerBox) || 0;-->
+<!--                            effectiveQuantity = quantity * unitsPerBox;-->
+<!--                            break;-->
+<!--                    }-->
+<!--                } else if (product.unitType === 'KG') {-->
+<!--                    const weightPerItem = parseFloat(product.weightPerItem) || 0;-->
+<!--                    if (weightPerItem > 0) {-->
+<!--                        switch (selectedUnit) {-->
+<!--                            case 'KG': effectiveQuantity = quantity / weightPerItem; break;-->
+<!--                            case 'BAG':-->
+<!--                                const totalBagWeight = parseFloat(product.totalBagWeight) || 0;-->
+<!--                                const itemsPerBag = totalBagWeight / weightPerItem;-->
+<!--                                effectiveQuantity = quantity * itemsPerBag;-->
+<!--                                break;-->
+<!--                        }-->
+<!--                    } else {-->
+<!--                        effectiveQuantity = 0;-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--            const discountPercent = parseFloat(discountInput ? discountInput.value : 0) || 0;-->
+<!--            const grossTotal = effectiveQuantity * unitPrice;-->
+<!--            const discountAmount = grossTotal * (discountPercent / 100);-->
+<!--            const netTotal = grossTotal - discountAmount;-->
+<!--            itemTotalSpan.textContent = `₹${netTotal.toFixed(2)}`;-->
+<!--            calculateGrandTotal();-->
+<!--            updateSubmitButtonState();-->
+<!--        }-->
+
+<!--        function calculateGrandTotal() {-->
+<!--            let grandTotal = 0;-->
+<!--            document.querySelectorAll('.item-total').forEach(element => {-->
+<!--                grandTotal += parseFloat(element.textContent.replace('₹', '')) || 0;-->
+<!--            });-->
+<!--            document.getElementById('grandTotal').textContent = `₹${grandTotal.toFixed(2)}`;-->
+<!--        }-->
+
+<!--        function updateUnitOptions(row, product) {-->
+<!--            const unitSelect = row.querySelector('select[name*="unitType"]');-->
+<!--            if (!unitSelect || !product) return;-->
+<!--            if (product.unitType === 'PCS') {-->
+<!--                unitSelect.innerHTML = `<option value="PCS">PCS</option><option value="DOZEN">DOZEN</option><option value="HALF_DOZEN">HALF_DOZEN</option><option value="BOX">BOX</option>`;-->
+<!--            } else if (product.unitType === 'KG') {-->
+<!--                unitSelect.innerHTML = `<option value="KG">KG</option><option value="BAG">BAG</option><option value="PCS">PCS</option>`;-->
+<!--            }-->
+<!--        }-->
+
+<!--        function updateProductDetails(row) {-->
+<!--            const hiddenField = row.querySelector('input[name*="productId"]');-->
+<!--            const unitPriceSpan = row.querySelector('.unit-price');-->
+<!--            if (!hiddenField || !unitPriceSpan) return;-->
+<!--            const productId = hiddenField.value;-->
+<!--            const product = productsData.find(p => p.id == productId);-->
+<!--            if (product) {-->
+<!--                unitPriceSpan.textContent = `₹${product.sellingPrice.toFixed(2)}`;-->
+<!--                updateUnitOptions(row, product);-->
+<!--            } else {-->
+<!--                unitPriceSpan.textContent = '₹0.00';-->
+<!--            }-->
+<!--            calculateRowTotal(row);-->
+<!--        }-->
+
+<!--        // Global function so onclick can find it-->
+<!--        window.addItem = function() {-->
+<!--            const container = document.getElementById("items-container");-->
+<!--            const index = container.children.length;-->
+<!--            const newRow = document.createElement("tr");-->
+<!--            newRow.className = "product-row";-->
+<!--            const productsHtml = productsData.map(p => `<div data-value="${p.id}">${p.name}</div>`).join('');-->
+<!--            newRow.innerHTML = `-->
+<!--                <td>-->
+<!--                    <div class="dropdown">-->
+<!--                        <input type="text" class="form-control" placeholder="Search product..." autocomplete="off">-->
+<!--                        <div class="dropdown-list">${productsHtml}</div>-->
+<!--                    </div>-->
+<!--                    <input type="hidden" name="items[${index}].productId"/>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <select name="items[${index}].unitType" class="form-select">-->
+<!--                        <option value="PCS">PCS</option>-->
+<!--                        <option value="DOZEN">DOZEN</option>-->
+<!--                        <option value="HALF_DOZEN">HALF_DOZEN</option>-->
+<!--                        <option value="BOX">BOX</option>-->
+<!--                    </select>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <input name="items[${index}].quantity" type="number" step="any" value="1" min="0" class="form-control" style="width: 100px;"/>-->
+<!--                    <span class="validation-error" style="color: red; font-size: 11px; display: none;"></span>-->
+<!--                </td>-->
+<!--                <td><span class="unit-price">₹0.00</span></td>-->
+<!--                <td><input name="items[${index}].discountPercent" type="number" step="0.01" value="0" class="form-control" style="width: 100px;"/></td>-->
+<!--                <td><span class="item-total">₹0.00</span></td>-->
+<!--                <td><button type="button" class="btn btn-sm btn-danger delete-btn" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>-->
+<!--            `;-->
+<!--            container.appendChild(newRow);-->
+<!--            setupProductDropdown(newRow); // CORRECTLY setup the new row-->
+<!--            attachRowEventListeners(newRow);-->
+<!--        }-->
+        
+<!--        // Global function so onclick can find it-->
+<!--        window.deleteRow = function(button) {-->
+<!--            const container = document.getElementById("items-container");-->
+<!--            if (container.children.length <= 1) {-->
+<!--                alert('At least one product is required.');-->
+<!--                return;-->
+<!--            }-->
+<!--            button.closest('tr').remove();-->
+<!--            calculateGrandTotal();-->
+<!--            updateSubmitButtonState();-->
+<!--        }-->
+
+<!--        function attachRowEventListeners(row) {-->
+<!--            const recalculate = () => calculateRowTotal(row);-->
+<!--            row.querySelector('input[name*="quantity"]').addEventListener('input', recalculate);-->
+<!--            row.querySelector('input[name*="discountPercent"]').addEventListener('input', recalculate);-->
+<!--            row.querySelector('select[name*="unitType"]').addEventListener('change', recalculate);-->
+            
+<!--            // Add event listener for clicks outside the product dropdown-->
+<!--             document.addEventListener("click", (e) => {-->
+<!--                const dropdown = row.querySelector(".dropdown");-->
+<!--                const list = row.querySelector(".dropdown-list");-->
+<!--                if (dropdown && !dropdown.contains(e.target)) {-->
+<!--                    list.style.display = "none";-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+
+<!--        // --- INITIALIZATION LOGIC ----->
+<!--        setupGenericDropdown("customerDropdown", "customerIdHidden", fetchCustomerDues);-->
+<!--        setupGenericDropdown("salesmanDropdown", "salesmanIdHidden");-->
+        
+<!--        // Initialize ALL product rows on the page, whether from Thymeleaf or added later-->
+<!--        document.querySelectorAll('.product-row').forEach(row => {-->
+<!--            setupProductDropdown(row);-->
+<!--            attachRowEventListeners(row);-->
+<!--            updateProductDetails(row); // Recalculate everything on load for edit mode-->
+<!--        });-->
+        
+<!--        calculateGrandTotal();-->
+        
+<!--        document.getElementById('bill-form').addEventListener('submit', function(event) {-->
+<!--            if (document.getElementById('submit-bill-btn').disabled) {-->
+<!--                event.preventDefault();-->
+<!--                alert('Please fix the errors in the item quantities before creating the bill.');-->
+<!--            }-->
+<!--        });-->
+
+<!--        updateSubmitButtonState();-->
+		
+<!--		if (!isEditMode && customerIdHidden.value) {-->
+<!--            fetchCustomerDues(customerIdHidden.value);-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!-- This is where it is perfect above ok -->
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -2881,15 +3348,24 @@
                                         </div>
                                         <input type="hidden" th:field="*{items[__${iterStat.index}__].productId}" />
                                     </td>
-                                    <td>
-                                        <select th:field="*{items[__${iterStat.index}__].unitType}" class="form-select"></select>
-                                    </td>
+<!--                                    <td>-->
+<!--                                        <select th:field="*{items[__${iterStat.index}__].unitType}" class="form-select"></select>-->
+<!--                                    </td>-->
+									<td>
+										   <select th:field="*{items[__${iterStat.index}__].unitType}"
+										           th:data-initial-value="${item.unitType}"
+										           class="form-select"></select>
+									</td>
                                     <td>
                                         <input th:field="*{items[__${iterStat.index}__].quantity}" type="number" step="any" min="0" class="form-control" style="width: 100px;"/>
                                         <span class="validation-error" style="color: red; font-size: 11px; display: none;"></span>
                                     </td>
-                                    <td><span class="unit-price">₹0.00</span></td>
-                                    <td><input th:field="*{items[__${iterStat.index}__].discountPercent}" type="number" step="0.01" value="0" class="form-control" style="width: 100px;"/></td>
+                                    <td>
+                                        <input type="number" step="0.01" min="0" class="form-control unit-price-input" style="width: 120px;" th:field="*{items[__${iterStat.index}__].unitPrice}" />
+                                    </td>
+                                    <td>
+                                        <input th:field="*{items[__${iterStat.index}__].discountPercent}" type="number" class="form-control" style="width: 100px;" readonly />
+                                    </td>
                                     <td><span class="item-total">₹0.00</span></td>
                                     <td><button type="button" class="btn btn-sm btn-danger delete-btn" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
                                 </tr>
@@ -2983,7 +3459,6 @@
             }
         }
 
-        // This function is for the Customer and Salesman dropdowns
         function setupGenericDropdown(dropdownId, hiddenFieldId, onSelectCallback) {
             const dropdown = document.getElementById(dropdownId);
             if (!dropdown) return;
@@ -3011,15 +3486,12 @@
             });
         }
         
-        // NEW, ROBUST function specifically for product rows
         function setupProductDropdown(row) {
             const dropdown = row.querySelector(".dropdown");
             const input = row.querySelector("input[type='text']");
             const list = row.querySelector(".dropdown-list");
             const hiddenField = row.querySelector("input[type='hidden'][name*='productId']");
-
             if (!dropdown || !input || !list || !hiddenField) return;
-
             input.addEventListener("input", () => {
                 const filter = input.value.toLowerCase();
                 list.querySelectorAll("div").forEach(item => {
@@ -3028,13 +3500,12 @@
                 });
                 list.style.display = "block";
             });
-
             list.querySelectorAll("div").forEach(item => {
                 item.addEventListener("click", () => {
                     input.value = item.textContent;
                     hiddenField.value = item.dataset.value;
                     list.style.display = "none";
-                    updateProductDetails(row); // Important: update details on selection
+                    updateProductDetails(row);
                 });
             });
         }
@@ -3077,17 +3548,35 @@
         function calculateRowTotal(row) {
             validateRowQuantity(row);
             const quantityInput = row.querySelector('input[name*="quantity"]');
-            const discountInput = row.querySelector('input[name*="discountPercent"]');
-            const unitPriceSpan = row.querySelector('.unit-price');
             const itemTotalSpan = row.querySelector('.item-total');
             const unitSelect = row.querySelector('select[name*="unitType"]');
             const hiddenField = row.querySelector('input[name*="productId"]');
-            if (!quantityInput || !unitPriceSpan || !itemTotalSpan || !unitSelect || !hiddenField) return;
+            // --- GET NEW & CHANGED ELEMENTS ---
+            const unitPriceInput = row.querySelector('.unit-price-input');
+            const discountInput = row.querySelector('input[name*="discountPercent"]');
+
+            if (!quantityInput || !itemTotalSpan || !unitSelect || !hiddenField || !unitPriceInput || !discountInput) return;
+
             const productId = hiddenField.value;
             const product = productsData.find(p => p.id == productId);
             const quantity = parseFloat(quantityInput.value) || 0;
-            const unitPrice = parseFloat(unitPriceSpan.textContent.replace('₹', '')) || 0;
+            const editedUnitPrice = parseFloat(unitPriceInput.value) || 0;
             const selectedUnit = unitSelect.value;
+            
+            // --- NEW LOGIC: Calculate discount based on edited price ---
+            if (product) {
+                const originalPrice = parseFloat(product.sellingPrice) || 0;
+                let discountPercent = 0;
+                if (originalPrice > 0 && editedUnitPrice < originalPrice) {
+                    const discountAmount = originalPrice - editedUnitPrice;
+                    discountPercent = (discountAmount / originalPrice) * 100;
+                }
+                // Update the readonly discount input field
+                discountInput.value = discountPercent.toFixed(2);
+            } else {
+                discountInput.value = "0.00";
+            }
+
             let effectiveQuantity = quantity;
             if (product) {
                 if (product.unitType === 'PCS') {
@@ -3115,10 +3604,9 @@
                     }
                 }
             }
-            const discountPercent = parseFloat(discountInput ? discountInput.value : 0) || 0;
-            const grossTotal = effectiveQuantity * unitPrice;
-            const discountAmount = grossTotal * (discountPercent / 100);
-            const netTotal = grossTotal - discountAmount;
+            
+            // --- CHANGED: Item total is now calculated with the user-entered price ---
+            const netTotal = effectiveQuantity * editedUnitPrice;
             itemTotalSpan.textContent = `₹${netTotal.toFixed(2)}`;
             calculateGrandTotal();
             updateSubmitButtonState();
@@ -3144,15 +3632,18 @@
 
         function updateProductDetails(row) {
             const hiddenField = row.querySelector('input[name*="productId"]');
-            const unitPriceSpan = row.querySelector('.unit-price');
-            if (!hiddenField || !unitPriceSpan) return;
+            // --- CHANGED: Select the input field instead of the span ---
+            const unitPriceInput = row.querySelector('.unit-price-input');
+            
+            if (!hiddenField || !unitPriceInput) return;
             const productId = hiddenField.value;
             const product = productsData.find(p => p.id == productId);
             if (product) {
-                unitPriceSpan.textContent = `₹${product.sellingPrice.toFixed(2)}`;
+                // --- CHANGED: Set the value of the input ---
+                unitPriceInput.value = product.sellingPrice.toFixed(2);
                 updateUnitOptions(row, product);
             } else {
-                unitPriceSpan.textContent = '₹0.00';
+                unitPriceInput.value = '0.00';
             }
             calculateRowTotal(row);
         }
@@ -3184,8 +3675,8 @@
                     <input name="items[${index}].quantity" type="number" step="any" value="1" min="0" class="form-control" style="width: 100px;"/>
                     <span class="validation-error" style="color: red; font-size: 11px; display: none;"></span>
                 </td>
-                <td><span class="unit-price">₹0.00</span></td>
-                <td><input name="items[${index}].discountPercent" type="number" step="0.01" value="0" class="form-control" style="width: 100px;"/></td>
+                <td><input name="items[${index}].unitPrice" type="number" step="0.01" min="0" class="form-control unit-price-input" style="width: 120px;" value="0"/></td>
+                <td><input name="items[${index}].discountPercent" type="number" class="form-control" style="width: 100px;" value="0" readonly/></td>
                 <td><span class="item-total">₹0.00</span></td>
                 <td><button type="button" class="btn btn-sm btn-danger delete-btn" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
             `;
@@ -3205,11 +3696,30 @@
             calculateGrandTotal();
             updateSubmitButtonState();
         }
+		function updateUnitOptions(row, product) {
+		    const unitSelect = row.querySelector('select[name*="unitType"]');
+		    if (!unitSelect || !product) return;
+
+		    // Get the correct initial value from the data attribute we just added.
+		    const initialValue = unitSelect.dataset.initialValue;
+
+		    if (product.unitType === 'PCS') {
+		        unitSelect.innerHTML = `<option value="PCS">PCS</option><option value="DOZEN">DOZEN</option><option value="HALF_DOZEN">HALF_DOZEN</option><option value="BOX">BOX</option>`;
+		    } else if (product.unitType === 'KG') {
+		        unitSelect.innerHTML = `<option value="KG">KG</option><option value="BAG">BAG</option><option value="PCS">PCS</option>`;
+		    }
+
+		    // Use the reliable initial value to set the dropdown.
+		    if (initialValue) {
+		        unitSelect.value = initialValue;
+		    }
+		}
 
         function attachRowEventListeners(row) {
             const recalculate = () => calculateRowTotal(row);
             row.querySelector('input[name*="quantity"]').addEventListener('input', recalculate);
-            row.querySelector('input[name*="discountPercent"]').addEventListener('input', recalculate);
+            // --- NEW: Add event listener for the new editable unit price field ---
+            row.querySelector('.unit-price-input').addEventListener('input', recalculate);
             row.querySelector('select[name*="unitType"]').addEventListener('change', recalculate);
             
             // Add event listener for clicks outside the product dropdown
@@ -3248,12 +3758,9 @@
             fetchCustomerDues(customerIdHidden.value);
         }
     });
+	
 </script>
 </body>
 </html>
 
-
-<!-- This is where it is perfect above ok -->
-
-
-
+<!--Literally perfect till here dude-->

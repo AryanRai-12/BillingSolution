@@ -62,6 +62,17 @@ public class BillItem {
 	@NotNull
 	@Column(precision = 18, scale = 2)
 	private BigDecimal lineTotal = BigDecimal.ZERO;
+	
+	// ADDED: Snapshot of the GST Rate at the time of billing
+	@NotNull
+	@Column(precision = 5, scale = 2)
+	private BigDecimal gstRateSnapshot = BigDecimal.ZERO;
+
+	// ADDED: Calculated tax amount for this line item
+	@NotNull
+	@Column(precision = 18, scale = 2)
+	private BigDecimal lineTax = BigDecimal.ZERO;
+
 
 	public BillItem() {}
 
@@ -91,4 +102,8 @@ public class BillItem {
 	public void setLineDiscount(BigDecimal lineDiscount) { this.lineDiscount = lineDiscount; }
 	public BigDecimal getLineTotal() { return lineTotal; }
 	public void setLineTotal(BigDecimal lineTotal) { this.lineTotal = lineTotal; }
+	public BigDecimal getGstRateSnapshot() { return gstRateSnapshot; }
+	public void setGstRateSnapshot(BigDecimal gstRateSnapshot) { this.gstRateSnapshot = gstRateSnapshot; }
+	public BigDecimal getLineTax() { return lineTax; }
+	public void setLineTax(BigDecimal lineTax) { this.lineTax = lineTax; }
 } 

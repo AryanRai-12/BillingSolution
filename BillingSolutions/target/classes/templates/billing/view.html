@@ -1279,6 +1279,417 @@
 <!--</html>-->
 
 
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>View Bill</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>-->
+
+<!--    <style>-->
+<!--        body { background-color: #f8f9fa; padding-top: 70px; }-->
+<!--        .bill-card { margin-top: 2rem; margin-bottom: 4rem; }-->
+<!--        .bill-header { background-color: #e9ecef; }-->
+<!--        .totals-section { background-color: #f8f9fa; }-->
+
+<!--        @media print {-->
+<!--            body {-->
+<!--                background-color: #fff;-->
+<!--                padding-top: 0;-->
+<!--            }-->
+<!--            .non-printable {-->
+<!--                display: none !important;-->
+<!--            }-->
+<!--            .bill-card {-->
+<!--                margin: 0 auto;-->
+<!--                border: none;-->
+<!--                box-shadow: none;-->
+<!--                width: 100%;-->
+<!--                page-break-inside: avoid;-->
+<!--            }-->
+<!--            .card-body {-->
+<!--                padding: 0 !important;-->
+<!--            }-->
+<!--            .card-header, .totals-section {-->
+<!--                background-color: #fff !important;-->
+<!--            }-->
+<!--            .container {-->
+<!--                max-width: 100%;-->
+<!--            }-->
+<!--            @page {-->
+<!--                size: A4 portrait;-->
+<!--                margin: 0.75in;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div th:replace="~{fragments/navbar :: navbar}"></div>-->
+
+<!--<div class="container">-->
+<!--    <div class="card bill-card">-->
+<!--        <div id="bill-to-print">-->
+<!--            <div class="card-header bill-header text-center py-3">-->
+<!--                <h1 class="h3 mb-1" th:text="${bill.business.name}">Business Name</h1>-->
+<!--                <h2 class="h5 mb-0 text-muted" th:text="'Bill Details: ' + ${bill.billNo}"></h2>-->
+<!--                <small class="text-muted" th:text="'Financial Year: ' + ${bill.financialYear}"></small>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                 <div class="d-flex justify-content-end mb-3 non-printable">-->
+<!--                    <a th:href="@{/billing}" class="btn btn-secondary me-2"><i class="fas fa-arrow-left me-1"></i>Back to List</a>-->
+<!--                    <button id="print-pdf-button" class="btn btn-primary"><i class="fas fa-print me-1"></i>Print/Save as PDF</button>-->
+<!--                </div>-->
+
+<!--                <div class="row mb-4">-->
+<!--                    <div class="col-6">-->
+<!--                        <h5>Billed To:</h5>-->
+<!--                        <p class="mb-1 fw-bold" th:text="${bill.customerNameSnapshot}"></p>-->
+<!--                        <p class="mb-1" th:text="${bill.customerAddressSnapshot}"></p>-->
+<!--                        <p class="mb-1" th:text="'Phone: ' + ${bill.customerPhoneSnapshot}"></p>-->
+<!--                        <p class="mb-0" th:text="'GSTIN: ' + ${bill.customerGstSnapshot}"></p>-->
+<!--                    </div>-->
+<!--                    <div class="col-6 text-end">-->
+<!--                        <h5>Bill Information:</h5>-->
+<!--                        <p class="mb-1"><strong>Billed On:</strong> <span th:text="${#temporals.format(bill.createdAt, 'dd-MMM-yyyy hh:mm a')}"></span></p>-->
+<!--                        <p class="mb-1"><strong>Billed By:</strong> <span th:text="${bill.createdBy}"></span></p>-->
+<!--                        <p class="mb-0" th:if="${bill.salesman != null}"><strong>Salesman Credit:</strong> <span th:text="${bill.salesman.username}"></span></p>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="table-responsive">-->
+<!--                    <table class="table table-bordered">-->
+<!--                        <thead class="table-light">-->
+<!--                            <tr>-->
+<!--                                <th>Product</th>-->
+<!--                                <th class="text-end">Unit Price</th>-->
+<!--                                <th class="text-center">Qty (pcs)</th>-->
+<!--                                <th class="text-end">Discount</th>-->
+<!--                                <th class="text-end">Total</th>-->
+<!--                            </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <tr th:each="item : ${bill.items}">-->
+<!--                                <td th:text="${item.product.name}"></td>-->
+<!--                                <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(item.unitPriceSnapshot, 1, 2, 'POINT')}"></td>-->
+<!--                                <td class="text-center" th:text="${item.totalPieces}"></td>-->
+<!--                                <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(item.lineDiscount, 1, 2, 'POINT')}"></td>-->
+<!--                                <td class="text-end fw-bold" th:text="${'₹' + #numbers.formatDecimal(item.lineTotal, 1, 2, 'POINT')}"></td>-->
+<!--                            </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+
+<!--                <div class="row mt-4 justify-content-end">-->
+<!--                    <div class="col-md-6">-->
+<!--                        <div class="card totals-section">-->
+<!--                            <div class="card-body">-->
+<!--                                <ul class="list-group list-group-flush">-->
+<!--                                    <li class="list-group-item d-flex justify-content-between"><span>Sub Total</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.subTotal, 1, 2, 'POINT')}"></span></li>-->
+<!--                                    <li class="list-group-item d-flex justify-content-between"><span>Total Discount</span> <span class="text-danger" th:text="'- ₹' + ${#numbers.formatDecimal(bill.totalDiscount, 1, 2, 'POINT')}"></span></li>-->
+<!--									<li class="list-group-item d-flex justify-content-between"><span>Previous Due</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.previousDue, 1, 2, 'POINT')}"></span></li>-->
+<!--                                    <li class="list-group-item d-flex justify-content-between fw-bold h5"><span>Bill Total</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.total, 1, 2, 'POINT')}"></span></li>-->
+<!--                                    <hr class="my-2">-->
+<!--									<li class="list-group-item d-flex justify-content-between fw-bold h6">-->
+<!--									    <span>Current Due</span>-->
+<!--										<span class="text-danger" th:text="${'₹' + #numbers.formatDecimal(bill.previousDue+bill.total, 1, 2, 'POINT')}"></span>-->
+<!--									</li>-->
+<!--                                    <li class="list-group-item d-flex justify-content-between">-->
+<!--                                        <span>Amount Paid</span>-->
+<!--                                        <span class="text-success" th:text="'- ₹' + ${#numbers.formatDecimal((bill.previousDue-(bill.newDue-bill.total)), 1, 2, 'POINT')}"></span>-->
+<!--                                    </li>-->
+<!--                                    <li class="list-group-item d-flex justify-content-between fw-bold h5">-->
+<!--                                        <span>Remaining Due</span>-->
+<!--										<span class="text-danger" th:text="${'₹' + #numbers.formatDecimal(bill.newDue, 1, 2, 'POINT')}"></span>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        
+<!--        <div class="card bill-card non-printable" th:if="${not #lists.isEmpty(bill.payments)}">-->
+<!--             <div class="card-body">-->
+<!--                <h5 class="mb-3"><i class="fas fa-history me-2"></i>Payment History</h5>-->
+<!--                <div class="table-responsive">-->
+<!--                    <table class="table table-sm table-striped">-->
+<!--                        <thead>-->
+<!--                            <tr>-->
+<!--                                <th>Date</th>-->
+<!--                                <th>Received By</th>-->
+<!--                                <th class="text-end">Amount</th>-->
+<!--                            </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <tr th:each="payment : ${bill.payments}">-->
+<!--                                <td th:text="${#temporals.format(payment.paymentDate, 'dd-MMM-yyyy hh:mm a')}"></td>-->
+<!--                                <td th:text="${payment.receivedBy.username}"></td>-->
+<!--                                <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(payment.amount, 1, 2, 'POINT')}"></td>-->
+<!--                            </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div th:replace="~{fragments/navbar :: scripts}"></div>-->
+<!--<script>-->
+<!--document.addEventListener('DOMContentLoaded', function () {-->
+<!--    const printButton = document.getElementById('print-pdf-button');-->
+<!--    const billContainer = document.getElementById('bill-to-print');-->
+
+<!--    printButton.addEventListener('click', function () {-->
+<!--        html2canvas(billContainer, {-->
+<!--            scale: 2, // Higher resolution for better quality-->
+<!--            useCORS: true-->
+<!--        }).then(canvas => {-->
+<!--            const imgData = canvas.toDataURL('image/png');-->
+<!--            const a5_width_mm = 148;-->
+<!--            const a5_height_mm = 210;-->
+<!--            const doc = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a5' });-->
+
+<!--            const canvasAspectRatio = canvas.height / canvas.width;-->
+<!--            let pdfImageWidth = a5_width_mm - 10; // 5mm margin on each side-->
+<!--            let pdfImageHeight = pdfImageWidth * canvasAspectRatio;-->
+
+<!--            if (pdfImageHeight > a5_height_mm - 10) {-->
+<!--                pdfImageHeight = a5_height_mm - 10;-->
+<!--                pdfImageWidth = pdfImageHeight / canvasAspectRatio;-->
+<!--            }-->
+            
+<!--            const x_pos = (a5_width_mm - pdfImageWidth) / 2;-->
+<!--            const y_pos = 5; // 5mm margin from top-->
+            
+<!--            doc.addImage(imgData, 'PNG', x_pos, y_pos, pdfImageWidth, pdfImageHeight);-->
+<!--            doc.autoPrint();-->
+<!--            window.open(doc.output('bloburl'), '_blank');-->
+<!--        });-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!-- Everyting is fine abouve this-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>View Bill</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>-->
+
+<!--    <style>-->
+<!--        body { background-color: #f8f9fa; padding-top: 70px; }-->
+<!--        .bill-card { margin-top: 2rem; margin-bottom: 4rem; }-->
+<!--        .bill-header { background-color: #e9ecef; }-->
+<!--        .totals-section { background-color: #f8f9fa; }-->
+
+<!--        @media print {-->
+<!--            body {-->
+<!--                background-color: #fff;-->
+<!--                padding-top: 0;-->
+<!--            }-->
+<!--            .non-printable {-->
+<!--                display: none !important;-->
+<!--            }-->
+<!--            .bill-card {-->
+<!--                margin: 0 auto;-->
+<!--                border: none;-->
+<!--                box-shadow: none;-->
+<!--                width: 100%;-->
+<!--                page-break-inside: avoid;-->
+<!--            }-->
+<!--            .card-body {-->
+<!--                padding: 0 !important;-->
+<!--            }-->
+<!--            .card-header, .totals-section {-->
+<!--                background-color: #fff !important;-->
+<!--            }-->
+<!--            .container {-->
+<!--                max-width: 100%;-->
+<!--            }-->
+<!--            @page {-->
+<!--                size: A4 portrait;-->
+<!--                margin: 0.75in;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div th:replace="~{fragments/navbar :: navbar}"></div>-->
+
+<!--<div class="container">-->
+<!--    <div class="card bill-card">-->
+<!--        <div id="bill-to-print">-->
+<!--            <div class="card-header bill-header text-center py-3">-->
+<!--                <h1 class="h3 mb-1" th:text="${bill.business.name}">Business Name</h1>-->
+<!--                <h2 class="h5 mb-0 text-muted" th:text="'Bill Details: ' + ${bill.billNo}"></h2>-->
+<!--                <small class="text-muted" th:text="'Financial Year: ' + ${bill.financialYear}"></small>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                 <div class="d-flex justify-content-end mb-3 non-printable">-->
+<!--                    <a th:href="@{/billing}" class="btn btn-secondary me-2"><i class="fas fa-arrow-left me-1"></i>Back to List</a>-->
+<!--                    <button id="print-pdf-button" class="btn btn-primary"><i class="fas fa-print me-1"></i>Print/Save as PDF</button>-->
+<!--                </div>-->
+
+<!--                <div class="row mb-4">-->
+<!--                    <div class="col-6">-->
+<!--                        <h5>Billed To:</h5>-->
+<!--                        <p class="mb-1 fw-bold" th:text="${bill.customerNameSnapshot}"></p>-->
+<!--                        <p class="mb-1" th:text="${bill.customerAddressSnapshot}"></p>-->
+<!--                        <p class="mb-1" th:text="'Phone: ' + ${bill.customerPhoneSnapshot}"></p>-->
+<!--                        <p class="mb-0" th:text="'GSTIN: ' + ${bill.customerGstSnapshot}"></p>-->
+<!--                    </div>-->
+<!--                    <div class="col-6 text-end">-->
+<!--                        <h5>Bill Information:</h5>-->
+<!--                        <p class="mb-1"><strong>Billed On:</strong> <span th:text="${#temporals.format(bill.createdAt, 'dd-MMM-yyyy hh:mm a')}"></span></p>-->
+<!--                        <p class="mb-1"><strong>Billed By:</strong> <span th:text="${bill.createdBy}"></span></p>-->
+<!--                        <p class="mb-0" th:if="${bill.salesman != null}"><strong>Salesman Credit:</strong> <span th:text="${bill.salesman.username}"></span></p>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="table-responsive">-->
+<!--                    <table class="table table-bordered">-->
+<!--                        <thead class="table-light">-->
+<!--                            <tr>-->
+<!--                                <th>Product</th>-->
+<!--                                <th class="text-end">Unit Price (Pre-Tax)</th>-->
+<!--                                <th class="text-end">Unit Tax</th>-->
+<!--                                <th class="text-end">Net Sale Price</th>-->
+<!--                                <th class="text-center">Qty (pcs)</th>-->
+<!--                                <th class="text-end">Line Discount</th>-->
+<!--                                <th class="text-end">Line Tax</th>-->
+<!--                                <th class="text-end">Line Total</th>-->
+<!--                            </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <tr th:each="item : ${bill.items}" th:with="hasPieces=${item.totalPieces > 0}">-->
+<!--                                <td th:text="${item.product.name}"></td>-->
+<!--                                <td class="text-end" th:text="${hasPieces ? '₹' + #numbers.formatDecimal((item.lineTotal - item.lineTax) / item.totalPieces, 1, 2, 'POINT') : '₹0.00'}"></td>-->
+<!--                                <td class="text-end" th:text="${hasPieces ? '₹' + #numbers.formatDecimal(item.lineTax / item.totalPieces, 1, 2, 'POINT') : '₹0.00'}"></td>-->
+<!--                                <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(item.unitPriceSnapshot, 1, 2, 'POINT')}"></td>-->
+<!--                                <td class="text-center" th:text="${item.totalPieces}"></td>-->
+<!--                                <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(item.lineDiscount, 1, 2, 'POINT')}"></td>-->
+<!--                                <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(item.lineTax, 1, 2, 'POINT')}"></td>-->
+<!--                                <td class="text-end fw-bold" th:text="${'₹' + #numbers.formatDecimal(item.lineTotal, 1, 2, 'POINT')}"></td>-->
+<!--                            </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--                <div class="row mt-4 justify-content-end">-->
+<!--                    <div class="col-md-6">-->
+<!--                        <div class="card totals-section">-->
+<!--                            <div class="card-body">-->
+<!--                                <ul class="list-group list-group-flush">-->
+<!--                                    <li class="list-group-item d-flex justify-content-between"><span>Sub Total</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.subTotal-bill.totalTax, 1, 2, 'POINT')}"></span></li>-->
+<!--                                    <li class="list-group-item d-flex justify-content-between"><span>Total Discount</span> <span class="text-danger" th:text="'- ₹' + ${#numbers.formatDecimal(bill.totalDiscount, 1, 2, 'POINT')}"></span></li>-->
+<!--                                    <li class="list-group-item d-flex justify-content-between"><span>Total Tax</span> <span th:text="'+ ₹' + ${#numbers.formatDecimal(bill.totalTax, 1, 2, 'POINT')}"></span></li>-->
+                                    
+<!--                                    <li class="list-group-item d-flex justify-content-between fw-bold h5"><span>Bill Total</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.total, 1, 2, 'POINT')}"></span></li>-->
+<!--                                    <hr class="my-2">-->
+<!--                                    <li class="list-group-item d-flex justify-content-between"><span>Previous Due</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.previousDue, 1, 2, 'POINT')}"></span></li>-->
+<!--                                    <li class="list-group-item d-flex justify-content-between fw-bold h6">-->
+<!--									    <span>Current Due</span>-->
+<!--										<span class="text-danger" th:text="${'₹' + #numbers.formatDecimal(bill.previousDue + bill.total, 1, 2, 'POINT')}"></span>-->
+<!--									</li>-->
+<!--                                    <li class="list-group-item d-flex justify-content-between">-->
+<!--                                        <span>Amount Paid</span>-->
+<!--                                        <span class="text-success" th:text="'- ₹' + ${#numbers.formatDecimal((bill.previousDue - (bill.newDue - bill.total)), 1, 2, 'POINT')}"></span>-->
+<!--                                    </li>-->
+<!--                                    <li class="list-group-item d-flex justify-content-between fw-bold h5">-->
+<!--                                        <span>Remaining Due</span>-->
+<!--										<span class="text-danger" th:text="${'₹' + #numbers.formatDecimal(bill.newDue, 1, 2, 'POINT')}"></span>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        
+<!--        <div class="card bill-card non-printable" th:if="${not #lists.isEmpty(bill.payments)}">-->
+<!--             <div class="card-body">-->
+<!--                <h5 class="mb-3"><i class="fas fa-history me-2"></i>Payment History</h5>-->
+<!--                <div class="table-responsive">-->
+<!--                    <table class="table table-sm table-striped">-->
+<!--                        <thead>-->
+<!--                            <tr>-->
+<!--                                <th>Date</th>-->
+<!--                                <th>Received By</th>-->
+<!--                                <th class="text-end">Amount</th>-->
+<!--                            </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <tr th:each="payment : ${bill.payments}">-->
+<!--                                <td th:text="${#temporals.format(payment.paymentDate, 'dd-MMM-yyyy hh:mm a')}"></td>-->
+<!--                                <td th:text="${payment.receivedBy.username}"></td>-->
+<!--                                <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(payment.amount, 1, 2, 'POINT')}"></td>-->
+<!--                            </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div th:replace="~{fragments/navbar :: scripts}"></div>-->
+<!--<script>-->
+<!--document.addEventListener('DOMContentLoaded', function () {-->
+<!--    const printButton = document.getElementById('print-pdf-button');-->
+<!--    const billContainer = document.getElementById('bill-to-print');-->
+
+<!--    printButton.addEventListener('click', function () {-->
+<!--        html2canvas(billContainer, {-->
+<!--            scale: 2, // Higher resolution for better quality-->
+<!--            useCORS: true-->
+<!--        }).then(canvas => {-->
+<!--            const imgData = canvas.toDataURL('image/png');-->
+<!--            const a5_width_mm = 148;-->
+<!--            const a5_height_mm = 210;-->
+<!--            const doc = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a5' });-->
+
+<!--            const canvasAspectRatio = canvas.height / canvas.width;-->
+<!--            let pdfImageWidth = a5_width_mm - 10; // 5mm margin on each side-->
+<!--            let pdfImageHeight = pdfImageWidth * canvasAspectRatio;-->
+
+<!--            if (pdfImageHeight > a5_height_mm - 10) {-->
+<!--                pdfImageHeight = a5_height_mm - 10;-->
+<!--                pdfImageWidth = pdfImageHeight / canvasAspectRatio;-->
+<!--            }-->
+            
+<!--            const x_pos = (a5_width_mm - pdfImageWidth) / 2;-->
+<!--            const y_pos = 5; // 5mm margin from top-->
+            
+<!--            doc.addImage(imgData, 'PNG', x_pos, y_pos, pdfImageWidth, pdfImageHeight);-->
+<!--            doc.autoPrint();-->
+<!--            window.open(doc.output('bloburl'), '_blank');-->
+<!--        });-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
@@ -1340,7 +1751,13 @@
                 <small class="text-muted" th:text="'Financial Year: ' + ${bill.financialYear}"></small>
             </div>
             <div class="card-body p-4">
-                 <div class="d-flex justify-content-end mb-3 non-printable">
+                 <div class="d-flex justify-content-end align-items-center mb-3 non-printable">
+                    <div th:if="${bill.totalDiscount > 0}" class="form-check me-3">
+                        <input class="form-check-input" type="checkbox" id="hideDiscountCheckbox">
+                        <label class="form-check-label" for="hideDiscountCheckbox">
+                            Hide Discount
+                        </label>
+                    </div>
                     <a th:href="@{/billing}" class="btn btn-secondary me-2"><i class="fas fa-arrow-left me-1"></i>Back to List</a>
                     <button id="print-pdf-button" class="btn btn-primary"><i class="fas fa-print me-1"></i>Print/Save as PDF</button>
                 </div>
@@ -1348,10 +1765,10 @@
                 <div class="row mb-4">
                     <div class="col-6">
                         <h5>Billed To:</h5>
-                        <p class="mb-1 fw-bold" th:text="${bill.customerNameSnapshot}"></p>
-                        <p class="mb-1" th:text="${bill.customerAddressSnapshot}"></p>
-                        <p class="mb-1" th:text="'Phone: ' + ${bill.customerPhoneSnapshot}"></p>
-                        <p class="mb-0" th:text="'GSTIN: ' + ${bill.customerGstSnapshot}"></p>
+                        <p class="mb-1 fw-bold"><strong>Name: </strong><span th:text="${bill.customerNameSnapshot}"></span></p>
+                        <p class="mb-1"><strong>Address: </strong><span th:text="${bill.customerAddressSnapshot}"></span></p>
+                        <p class="mb-1"><strong>PhoneNO: </strong><span th:text=" ${bill.customerPhoneSnapshot}"></span></p>
+                        <p class="mb-0"><strong>GSTIN: </strong> <span th:text=" ${bill.customerGstSnapshot}"></span></p>
                     </div>
                     <div class="col-6 text-end">
                         <h5>Bill Information:</h5>
@@ -1366,41 +1783,48 @@
                         <thead class="table-light">
                             <tr>
                                 <th>Product</th>
-                                <th class="text-end">Unit Price</th>
+                                <th class="text-end">Unit Price (Pre-Tax)</th>
+                                <th class="text-end">Unit Tax</th>
+                                <th class="text-end">Unit Sale Price</th>
                                 <th class="text-center">Qty (pcs)</th>
-                                <th class="text-end">Discount</th>
-                                <th class="text-end">Total</th>
+                                <th th:if="${bill.totalDiscount > 0}" class="text-end discount-column">Line Discount</th>
+                                <th class="text-end">Line Tax</th>
+                                <th class="text-end">Line Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="item : ${bill.items}">
+                            <tr th:each="item : ${bill.items}" th:with="hasPieces=${item.totalPieces > 0}">
                                 <td th:text="${item.product.name}"></td>
+                                <td class="text-end" th:text="${hasPieces ? '₹' + #numbers.formatDecimal((item.lineTotal - item.lineTax) / item.totalPieces, 1, 2, 'POINT') : '₹0.00'}"></td>
+                                <td class="text-end" th:text="${hasPieces ? '₹' + #numbers.formatDecimal(item.lineTax / item.totalPieces, 1, 2, 'POINT') : '₹0.00'}"></td>
                                 <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(item.unitPriceSnapshot, 1, 2, 'POINT')}"></td>
                                 <td class="text-center" th:text="${item.totalPieces}"></td>
-                                <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(item.lineDiscount, 1, 2, 'POINT')}"></td>
+                                <td th:if="${bill.totalDiscount > 0}" class="text-end discount-column" th:text="${'₹' + #numbers.formatDecimal(item.lineDiscount, 1, 2, 'POINT')}"></td>
+                                <td class="text-end" th:text="${'₹' + #numbers.formatDecimal(item.lineTax, 1, 2, 'POINT')}"></td>
                                 <td class="text-end fw-bold" th:text="${'₹' + #numbers.formatDecimal(item.lineTotal, 1, 2, 'POINT')}"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
                 <div class="row mt-4 justify-content-end">
                     <div class="col-md-6">
                         <div class="card totals-section">
                             <div class="card-body">
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between"><span>Sub Total</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.subTotal, 1, 2, 'POINT')}"></span></li>
-                                    <li class="list-group-item d-flex justify-content-between"><span>Total Discount</span> <span class="text-danger" th:text="'- ₹' + ${#numbers.formatDecimal(bill.totalDiscount, 1, 2, 'POINT')}"></span></li>
-									<li class="list-group-item d-flex justify-content-between"><span>Previous Due</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.previousDue, 1, 2, 'POINT')}"></span></li>
+                                    <li class="list-group-item d-flex justify-content-between"><span>Sub Total</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.subTotal-bill.totalTax, 1, 2, 'POINT')}"></span></li>
+                                    <li th:if="${bill.totalDiscount > 0}" class="list-group-item d-flex justify-content-between"><span>Total Discount</span> <span class="text-danger" th:text="'- ₹' + ${#numbers.formatDecimal(bill.totalDiscount, 1, 2, 'POINT')}"></span></li>
+                                    <li class="list-group-item d-flex justify-content-between"><span>Total Tax</span> <span th:text="'+ ₹' + ${#numbers.formatDecimal(bill.totalTax, 1, 2, 'POINT')}"></span></li>
+                                    
                                     <li class="list-group-item d-flex justify-content-between fw-bold h5"><span>Bill Total</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.total, 1, 2, 'POINT')}"></span></li>
                                     <hr class="my-2">
-									<li class="list-group-item d-flex justify-content-between fw-bold h6">
+                                    <li class="list-group-item d-flex justify-content-between"><span>Previous Due</span> <span th:text="${'₹' + #numbers.formatDecimal(bill.previousDue, 1, 2, 'POINT')}"></span></li>
+                                    <li class="list-group-item d-flex justify-content-between fw-bold h6">
 									    <span>Current Due</span>
-										<span class="text-danger" th:text="${'₹' + #numbers.formatDecimal(bill.previousDue+bill.total, 1, 2, 'POINT')}"></span>
+										<span class="text-danger" th:text="${'₹' + #numbers.formatDecimal(bill.previousDue + bill.total, 1, 2, 'POINT')}"></span>
 									</li>
                                     <li class="list-group-item d-flex justify-content-between">
                                         <span>Amount Paid</span>
-                                        <span class="text-success" th:text="'- ₹' + ${#numbers.formatDecimal((bill.previousDue-(bill.newDue-bill.total)), 1, 2, 'POINT')}"></span>
+                                        <span class="text-success" th:text="'- ₹' + ${#numbers.formatDecimal((bill.previousDue - (bill.newDue - bill.total)), 1, 2, 'POINT')}"></span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between fw-bold h5">
                                         <span>Remaining Due</span>
@@ -1445,10 +1869,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     const printButton = document.getElementById('print-pdf-button');
     const billContainer = document.getElementById('bill-to-print');
-
+    
     printButton.addEventListener('click', function () {
         html2canvas(billContainer, {
-            scale: 2, // Higher resolution for better quality
+            scale: 2,
             useCORS: true
         }).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
@@ -1457,7 +1881,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const doc = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a5' });
 
             const canvasAspectRatio = canvas.height / canvas.width;
-            let pdfImageWidth = a5_width_mm - 10; // 5mm margin on each side
+            let pdfImageWidth = a5_width_mm - 10;
             let pdfImageHeight = pdfImageWidth * canvasAspectRatio;
 
             if (pdfImageHeight > a5_height_mm - 10) {
@@ -1466,17 +1890,27 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             
             const x_pos = (a5_width_mm - pdfImageWidth) / 2;
-            const y_pos = 5; // 5mm margin from top
+            const y_pos = 5;
             
             doc.addImage(imgData, 'PNG', x_pos, y_pos, pdfImageWidth, pdfImageHeight);
             doc.autoPrint();
             window.open(doc.output('bloburl'), '_blank');
         });
     });
+
+    const hideDiscountCheckbox = document.getElementById('hideDiscountCheckbox');
+    // This check is necessary because the element won't exist if discount is 0
+    if(hideDiscountCheckbox) {
+        hideDiscountCheckbox.addEventListener('change', function() {
+            const discountColumns = document.querySelectorAll('.discount-column');
+            const displayStyle = this.checked ? 'none' : '';
+            discountColumns.forEach(col => {
+                col.style.display = displayStyle;
+            });
+        });
+    }
 });
 </script>
 
 </body>
 </html>
-
-

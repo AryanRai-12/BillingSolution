@@ -314,7 +314,8 @@ public class BillingController {
                 .map(ProductDTO::new)
                 .collect(Collectors.toList());
         model.addAttribute("products", productDTOs); // Pass the safe DTO list
-
+        
+        //model.addAttribute("bill", new Bill());
         model.addAttribute("customers", customerRepository.findByBusiness(currentBusiness));
         model.addAttribute("salesmen", userRepository.findByBusinessAndRolesContaining(currentBusiness, "ROLE_SALESMAN"));
         model.addAttribute("financialYears", generateFinancialYears());
@@ -331,6 +332,7 @@ public class BillingController {
     public String showEditBillForm(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Bill bill = billingService.getBillById(id);
+            //model.addAttribute("bill", bill);
             if (!billingService.isBillActionable(bill)) {
                 redirectAttributes.addFlashAttribute("errorMessage", "This bill can no longer be edited.");
                 return "redirect:/billing";
@@ -375,7 +377,11 @@ public class BillingController {
 //        }
 //    }
     
-    
+    @GetMapping("/billing/form")
+    public String showForm(Model model) {
+        model.addAttribute("billRequest", new BillRequest());
+        return "billing/form";
+    }
     @PostMapping("/{id}/edit")
     public String processBillUpdate(@PathVariable("id") Long id, @ModelAttribute("request") BillRequest request, RedirectAttributes redirectAttributes) {
          try {

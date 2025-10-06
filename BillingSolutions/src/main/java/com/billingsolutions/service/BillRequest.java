@@ -107,6 +107,7 @@ public class BillRequest {
         private Long productId;
         private String productName;
         private UnitType unitType;
+        private BigDecimal unitPrice; // ADDED: The missing field
         private int quantity;
         private BigDecimal discountPercent = BigDecimal.ZERO;
         
@@ -158,6 +159,13 @@ public class BillRequest {
         }
         public Long getId() { return id; }
         public void setId(Long id) { this.id = id; }
+        public BigDecimal getUnitPrice() {
+            return unitPrice;
+        }
+
+        public void setUnitPrice(BigDecimal unitPrice) {
+            this.unitPrice = unitPrice;
+        }
     }
 }
 

@@ -103,7 +103,7 @@ public class ProductController {
             product.setTotalBags(form.getTotalBags());
             product.setWeightPerItem(form.getWeightPerItem());
             product.setTotalBagWeight(form.getTotalBagWeight());
-            
+            product.setGstRate(form.getGstRate());
             if (vendorName != null && !vendorName.trim().isEmpty()) {
                  vendorService.findByNameIgnoreCase(vendorName.trim())
                     .ifPresent(product::setVendor);
