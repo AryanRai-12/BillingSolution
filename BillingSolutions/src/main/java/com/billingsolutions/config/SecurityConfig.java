@@ -1,5 +1,6 @@
 package com.billingsolutions.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -10,12 +11,19 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 @Configuration
 public class SecurityConfig {
+	
+	
 	private final UserDetailsService userDetailsService;
 	private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+	
+	
 	public SecurityConfig(UserDetailsService userDetailsService,AuthenticationSuccessHandler customAuthenticationSuccessHandler) {
 		this.userDetailsService = userDetailsService;
 		this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;;
 	}
+	
+	@Value("${app.security.remember-me.key}")
+    private String rememberMeKey;
 
 //	@Bean
 //	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -61,6 +69,11 @@ public class SecurityConfig {
 				.successHandler(customAuthenticationSuccessHandler)
 				.permitAll()
 			)
+			.rememberMe(rememberMe -> rememberMe
+	                .key(rememberMeKey) // ⚠️ A unique, secret key is required
+	                .tokenValiditySeconds(1209600) // Sets cookie to last for 14 days
+	                .userDetailsService(userDetailsService)
+	        )
 			.logout(logout -> logout
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
