@@ -24,79 +24,191 @@
 <!--</body>-->
 <!--</html> -->
 
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title th:text="${vendor.id != null ? 'Edit Vendor' : 'Create Vendor'}"></title>-->
+<!--     Bootstrap 5 CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--     Font Awesome for Icons -->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body { -->
+<!--            background-color: #f8f9fa;-->
+<!--            padding-top: 70px; /* Added padding for the fixed navbar */-->
+<!--        }-->
+<!--        .form-card { margin-top: 2rem; margin-bottom: 4rem; }-->
+<!--        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }-->
+<!--        .user-info .nav-link { display: flex; align-items: center; }-->
+<!--        .user-info .fa-user-circle { font-size: 1.5rem; margin-right: 0.5rem; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--     Consistent Navigation Bar -->
+<!--    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">-->
+<!--        <div class="container-fluid">-->
+<!--            <a class="navbar-brand fw-bold" th:href="@{/}">-->
+<!--                <i class="fas fa-file-invoice-dollar"></i>-->
+<!--                BillingSolutions-->
+<!--            </a>-->
+<!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--            </button>-->
+<!--            <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">-->
+<!--                        <a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/billing/create}"><i class="fas fa-plus-circle me-1"></i>Create Bill</a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">-->
+<!--                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                            <i class="fas fa-user-shield me-1"></i>Admin-->
+<!--                        </a>-->
+<!--                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>-->
+<!--                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--                <ul class="navbar-nav user-info">-->
+<!--                    <li class="nav-item">-->
+<!--                        <span class="nav-link">-->
+<!--                            <i class="fas fa-user-circle"></i>-->
+<!--                            <span sec:authentication="name">Username</span>-->
+<!--                        </span>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                        <form th:action="@{/logout}" method="post" class="d-flex">-->
+<!--                            <button class="btn btn-outline-danger btn-sm" type="submit">Logout</button>-->
+<!--                        </form>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </nav>-->
+
+<!--<div class="container">-->
+<!--    <div class="card form-card shadow-sm">-->
+<!--        <div class="card-header bg-light py-3">-->
+<!--            <h2 class="h4 mb-0" th:text="${vendor.id != null ? 'Edit Vendor' : 'Create New Vendor'}"></h2>-->
+<!--        </div>-->
+<!--        <div class="card-body p-4">-->
+<!--            <form th:action="${vendor.id != null ? '/vendors/' + vendor.id : '/vendors'}" -->
+<!--                  th:object="${vendor}" method="post">-->
+                
+<!--                <div class="row">-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="companyName" class="form-label">Company Name</label>-->
+<!--                        <input type="text" id="companyName" class="form-control" th:field="*{companyName}" required>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="name" class="form-label">Contact Person Name</label>-->
+<!--                        <input type="text" id="name" class="form-control" th:field="*{name}" required>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="row">-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="phone" class="form-label">Phone</label>-->
+<!--                        <input type="text" id="phone" class="form-control" th:field="*{phone}">-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="email" class="form-label">Email</label>-->
+<!--                        <input type="email" id="email" class="form-control" th:field="*{email}">-->
+<!--                    </div>-->
+<!--                </div>-->
+                
+<!--                <div class="mb-3">-->
+<!--                    <label for="address" class="form-label">Address</label>-->
+<!--                    <input type="text" id="address" class="form-control" th:field="*{address}">-->
+<!--                </div>-->
+
+<!--                <div class="row">-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="houseAddress" class="form-label">House/Building Address</label>-->
+<!--                        <input type="text" id="houseAddress" class="form-control" th:field="*{houseAddress}">-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="landmark" class="form-label">Landmark</label>-->
+<!--                        <input type="text" id="landmark" class="form-control" th:field="*{landmark}">-->
+<!--                    </div>-->
+<!--                </div>-->
+                
+<!--                <hr class="my-4">-->
+                
+<!--                <div class="row">-->
+<!--                    <div class="col-md-4 mb-3">-->
+<!--                        <label for="gst" class="form-label">GST Number</label>-->
+<!--                        <input type="text" id="gst" class="form-control" th:field="*{gst}">-->
+<!--                    </div>-->
+<!--                    <div class="col-md-4 mb-3">-->
+<!--                        <label for="partyCode" class="form-label">Party Code</label>-->
+<!--                        <input type="text" id="partyCode" class="form-control" th:field="*{partyCode}">-->
+<!--                    </div>-->
+<!--                     <div class="col-md-4 mb-3">-->
+<!--                        <label for="vendorGroup" class="form-label">Group</label>-->
+<!--                        <input type="text" id="vendorGroup" class="form-control" th:field="*{vendorGroup}">-->
+<!--                    </div>-->
+<!--                </div>-->
+                
+<!--                <div class="row">-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="creditLimit" class="form-label">Credit Limit</label>-->
+<!--                        <input type="number" id="creditLimit" class="form-control" th:field="*{creditLimit}" step="0.01">-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="due" class="form-label">Current Payable (Due)</label>-->
+<!--                        <input type="number" id="due" class="form-control" th:field="*{due}" step="0.01">-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="d-flex justify-content-end mt-4">-->
+<!--                    <a th:href="@{/vendors}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                    <button type="submit" class="btn btn-primary">-->
+<!--                        <i class="fas fa-save me-1"></i> Save Vendor-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!-- Bootstrap 5 JS Bundle -->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${vendor.id != null ? 'Edit Vendor' : 'Create Vendor'}"></title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        body { 
-            background-color: #f8f9fa;
-            padding-top: 70px; /* Added padding for the fixed navbar */
-        }
+        body { background-color: #f8f9fa; padding-top: 70px; }
         .form-card { margin-top: 2rem; margin-bottom: 4rem; }
         .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }
-        .user-info .nav-link { display: flex; align-items: center; }
-        .user-info .fa-user-circle { font-size: 1.5rem; margin-right: 0.5rem; }
+        .is-invalid ~ .invalid-feedback { display: block; }
     </style>
 </head>
 <body>
 
-    <!-- Consistent Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" th:href="@{/}">
-                <i class="fas fa-file-invoice-dollar"></i>
-                BillingSolutions
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/customers}"><i class="fas fa-users me-1"></i>Customers</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
-                        <a class="nav-link" th:href="@{/vendors}"><i class="fas fa-store me-1"></i>Vendors</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/products}"><i class="fas fa-box-open me-1"></i>Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/billing/create}"><i class="fas fa-plus-circle me-1"></i>Create Bill</a>
-                    </li>
-                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-shield me-1"></i>Admin
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                            <li><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>
-                            <li><a class="dropdown-item" th:href="@{/admin/users}">Manage Users</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="navbar-nav user-info">
-                    <li class="nav-item">
-                        <span class="nav-link">
-                            <i class="fas fa-user-circle"></i>
-                            <span sec:authentication="name">Username</span>
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <form th:action="@{/logout}" method="post" class="d-flex">
-                            <button class="btn btn-outline-danger btn-sm" type="submit">Logout</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container">
     <div class="card form-card shadow-sm">
@@ -104,72 +216,100 @@
             <h2 class="h4 mb-0" th:text="${vendor.id != null ? 'Edit Vendor' : 'Create New Vendor'}"></h2>
         </div>
         <div class="card-body p-4">
-            <form th:action="${vendor.id != null ? '/vendors/' + vendor.id : '/vendors'}" 
-                  th:object="${vendor}" method="post">
-                
+            <form th:action="${vendor.id != null ? '/vendors/' + vendor.id : '/vendors'}"
+                  th:object="${vendor}" method="post" novalidate>
+
+                <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+                    Please correct the errors below.
+                </div>
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="companyName" class="form-label">Company Name</label>
-                        <input type="text" id="companyName" class="form-control" th:field="*{companyName}" required>
+                        <input type="text" id="companyName" class="form-control" th:field="*{companyName}"
+                               th:classappend="${#fields.hasErrors('companyName')} ? 'is-invalid' : ''">
+                        <div th:errors="*{companyName}" class="invalid-feedback"></div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="name" class="form-label">Contact Person Name</label>
-                        <input type="text" id="name" class="form-control" th:field="*{name}" required>
+                        <input type="text" id="name" class="form-control" th:field="*{name}"
+                               th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+                        <div th:errors="*{name}" class="invalid-feedback"></div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="phone" class="form-label">Phone</label>
-                        <input type="text" id="phone" class="form-control" th:field="*{phone}">
+                        <input type="text" id="phone" class="form-control" th:field="*{phone}"
+                               th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''">
+                        <div th:errors="*{phone}" class="invalid-feedback"></div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" class="form-control" th:field="*{email}">
+                        <input type="email" id="email" class="form-control" th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+                        <div th:errors="*{email}" class="invalid-feedback"></div>
                     </div>
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
-                    <input type="text" id="address" class="form-control" th:field="*{address}">
+                    <input type="text" id="address" class="form-control" th:field="*{address}"
+                           th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''">
+                    <div th:errors="*{address}" class="invalid-feedback"></div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="houseAddress" class="form-label">House/Building Address</label>
-                        <input type="text" id="houseAddress" class="form-control" th:field="*{houseAddress}">
+                        <input type="text" id="houseAddress" class="form-control" th:field="*{houseAddress}"
+                               th:classappend="${#fields.hasErrors('houseAddress')} ? 'is-invalid' : ''">
+                        <div th:errors="*{houseAddress}" class="invalid-feedback"></div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="landmark" class="form-label">Landmark</label>
-                        <input type="text" id="landmark" class="form-control" th:field="*{landmark}">
+                        <input type="text" id="landmark" class="form-control" th:field="*{landmark}"
+                               th:classappend="${#fields.hasErrors('landmark')} ? 'is-invalid' : ''">
+                        <div th:errors="*{landmark}" class="invalid-feedback"></div>
                     </div>
                 </div>
-                
+
                 <hr class="my-4">
-                
+
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="gst" class="form-label">GST Number</label>
-                        <input type="text" id="gst" class="form-control" th:field="*{gst}">
+                        <input type="text" id="gst" class="form-control" th:field="*{gst}"
+                               th:classappend="${#fields.hasErrors('gst')} ? 'is-invalid' : ''">
+                        <div th:errors="*{gst}" class="invalid-feedback"></div>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="partyCode" class="form-label">Party Code</label>
-                        <input type="text" id="partyCode" class="form-control" th:field="*{partyCode}">
+                        <input type="text" id="partyCode" class="form-control" th:field="*{partyCode}"
+                               th:classappend="${#fields.hasErrors('partyCode')} ? 'is-invalid' : ''">
+                        <div th:errors="*{partyCode}" class="invalid-feedback"></div>
                     </div>
-                     <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label for="vendorGroup" class="form-label">Group</label>
-                        <input type="text" id="vendorGroup" class="form-control" th:field="*{vendorGroup}">
+                        <input type="text" id="vendorGroup" class="form-control" th:field="*{vendorGroup}"
+                               th:classappend="${#fields.hasErrors('vendorGroup')} ? 'is-invalid' : ''">
+                        <div th:errors="*{vendorGroup}" class="invalid-feedback"></div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="creditLimit" class="form-label">Credit Limit</label>
-                        <input type="number" id="creditLimit" class="form-control" th:field="*{creditLimit}" step="0.01">
+                        <input type="number" id="creditLimit" class="form-control" th:field="*{creditLimit}" step="0.01"
+                               th:classappend="${#fields.hasErrors('creditLimit')} ? 'is-invalid' : ''">
+                        <div th:errors="*{creditLimit}" class="invalid-feedback"></div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="due" class="form-label">Current Payable (Due)</label>
-                        <input type="number" id="due" class="form-control" th:field="*{due}" step="0.01">
+                        <input type="number" id="due" class="form-control" th:field="*{due}" step="0.01"
+                               th:classappend="${#fields.hasErrors('due')} ? 'is-invalid' : ''">
+                        <div th:errors="*{due}" class="invalid-feedback"></div>
                     </div>
                 </div>
 
@@ -184,7 +324,6 @@
     </div>
 </div>
 
-<!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

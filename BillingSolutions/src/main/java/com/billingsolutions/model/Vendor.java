@@ -19,34 +19,34 @@ public class Vendor {
     @JoinColumn(name = "business_id")
     private Business business;
 	
-	@NotBlank
+	@NotBlank(message = "Company name is required.")
 	@Column(nullable=false)
 	private String CompanyName;
 	
 	
 	private String Vendorgroup;
 	
-	@NotBlank
+	@NotBlank(message = "Contact person name is required.")
 	@Column(nullable = false)
 	private String name;
 
 	private String address;
 	
-	@Size(min = 10, max = 10)
+	@Size(min = 10, max = 10, message = "Phone number must be exactly 10 digits.")
 	private String phone;
 
-	@Size(min = 15, max = 15)
+	@Pattern(regexp = "^$|^.{15}$", message = "GST number must be either empty or exactly 15 characters long.")
 	@Column(length = 15)
 	private String gst;
 
-	@Email
+    @Email(message = "Please enter a valid email address.")
 	private String email;
 
-	@NotNull
+    @NotNull(message = "Credit limit cannot be empty.")
 	@Column(precision = 18, scale = 2)
 	private BigDecimal creditLimit = BigDecimal.ZERO;
 
-	@NotNull
+    @NotNull(message = "Due amount cannot be empty.")
 	@Column(precision = 18, scale = 2)
 	private BigDecimal due = BigDecimal.ZERO;
 
@@ -54,7 +54,7 @@ public class Vendor {
 
 	private String houseAddress;
 
-	@NotBlank
+    @NotBlank(message = "Party code is required.")
 	@Column(unique = true)
 	private String partyCode;
 
