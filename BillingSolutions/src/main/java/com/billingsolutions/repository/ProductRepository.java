@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findBySku(String sku);
+    
+    
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.vendor")
     List<Product> findAllWithVendors();
     
@@ -21,6 +23,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * This prevents SKU conflicts between different businesses.
      */
     Optional<Product> findBySkuAndBusiness(String sku, Business business);
+    
+    boolean existsBySkuAndBusiness(String sku, Business business);
+
 
     /**
      * REPLACED: The old `findAllWithVendors` is replaced by this new, secure version.
@@ -51,4 +56,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByIdAndBusiness(Long id, Business business);
 
     void deleteByIdAndBusiness(Long id, Business business);
+    
+    
+    boolean existsBySku(String sku);
 }

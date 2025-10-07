@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -224,6 +225,16 @@ public class ProductService {
 
         product.setTotalBags(updatedBags);
         save(product);
+    }
+    public Optional<Product> findBySku(String sku) {
+        return productRepository.findBySkuAndBusiness(sku, getCurrentBusiness());
+    }
+
+    /**
+     * Securely checks if a product with the given SKU exists, but only within the current user's business.
+     */
+    public boolean existsBySku(String sku) {
+        return productRepository.existsBySkuAndBusiness(sku, getCurrentBusiness());
     }
 }
 
