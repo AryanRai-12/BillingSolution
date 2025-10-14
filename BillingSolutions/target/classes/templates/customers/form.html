@@ -265,11 +265,154 @@
 <!--</body>-->
 <!--</html>-->
 
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title th:text="${customer.id != null ? 'Edit Customer' : 'Create Customer'}"></title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">-->
+<!--    <style>-->
+<!--        body { background-color: #f8f9fa; padding-top: 70px; }-->
+<!--        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }-->
+<!--        .form-card { margin-top: 2rem; margin-bottom: 4rem; }-->
+<!--        .form-header { background-color: #e9ecef; }-->
+<!--        /* Ensures Bootstrap's invalid-feedback messages are shown */-->
+<!--        .is-invalid ~ .invalid-feedback {-->
+<!--            display: block;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--    <div th:replace="~{fragments/navbar :: navbar}"></div>-->
+
+<!--    <div class="container">-->
+<!--        <div class="card form-card">-->
+<!--            <div class="card-header form-header py-3">-->
+<!--                <h1 class="h4" th:text="${customer.id != null ? 'Edit Customer' : 'Create Customer'}"></h1>-->
+<!--            </div>-->
+<!--            <div class="card-body p-4">-->
+<!--                <form th:action="${customer.id != null ? '/customers/' + customer.id : '/customers'}"-->
+<!--                      th:object="${customer}" method="post" novalidate>-->
+
+<!--                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">-->
+<!--                        Please correct the errors below.-->
+<!--                    </div>-->
+
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="counterName" class="form-label">Counter Name</label>-->
+<!--                            <input type="text" id="counterName" class="form-control" th:field="*{counterName}"-->
+<!--                                   th:classappend="${#fields.hasErrors('counterName')} ? 'is-invalid' : ''">-->
+<!--                            <div th:errors="*{counterName}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="name" class="form-label">Customer Name</label>-->
+<!--                            <input type="text" id="name" class="form-control" th:field="*{name}"-->
+<!--                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">-->
+<!--                            <div th:errors="*{name}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    
+<!--                    <div class="row">-->
+<!--                         <div class="col-md-6 mb-3">-->
+<!--                            <label for="phone" class="form-label">Phone</label>-->
+<!--                            <input type="text" id="phone" class="form-control" th:field="*{phone}"-->
+<!--                                   th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''">-->
+<!--                            <div th:errors="*{phone}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="email" class="form-label">Email</label>-->
+<!--                            <input type="email" id="email" class="form-control" th:field="*{email}"-->
+<!--                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">-->
+<!--                            <div th:errors="*{email}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="mb-3">-->
+<!--                        <label for="address" class="form-label">Address</label>-->
+<!--                        <input type="text" id="address" class="form-control" th:field="*{address}"-->
+<!--                               th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''">-->
+<!--                        <div th:errors="*{address}" class="invalid-feedback"></div>-->
+<!--                    </div>-->
+
+<!--                     <div class="row">-->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="houseAddress" class="form-label">House Address</label>-->
+<!--                            <input type="text" id="houseAddress" class="form-control" th:field="*{houseAddress}"-->
+<!--                                   th:classappend="${#fields.hasErrors('houseAddress')} ? 'is-invalid' : ''">-->
+<!--                             <div th:errors="*{houseAddress}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="landmark" class="form-label">Landmark</label>-->
+<!--                            <input type="text" id="landmark" class="form-control" th:field="*{landmark}"-->
+<!--                                   th:classappend="${#fields.hasErrors('landmark')} ? 'is-invalid' : ''">-->
+<!--                             <div th:errors="*{landmark}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <hr class="my-4">-->
+
+<!--                    <div class="row">-->
+<!--                         <div class="col-md-6 mb-3">-->
+<!--                            <label for="gst" class="form-label">GST Number</label>-->
+<!--                            <input type="text" id="gst" class="form-control" th:field="*{gst}"-->
+<!--                                   th:classappend="${#fields.hasErrors('gst')} ? 'is-invalid' : ''">-->
+<!--                             <div th:errors="*{gst}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="partyCode" class="form-label">Party Code</label>-->
+<!--                            <input type="text" id="partyCode" class="form-control" th:field="*{partyCode}"-->
+<!--                                   th:classappend="${#fields.hasErrors('partyCode')} ? 'is-invalid' : ''">-->
+<!--                             <div th:errors="*{partyCode}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                     <div class="row">-->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="creditLimit" class="form-label">Credit Limit</label>-->
+<!--                            <input type="number" id="creditLimit" class="form-control" th:field="*{creditLimit}" step="0.01"-->
+<!--                                   th:classappend="${#fields.hasErrors('creditLimit')} ? 'is-invalid' : ''">-->
+<!--                             <div th:errors="*{creditLimit}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="due" class="form-label">Current Due</label>-->
+<!--                            <input type="number" id="due" class="form-control" th:field="*{due}" step="0.01"-->
+<!--                                   th:classappend="${#fields.hasErrors('due')} ? 'is-invalid' : ''">-->
+<!--                             <div th:errors="*{due}" class="invalid-feedback"></div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                     <div class="mb-3">-->
+<!--                        <label for="customerGroup" class="form-label">Customer Group</label>-->
+<!--                        <input type="text" id="customerGroup" class="form-control" th:field="*{customerGroup}"-->
+<!--                               th:classappend="${#fields.hasErrors('customerGroup')} ? 'is-invalid' : ''">-->
+<!--                         <div th:errors="*{customerGroup}" class="invalid-feedback"></div>-->
+<!--                    </div>-->
+                    
+<!--                    <hr class="my-4">-->
+<!--                    <div class="d-flex justify-content-end">-->
+<!--                        <a th:href="@{/customers}" class="btn btn-secondary me-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Save Customer</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    
     <title th:text="${customer.id != null ? 'Edit Customer' : 'Create Customer'}"></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -278,10 +421,7 @@
         .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }
         .form-card { margin-top: 2rem; margin-bottom: 4rem; }
         .form-header { background-color: #e9ecef; }
-        /* Ensures Bootstrap's invalid-feedback messages are shown */
-        .is-invalid ~ .invalid-feedback {
-            display: block;
-        }
+        .is-invalid ~ .invalid-feedback { display: block; }
     </style>
 </head>
 <body>
@@ -302,18 +442,19 @@
                     </div>
 
                     <div class="row">
+                        
                         <div class="col-md-6 mb-3">
-                            <label for="counterName" class="form-label">Counter Name</label>
-                            <input type="text" id="counterName" class="form-control" th:field="*{counterName}"
-                                   th:classappend="${#fields.hasErrors('counterName')} ? 'is-invalid' : ''">
-                            <div th:errors="*{counterName}" class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="name" class="form-label">Customer Name</label>
+                            <label for="name" class="form-label">Counter Name</label>
                             <input type="text" id="name" class="form-control" th:field="*{name}"
                                    th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
                             <div th:errors="*{name}" class="invalid-feedback"></div>
                         </div>
+						<div class="col-md-6 mb-3">
+							<label for="counterName" class="form-label">Customer Name</label>
+						    <input type="text" id="counterName" class="form-control" th:field="*{counterName}"
+						    	th:classappend="${#fields.hasErrors('counterName')} ? 'is-invalid' : ''">
+					    	<div th:errors="*{counterName}" class="invalid-feedback"></div>
+						</div>
                     </div>
                     
                     <div class="row">
@@ -384,11 +525,22 @@
                              <div th:errors="*{due}" class="invalid-feedback"></div>
                         </div>
                     </div>
+                     
                      <div class="mb-3">
                         <label for="customerGroup" class="form-label">Customer Group</label>
-                        <input type="text" id="customerGroup" class="form-control" th:field="*{customerGroup}"
-                               th:classappend="${#fields.hasErrors('customerGroup')} ? 'is-invalid' : ''">
-                         <div th:errors="*{customerGroup}" class="invalid-feedback"></div>
+                        <div class="input-group">
+                            <select id="customerGroup" class="form-select" th:field="*{customerGroup}" 
+                                    th:classappend="${#fields.hasErrors('customerGroup')} ? 'is-invalid' : ''">
+                                <option value="">-- Select a Group --</option>
+                                <option th:each="group : ${allCustomerGroups}"
+                                        th:value="${group.id}"
+                                        th:text="${group.name}"></option>
+                            </select>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addGroupModal">
+                                <i class="fas fa-plus"></i> Add New
+                            </button>
+                             <div th:errors="*{customerGroup}" class="invalid-feedback"></div>
+                        </div>
                     </div>
                     
                     <hr class="my-4">
@@ -401,6 +553,89 @@
         </div>
     </div>
 
+    <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addGroupModalLabel">Add New Customer Group</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div id="modal-error-alert" class="alert alert-danger d-none p-2" role="alert"></div>
+              <div class="mb-3">
+                <label for="newGroupName" class="form-label">Group Name</label>
+                <input type="text" class="form-control" id="newGroupName" required>
+                <div id="newGroupNameFeedback" class="invalid-feedback">Group name cannot be empty.</div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="saveNewGroupBtn">Save Group</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // This JavaScript powers the "Add New" modal
+        document.addEventListener('DOMContentLoaded', function () {
+            const saveBtn = document.getElementById('saveNewGroupBtn');
+            const groupNameInput = document.getElementById('newGroupName');
+            const customerGroupSelect = document.getElementById('customerGroup');
+            const modalElement = document.getElementById('addGroupModal');
+            const modal = new bootstrap.Modal(modalElement);
+            const modalErrorAlert = document.getElementById('modal-error-alert');
+
+            const token = document.querySelector("meta[name='_csrf']").getAttribute("content");
+            const header = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+            saveBtn.addEventListener('click', function () {
+                const groupName = groupNameInput.value.trim();
+                
+                if (!groupName) {
+                    groupNameInput.classList.add('is-invalid');
+                    return;
+                }
+                groupNameInput.classList.remove('is-invalid');
+                modalErrorAlert.classList.add('d-none');
+
+                fetch('/customer-groups/api', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [header]: token 
+                    },
+                    body: JSON.stringify({ name: groupName })
+                })
+                .then(async response => {
+                    if (!response.ok) {
+                         const errorText = await response.text();
+                         throw new Error(errorText || 'Could not save the group.');
+                    }
+                    return response.json();
+                })
+                .then(savedGroup => {
+                    const newOption = new Option(savedGroup.name, savedGroup.id, false, true);
+                    customerGroupSelect.add(newOption);
+                    customerGroupSelect.value = savedGroup.id;
+                    
+                    groupNameInput.value = '';
+                    modal.hide();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    modalErrorAlert.textContent = 'Error: ' + error.message;
+                    modalErrorAlert.classList.remove('d-none');
+                });
+            });
+
+            modalElement.addEventListener('hidden.bs.modal', function () {
+                groupNameInput.classList.remove('is-invalid');
+                groupNameInput.value = '';
+                modalErrorAlert.classList.add('d-none');
+            });
+        });
+    </script>
 </body>
 </html>

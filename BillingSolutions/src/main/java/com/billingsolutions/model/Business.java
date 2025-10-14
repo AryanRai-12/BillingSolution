@@ -47,6 +47,10 @@ public class Business {
     // A business can have many bills.
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bill> bills = new ArrayList<>();
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CustomerGroup> customerGroups = new ArrayList<>();
 
     public Business() {}
 
@@ -69,5 +73,7 @@ public class Business {
     public void setVendors(List<Vendor> vendors) { this.vendors = vendors; }
     public List<Bill> getBills() { return bills; }
     public void setBills(List<Bill> bills) { this.bills = bills; }
+    public List<CustomerGroup> getCustomerGroups() { return customerGroups; }
+    public void setCustomerGroups(List<CustomerGroup> customerGroups) { this.customerGroups = customerGroups; }
 }
 

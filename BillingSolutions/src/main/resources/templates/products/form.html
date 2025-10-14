@@ -1532,10 +1532,18 @@
                                placeholder="e.g., SKU12345" />
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('sku')}" th:errors="*{sku}"></div>
                     </div>
+					<div class="col-md-4 mb-3">
+					                        <label for="hsn" class="form-label">HSN Code <span class="text-muted">(Optional)</span></label>
+					                        <input type="text" id="hsn" class="form-control" th:field="*{hsn}"
+					                               th:classappend="${#fields.hasErrors('hsn')} ? 'is-invalid' : ''"
+					                               placeholder="e.g., 998877" />
+					                        <div class="invalid-feedback" th:if="${#fields.hasErrors('hsn')}" th:errors="*{hsn}"></div>
+					                    </div>
                     <div class="col-md-6 mb-3">
                         <label for="productGroup" class="form-label">Product Group</label>
                         <input type="text" id="productGroup" class="form-control" th:field="*{productGroup}" placeholder="e.g., Spices, Snacks" />
                     </div>
+					
                 </div>
 
                 <div class="row">

@@ -2,6 +2,8 @@ package com.billingsolutions.repository;
 
 import com.billingsolutions.model.Business;
 import com.billingsolutions.model.Customer;
+import com.billingsolutions.model.CustomerGroup;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -44,5 +46,15 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
      * Securely checks if a customer exists for a given business.
      */
     boolean existsByIdAndBusiness(Long id, Business business);
+    
+    
+    Optional<CustomerGroup> findByNameAndBusiness(String name, Business business);
+
+    /**
+     * Finds all customer groups for a specific business.
+     * @param business The current business.
+     * @return A list of customer groups.
+     */
+    List<CustomerGroup> findByBusinessOrderByName(Business business);
 }
 

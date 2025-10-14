@@ -23,7 +23,11 @@ public class Product {
     @NotBlank
     @Column(nullable = false)
     private String name;
-
+    
+    @Column
+    private String hsn;
+    
+    
     @Column(unique = true)
     private String sku;
     
@@ -222,5 +226,14 @@ public class Product {
 	public void setProductGroup(String group) {
 		ProductGroup = group;
 	}
+
+	public String getHsn() {
+	    return hsn;
+	}
+
+	public void setHsn(String hsn) {
+	    this.hsn = hsn;
+	}
     
+	
 }

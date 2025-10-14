@@ -55,7 +55,9 @@ public class Customer {
 	private String partyCode;
 	
 	
-	private String customerGroup;
+	@ManyToOne(fetch = FetchType.LAZY) // Eager fetch can be simpler for forms
+    @JoinColumn(name = "customer_group_id")
+    private CustomerGroup customerGroup;
 
 	public Customer() {}
 	
@@ -104,12 +106,12 @@ public class Customer {
 		CounterName = counterName;
 	}
 
-	public String getCustomerGroup() {
+	public CustomerGroup getCustomerGroup() {
 		return customerGroup;
 	}
 
-	public void setCustomerGroup(String group) {
-		customerGroup = group;
+	public void setCustomerGroup(CustomerGroup customerGroup) {
+		this.customerGroup = customerGroup;
 	}
 	
 } 

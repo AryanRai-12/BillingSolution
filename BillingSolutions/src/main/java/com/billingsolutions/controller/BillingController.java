@@ -175,6 +175,8 @@ import com.billingsolutions.service.BillingService.CreditLimitExceededException;
 import com.billingsolutions.service.BillingService.InsufficientStockException;
 import com.billingsolutions.service.BillingService.UpdateBillRequest;
 import com.billingsolutions.service.CustomerBillDueDTO;
+import com.billingsolutions.service.CustomerDto;
+import com.billingsolutions.service.CustomerGroupService;
 import com.billingsolutions.service.CustomerService;
 import com.billingsolutions.service.InsufficientProfitException;
 import com.billingsolutions.service.ProductDTO;
@@ -206,19 +208,23 @@ public class BillingController {
     private final CustomerService customerService;
     private final UserRepository userRepository;
     private final BillRepository billRepository;
+    private final CustomerGroupService customerGroupService; // Add this field
+
 
     public BillingController(BillingService billingService,
                              ProductRepository productRepository,
                              CustomerRepository customerRepository,
                              UserRepository userRepository,
                              CustomerService customerService, 
-                             BillRepository billRepository) {
+                             BillRepository billRepository,
+                             CustomerGroupService customerGroupService) {
         this.billingService = billingService;
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
         this.customerService = customerService;
         this.billRepository = billRepository;
+        this.customerGroupService = customerGroupService;
     }
     
     
@@ -316,10 +322,23 @@ public class BillingController {
         model.addAttribute("products", productDTOs); // Pass the safe DTO list
         
         //model.addAttribute("bill", new Bill());
-        model.addAttribute("customers", customerRepository.findByBusiness(currentBusiness));
+        List<Customer> customers = customerRepository.findByBusiness(currentBusiness);
+        List<CustomerDto> customerDtos = customers.stream()
+                .map(customer -> new CustomerDto(
+                    customer.getId(),
+                    customer.getName(),
+                    // Safely get the group ID, handling nulls
+                    (customer.getCustomerGroup() != null) ? customer.getCustomerGroup().getId() : null
+                ))
+                .collect(Collectors.toList());
+        
+        
+        model.addAttribute("customers", customerDtos);
+        
         model.addAttribute("salesmen", userRepository.findByBusinessAndRolesContaining(currentBusiness, "ROLE_SALESMAN"));
         model.addAttribute("financialYears", generateFinancialYears());
-
+        model.addAttribute("allCustomerGroups", customerGroupService.findAllForCurrentBusiness());
+        
         if (!model.containsAttribute("request")) {
             BillRequest request = new BillRequest();
             request.setFinancialYear(getCurrentFinancialYear());
@@ -351,7 +370,19 @@ public class BillingController {
                     .collect(Collectors.toList());
             model.addAttribute("products", productDTOs); // Pass the safe DTO list
             
-            model.addAttribute("customers", customerRepository.findByBusiness(currentBusiness));
+            List<Customer> customers = customerRepository.findByBusiness(currentBusiness);
+            List<CustomerDto> customerDtos = customers.stream()
+            	    .map(c -> new CustomerDto(
+            	        c.getId(),
+            	        c.getName(),
+            	        // This safely gets the group ID while the database session is still open
+            	        (c.getCustomerGroup() != null) ? c.getCustomerGroup().getId() : null
+            	    ))
+            	    .collect(Collectors.toList());
+            
+            model.addAttribute("allCustomerGroups", customerGroupService.findAllForCurrentBusiness());
+
+            model.addAttribute("customers", customerDtos);
             model.addAttribute("salesmen", userRepository.findByBusinessAndRolesContaining(currentBusiness, "ROLE_SALESMAN"));
             model.addAttribute("financialYears", generateFinancialYears());
             
@@ -406,33 +437,69 @@ public class BillingController {
     /**
      * Processes the creation of a new bill.
      */
+//    @PostMapping("/create")
+//    public String createBill(@ModelAttribute("request") BillRequest request, RedirectAttributes redirectAttributes) {
+//        try {
+//            Bill createdBill = billingService.createBill(request);
+//            redirectAttributes.addFlashAttribute("successMessage", "Bill #" + createdBill.getBillNo() + " created successfully for FY " + createdBill.getFinancialYear());
+//            return "redirect:/billing/" + createdBill.getId();
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("error", "An unexpected error occurred: " + e.getMessage());
+//            redirectAttributes.addFlashAttribute("request", request);
+//            return "redirect:/billing/create";
+//        }
+//    }
     @PostMapping("/create")
     public String createBill(@ModelAttribute("request") BillRequest request, RedirectAttributes redirectAttributes) {
         try {
-            Bill createdBill = billingService.createBill(request);
+            // The service now returns our new result object
+            BillingService.BillCreationResult result = billingService.createBill(request);
+            Bill createdBill = result.getBill();
+
+            // Check if the result has a warning message
+            if (result.hasWarning()) {
+                redirectAttributes.addFlashAttribute("warningMessage", result.getWarningMessage());
+            }
+
             redirectAttributes.addFlashAttribute("successMessage", "Bill #" + createdBill.getBillNo() + " created successfully for FY " + createdBill.getFinancialYear());
             return "redirect:/billing/" + createdBill.getId();
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "An unexpected error occurred: " + e.getMessage());
             redirectAttributes.addFlashAttribute("request", request);
             return "redirect:/billing/create";
         }
     }
-
-    /**
-     * Securely displays the details of a single bill.
-     */
     @GetMapping("/{id}")
     public String viewBill(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Bill bill = billingService.getBillById(id);
             model.addAttribute("bill", bill);
+
+            // THIS IS THE CRUCIAL LINE YOU ARE MISSING
+            // It checks if the bill can be edited and tells the HTML page.
+            model.addAttribute("isEditable", billingService.isBillActionable(bill)); 
+            
             return "billing/view";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Bill not found.");
             return "redirect:/billing";
         }
     }
+    /**
+     * Securely displays the details of a single bill.
+     */
+//    @GetMapping("/{id}")
+//    public String viewBill(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+//        try {
+//            Bill bill = billingService.getBillById(id);
+//            model.addAttribute("bill", bill);
+//            return "billing/view";
+//        } catch (EntityNotFoundException e) {
+//            redirectAttributes.addFlashAttribute("errorMessage", "Bill not found.");
+//            return "redirect:/billing";
+//        }
+//    }
     
 //    /**
 //     * MODIFIED: This method now prepares the data for the edit form.

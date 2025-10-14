@@ -4,6 +4,7 @@ C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutio
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\repository\projection\CustomerProfit.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\service\BusinessRegistrationRequest.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\controller\BusinessRegistrationController.java
+C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\controller\CustomerGroupController.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\service\PaymentService.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\model\Vendor.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\controller\VendorController.java
@@ -12,6 +13,7 @@ C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutio
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\service\BillingService.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\controller\CustomerController.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\repository\CustomerRepository.java
+C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\repository\CustomerGroupRepository.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\model\Customer.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\service\PaymentRequest.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\controller\AdminRegistrationController.java
@@ -23,6 +25,7 @@ C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutio
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\model\Payment.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\BillingSolutionsApplication.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\repository\VendorRepository.java
+C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\service\CustomerGroupService.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\repository\BusinessRepository.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\controller\BillingController.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\model\UnitType.java
@@ -32,6 +35,7 @@ C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutio
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\controller\PaymentController.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\repository\BillRepository.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\config\CustomAuthenticationSuccessHandler.java
+C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\model\CustomerGroup.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\model\Salesman.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\model\Business.java
 C:\Users\Aryan\git\repository3\BillingSolutions\src\main\java\com\billingsolutions\repository\UserRepository.java

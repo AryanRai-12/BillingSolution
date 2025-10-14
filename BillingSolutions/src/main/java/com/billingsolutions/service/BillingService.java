@@ -1018,295 +1018,48 @@ public class BillingService {
         return isSameDay && beforeCutoff;
     }
     
-    
-    /**
-     * THIS IS THE NEW, COMPLETE METHOD FOR DELETING A BILL.
-     */
-//    public void deleteBill(Long billId) {
-//        Bill bill = getBillById(billId);
-//
-//        if (!isBillActionable(bill)) {
-//            throw new SecurityException("You do not have permission to delete this bill.");
-//        }
-//
-//        Customer customer = bill.getCustomer();
-//        
-//        // Step 1: Reverse stock for each item
-//        for (BillItem item : bill.getItems()) {
-//            Product product = item.getProduct();
-//            product.setPcs(product.getPcs() + item.getTotalPieces());
-//        }
-//
-//        // Step 2: Reverse the bill's impact on the customer's due amount
-//        BigDecimal totalPaidOnThisBill = bill.getAmountPaid();
-//        customer.setDue(customer.getDue().add(totalPaidOnThisBill).subtract(bill.getTotal()));
-//        
-//        billRepository.delete(bill);
-//    }
-//    
-    
-//    /**
-//     * ADDED: A new method to safely delete a bill.
-//     */
-//    public void deleteBill(Long billId) {
-//        Bill bill = getBillById(billId); // Securely fetch the bill
-//
-//        // Security check: ensure the user has permission to delete this bill.
-//        if (!isBillActionable(bill)) {
-//            throw new SecurityException("You do not have permission to delete this bill.");
-//        }
-//
-//        Customer customer = bill.getCustomer();
-//        
-//        // Step 1: Reverse stock for each item in the bill
-//        for (BillItem item : bill.getItems()) {
-//            Product product = item.getProduct();
-//            product.setPcs(product.getPcs() + item.getTotalPieces());
-//            productRepository.save(product);
-//        }
-//
-//        // Step 2: Reverse the bill's impact on the customer's total due amount
-//        BigDecimal totalPaidOnThisBill = bill.getAmountPaid();
-//        customer.setDue(customer.getDue().add(totalPaidOnThisBill).subtract(bill.getTotal()));
-//        
-//        billRepository.delete(bill);
-//    }
-//    
 
-//    public Bill createBill(BillRequest request) {
-//        Business currentBusiness = getCurrentBusiness();
-//        
-//        String selectedFinancialYear = request.getFinancialYear();
-//        if (selectedFinancialYear == null || selectedFinancialYear.isBlank()) {
-//            throw new IllegalArgumentException("Financial Year must be selected.");
-//        }
-//
-//        long nextBillNumber = billRepository.findTopByFinancialYearAndBusinessOrderByIdDesc(selectedFinancialYear, currentBusiness)
-//                .map(latestBill -> {
-//                    String lastBillNo = latestBill.getBillNo();
-//                    try {
-//                        long lastNumber = Long.parseLong(lastBillNo.substring(lastBillNo.lastIndexOf('-') + 1));
-//                        return lastNumber + 1;
-//                    } catch (Exception e) {
-//                        return 1L; 
-//                    }
-//                })
-//                .orElse(1L);
-//        
-//        Bill bill = new Bill();
-//        bill.setBusiness(currentBusiness);
-//        bill.setFinancialYear(selectedFinancialYear);
-//        bill.setBillNo("GST-" + nextBillNumber);
-//
-//        Customer customer = customerRepository.findByIdAndBusiness(request.getCustomerId(), currentBusiness)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid Customer ID for this business: " + request.getCustomerId()));
-//        
-//        User salesmanUser = null;
-//        if (request.getSalesmanId() != null) {
-//            salesmanUser = userRepository.findById(request.getSalesmanId())
-//                    .orElseThrow(() -> new IllegalArgumentException("Invalid Salesman ID: " + request.getSalesmanId()));
-//        }
-//
-//        bill.setCustomer(customer);
-//        bill.setSalesman(salesmanUser);
-//        
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null) {
-//            bill.setCreatedBy(authentication.getName());
-//        }
-//        
-//        bill.setCustomerNameSnapshot(customer.getName());
-//        bill.setCustomerPhoneSnapshot(customer.getPhone());
-//        bill.setCustomerAddressSnapshot(customer.getAddress());
-//        bill.setCustomerGstSnapshot(customer.getGst());
-//
-//        BigDecimal subTotal = BigDecimal.ZERO;
-//        BigDecimal totalDiscount = BigDecimal.ZERO;
-//        BigDecimal totalCostBasis = BigDecimal.ZERO;
-//
-//        for (BillRequest.ItemRequest itemReq : request.getItems()) {
-//            Product product = productRepository.findByIdAndBusiness(itemReq.getProductId(), currentBusiness)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid Product ID for this business: " + itemReq.getProductId()));
-//            
-//            int piecesSold = calculateEffectivePieces(product, itemReq.getUnitType(), itemReq.getQuantity());
-//            validateAndReduceStock(product, piecesSold);
-//            validateProfitability(product, itemReq.getDiscountPercent());
-//
-//            BillItem item = new BillItem();
-//            item.setBill(bill);
-//            item.setProduct(product);
-//            item.setUnitType(itemReq.getUnitType());
-//            item.setQuantity(itemReq.getQuantity());
-//            item.setDiscountPercent(itemReq.getDiscountPercent());
-//            item.setUnitPriceSnapshot(product.getSellingPrice());
-//            item.setUnitCostSnapshot(product.getCostPrice());
-//            item.setTotalPieces(piecesSold);
-//            BigDecimal effectiveQuantityBD = new BigDecimal(piecesSold);
-//            BigDecimal grossLineTotal = product.getSellingPrice().multiply(effectiveQuantityBD);
-//            BigDecimal discountAmount = grossLineTotal.multiply(itemReq.getDiscountPercent()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-//            BigDecimal netLineTotal = grossLineTotal.subtract(discountAmount);
-//            item.setLineDiscount(discountAmount);
-//            item.setLineTotal(netLineTotal);
-//            bill.addItem(item);
-//            subTotal = subTotal.add(grossLineTotal);
-//            totalDiscount = totalDiscount.add(discountAmount);
-//            totalCostBasis = totalCostBasis.add(product.getCostPrice().multiply(effectiveQuantityBD));
-//        }
-//
-//        bill.setSubTotal(subTotal);
-//        bill.setTotalDiscount(totalDiscount);
-//        bill.setTotal(subTotal.subtract(totalDiscount));
-//        bill.setTotalCostBasis(totalCostBasis);
-//
-//        BigDecimal previousDue = customer.getDue() != null ? customer.getDue() : BigDecimal.ZERO;
-//        bill.setPreviousDue(previousDue);
-//        
-//        BigDecimal paymentAgainstDue = request.getPaymentAgainstPreviousDue() != null ? request.getPaymentAgainstPreviousDue() : BigDecimal.ZERO;
-//        bill.setPaymentAgainstPreviousDue(paymentAgainstDue);
-//        
-//        BigDecimal newDue = previousDue.subtract(paymentAgainstDue).add(bill.getTotal());
-//        bill.setNewDue(newDue);
-//        
-//        BigDecimal creditLimit = customer.getCreditLimit();
-//        if (creditLimit != null && newDue.compareTo(creditLimit) > 0) {
-//            throw new CreditLimitExceededException(
-//                "Cannot create bill. New due amount of " + newDue.setScale(2, RoundingMode.HALF_UP) +
-//                " would exceed the customer's credit limit of " + creditLimit.setScale(2, RoundingMode.HALF_UP) + "."
-//            );
-//        }
-//        	
-//        customer.setDue(newDue);
-//
-//        return billRepository.save(bill);
-//    }
-    
-//    @Transactional
-//    public Bill createBill(BillRequest request) {
-//        Business currentBusiness = getCurrentBusiness();
-//        
-//        Customer customer = customerRepository.findByIdAndBusiness(request.getCustomerId(), currentBusiness)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid Customer ID for this business: " + request.getCustomerId()));
-//
-//        BigDecimal previousDueForNewBill = customer.getDue() != null ? customer.getDue() : BigDecimal.ZERO;
-//
-//        if (request.getPayments() != null) {
-//            for (PaymentRequest paymentRequest : request.getPayments()) {
-//                if (paymentRequest.getPaymentType() != null && !"none".equals(paymentRequest.getPaymentType())) {
-//                    Bill billToPay = getBillById(paymentRequest.getBillId());
-//                    BigDecimal remainingDueOnBill = billToPay.getTotal().subtract(
-//                        billToPay.getPayments().stream().map(Payment::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add)
-//                    );
-//                    
-//                    BigDecimal paymentAmount = BigDecimal.ZERO;
-//                    if ("full".equals(paymentRequest.getPaymentType())) {
-//                        paymentAmount = remainingDueOnBill;
-//                    } else if ("partial".equals(paymentRequest.getPaymentType()) && paymentRequest.getPartialAmount() != null) {
-//                        paymentAmount = paymentRequest.getPartialAmount();
-//                    }
-//
-//                    if (paymentAmount.compareTo(remainingDueOnBill) > 0) {
-//                        paymentAmount = remainingDueOnBill;
-//                    }
-//
-//                    if (paymentAmount.compareTo(BigDecimal.ZERO) > 0) {
-//                        paymentService.createPayment(billToPay.getId(), paymentAmount);
-//                    }
-//                }
-//            }
-//        }
-//        
-//        String selectedFinancialYear = request.getFinancialYear();
-//        long nextBillNumber = billRepository.findTopByFinancialYearAndBusinessOrderByIdDesc(selectedFinancialYear, currentBusiness)
-//            .map(latestBill -> {
-//                String lastBillNo = latestBill.getBillNo();
-//                try {
-//                    long lastNumber = Long.parseLong(lastBillNo.substring(lastBillNo.lastIndexOf('-') + 1));
-//                    return lastNumber + 1;
-//                } catch (Exception e) { return 1L; }
-//            }).orElse(1L);
-//
-//        Bill bill = new Bill();
-//        bill.setBusiness(currentBusiness);
-//        bill.setFinancialYear(selectedFinancialYear);
-//        bill.setBillNo("GST-" + nextBillNumber);
-//        
-//        User salesmanUser = null;
-//        if (request.getSalesmanId() != null) {
-//            salesmanUser = userRepository.findById(request.getSalesmanId())
-//                    .orElseThrow(() -> new IllegalArgumentException("Invalid Salesman ID: " + request.getSalesmanId()));
-//        }
-//
-//        bill.setCustomer(customer);
-//        bill.setSalesman(salesmanUser);
-//        
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null) {
-//            bill.setCreatedBy(authentication.getName());
-//        }
-//        
-//        bill.setCustomerNameSnapshot(customer.getName());
-//        bill.setCustomerPhoneSnapshot(customer.getPhone());
-//        bill.setCustomerAddressSnapshot(customer.getAddress());
-//        bill.setCustomerGstSnapshot(customer.getGst());
-//
-//        BigDecimal subTotal = BigDecimal.ZERO;
-//        BigDecimal totalDiscount = BigDecimal.ZERO;
-//        BigDecimal totalCostBasis = BigDecimal.ZERO;
-//
-//        for (BillRequest.ItemRequest itemReq : request.getItems()) {
-//            Product product = productRepository.findByIdAndBusiness(itemReq.getProductId(), currentBusiness)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid Product ID for this business: " + itemReq.getProductId()));
-//            
-//            int piecesSold = calculateEffectivePieces(product, itemReq.getUnitType(), itemReq.getQuantity());
-//            validateAndReduceStock(product, piecesSold);
-//            validateProfitability(product, itemReq.getDiscountPercent());
-//
-//            BillItem item = new BillItem();
-//            item.setBill(bill);
-//            item.setProduct(product);
-//            item.setUnitType(itemReq.getUnitType());
-//            item.setQuantity(itemReq.getQuantity());
-//            item.setDiscountPercent(itemReq.getDiscountPercent());
-//            item.setUnitPriceSnapshot(product.getSellingPrice());
-//            item.setUnitCostSnapshot(product.getCostPrice());
-//            item.setTotalPieces(piecesSold);
-//            BigDecimal effectiveQuantityBD = new BigDecimal(piecesSold);
-//            BigDecimal grossLineTotal = product.getSellingPrice().multiply(effectiveQuantityBD);
-//            BigDecimal discountAmount = grossLineTotal.multiply(itemReq.getDiscountPercent()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-//            BigDecimal netLineTotal = grossLineTotal.subtract(discountAmount);
-//            item.setLineDiscount(discountAmount);
-//            item.setLineTotal(netLineTotal);
-//            bill.addItem(item);
-//            subTotal = subTotal.add(grossLineTotal);
-//            totalDiscount = totalDiscount.add(discountAmount);
-//            totalCostBasis = totalCostBasis.add(product.getCostPrice().multiply(effectiveQuantityBD));
-//        }
-//
-//        bill.setSubTotal(subTotal);
-//        bill.setTotalDiscount(totalDiscount);
-//        bill.setTotal(subTotal.subtract(totalDiscount));
-//        bill.setTotalCostBasis(totalCostBasis);
-//        
-//        bill.setPreviousDue(previousDueForNewBill);
-//        bill.setPaymentAgainstPreviousDue(BigDecimal.ZERO);
-//
-//        BigDecimal finalCustomerDue = customer.getDue().add(bill.getTotal());
-//        bill.setNewDue(finalCustomerDue);
-//        customer.setDue(finalCustomerDue);
-//
-//        return billRepository.save(bill);
-//    }
-//    
     
     /**
      * This is the complete, final, and correct version of the createBill method.
      */
     @Transactional
-    public Bill createBill(BillRequest request) {
+    public BillCreationResult createBill(BillRequest request) {
         Business currentBusiness = getCurrentBusiness();
+        String warningMessage = null;
         
         Customer customer = customerRepository.findByIdAndBusiness(request.getCustomerId(), currentBusiness)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Customer ID for this business: " + request.getCustomerId()));
+        
+        
+     // --- NEW CREDIT LIMIT CHECK ---
+        if (!isCurrentUserAdmin()) {
+            BigDecimal creditLimit = customer.getCreditLimit();
+            // Only check if a credit limit is actually set (i.e., greater than zero)
+            if (creditLimit != null && creditLimit.compareTo(BigDecimal.ZERO) > 0) {
+            	
+            	System.out.println("This block of code is running perfectly");
+                BigDecimal currentDue = customer.getDue() != null ? customer.getDue() : BigDecimal.ZERO;
+                BigDecimal newBillTotal = calculateProvisionalTotal(request);
+                BigDecimal projectedDue = currentDue.add(newBillTotal);
+
+                if (projectedDue.compareTo(creditLimit) > 0) {
+                    // If the user is an admin, set a warning message.
+                    if (isCurrentUserAdmin()) {
+                        warningMessage = "Warning: Customer's projected due of ₹" + projectedDue.setScale(2, RoundingMode.HALF_UP) +
+                                         " exceeds their credit limit of ₹" + creditLimit.setScale(2, RoundingMode.HALF_UP) + ". Bill created with admin override.";
+                    } else {
+                        // If not an admin, throw the error and block the creation as before.
+                        throw new CreditLimitExceededException(
+                            "Cannot create bill. Customer's projected due of ₹" + projectedDue.setScale(2, RoundingMode.HALF_UP) +
+                            " exceeds their credit limit of ₹" + creditLimit.setScale(2, RoundingMode.HALF_UP) + "."
+                        );
+                    }
+                }
+            }
+        }
+        // --- END OF CREDIT LIMIT CHECK ---
+        
 
         // STEP 1: Capture the customer's due amount BEFORE any payments are made.
         BigDecimal previousDueForNewBill = customer.getDue() != null ? customer.getDue() : BigDecimal.ZERO;
@@ -1435,8 +1188,9 @@ public class BillingService {
         BigDecimal finalCustomerDue = customer.getDue().add(bill.getTotal());
         bill.setNewDue(finalCustomerDue);
         customer.setDue(finalCustomerDue);
-
-        return billRepository.save(bill);
+        Bill savedBill = billRepository.save(bill);
+        return new BillCreationResult(savedBill, warningMessage);
+        //return billRepository.save(bill);
     }
     /**
      * THIS IS THE FINAL, CORRECTED VERSION OF THE updateBill METHOD.
@@ -1630,9 +1384,48 @@ public class BillingService {
 
         return billRepository.save(bill);
     }
-
+    
+    
+    /**
+     * Checks if the currently authenticated user has the 'ROLE_ADMIN'.
+     */
+    private boolean isCurrentUserAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) return false;
+        return authentication.getAuthorities().stream()
+                .anyMatch(auth -> "ROLE_ADMIN".equals(auth.getAuthority()));
+    }
     // --- Helper Methods, DTOs & Exception Classes ---
+    
+    /**
+     * Calculates the total value of a new bill request before it's saved.
+     * This is used to project the customer's future due amount for the credit check.
+     */
+    private BigDecimal calculateProvisionalTotal(BillRequest request) {
+        Business currentBusiness = getCurrentBusiness();
+        BigDecimal provisionalTotal = BigDecimal.ZERO;
 
+        if (request.getItems() == null) {
+            return provisionalTotal;
+        }
+
+        for (BillRequest.ItemRequest itemReq : request.getItems()) {
+            Product product = productRepository.findByIdAndBusiness(itemReq.getProductId(), currentBusiness)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Product ID: " + itemReq.getProductId()));
+            
+            int pieces = calculateEffectivePieces(product, itemReq.getUnitType(), itemReq.getQuantity());
+            BigDecimal effectiveQuantityBD = new BigDecimal(pieces);
+            
+            BigDecimal grossLineTotal = product.getSellingPrice().multiply(effectiveQuantityBD);
+            BigDecimal discountPercent = itemReq.getDiscountPercent() != null ? itemReq.getDiscountPercent() : BigDecimal.ZERO;
+            BigDecimal discountAmount = grossLineTotal.multiply(discountPercent).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+            BigDecimal netLineTotal = grossLineTotal.subtract(discountAmount);
+            
+            provisionalTotal = provisionalTotal.add(netLineTotal);
+        }
+        return provisionalTotal;
+    }
+    
     private int calculateEffectivePieces(Product product, UnitType unitType, int quantity) {
         if (product.getUnitType() == UnitType.PCS) {
             switch (unitType) {
@@ -1758,6 +1551,21 @@ public class BillingService {
             this.itemId = item.getId();
             this.discountPercent = item.getDiscountPercent();
         }
+    }
+    
+ // Add this new static class at the end of your BillingService file
+    public static class BillCreationResult {
+        private final Bill bill;
+        private final String warningMessage;
+
+        public BillCreationResult(Bill bill, String warningMessage) {
+            this.bill = bill;
+            this.warningMessage = warningMessage;
+        }
+
+        public Bill getBill() { return bill; }
+        public String getWarningMessage() { return warningMessage; }
+        public boolean hasWarning() { return warningMessage != null; }
     }
 }
 
