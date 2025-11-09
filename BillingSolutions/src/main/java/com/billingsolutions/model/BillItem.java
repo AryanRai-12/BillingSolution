@@ -19,9 +19,28 @@ public class BillItem {
 	@JoinColumn(name = "bill_id")
 	private Bill bill;
 
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
 	private Product product;
+	
+
+	@Column(nullable = false)
+    private String productNameSnapshot;
+
+    @Column // SKU might be null
+    private String productSkuSnapshot;
+	
+    @Column // HSN might be null
+    private String productHsnSnapshot;
+
+    @Column // Group might be null
+    private String productGroupSnapshot;
+    
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UnitType unitTypeSnapshot;
+	
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -106,4 +125,18 @@ public class BillItem {
 	public void setGstRateSnapshot(BigDecimal gstRateSnapshot) { this.gstRateSnapshot = gstRateSnapshot; }
 	public BigDecimal getLineTax() { return lineTax; }
 	public void setLineTax(BigDecimal lineTax) { this.lineTax = lineTax; }
+	public String getProductNameSnapshot() { return productNameSnapshot; }
+    public void setProductNameSnapshot(String n) { this.productNameSnapshot = n; }
+    
+    public String getProductSkuSnapshot() { return productSkuSnapshot; }
+    public void setProductSkuSnapshot(String s) { this.productSkuSnapshot = s; }
+
+    public String getProductHsnSnapshot() { return productHsnSnapshot; }
+    public void setProductHsnSnapshot(String h) { this.productHsnSnapshot = h; }
+
+    public String getProductGroupSnapshot() { return productGroupSnapshot; }
+    public void setProductGroupSnapshot(String g) { this.productGroupSnapshot = g; }
+
+    public UnitType getUnitTypeSnapshot() { return unitTypeSnapshot; }
+    public void setUnitTypeSnapshot(UnitType u) { this.unitTypeSnapshot = u; }
 } 

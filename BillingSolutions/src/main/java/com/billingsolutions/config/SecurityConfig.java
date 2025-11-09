@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 @Configuration
 public class SecurityConfig {
@@ -44,6 +46,10 @@ public class SecurityConfig {
 //		return http.build();
 //	}
 	@Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests(auth -> auth
@@ -70,7 +76,7 @@ public class SecurityConfig {
 				.permitAll()
 			)
 			.rememberMe(rememberMe -> rememberMe
-	                .key(rememberMeKey) // ⚠️ A unique, secret key is required
+	                .key(rememberMeKey) // A unique, secret key is required
 	                .tokenValiditySeconds(1209600) // Sets cookie to last for 14 days
 	                .userDetailsService(userDetailsService)
 	        )

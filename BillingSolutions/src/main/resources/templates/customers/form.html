@@ -503,12 +503,14 @@
                                    th:classappend="${#fields.hasErrors('gst')} ? 'is-invalid' : ''">
                              <div th:errors="*{gst}" class="invalid-feedback"></div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="partyCode" class="form-label">Party Code</label>
-                            <input type="text" id="partyCode" class="form-control" th:field="*{partyCode}"
-                                   th:classappend="${#fields.hasErrors('partyCode')} ? 'is-invalid' : ''">
-                             <div th:errors="*{partyCode}" class="invalid-feedback"></div>
-                        </div>
+
+						<div th:if="${customer.id != null}" class="col-md-6 mb-3">
+						    <label for="partyCode" class="form-label">Party Code</label>
+						    
+						    <input type="text" id="partyCode" class="form-control" th:field="*{partyCode}" readonly disabled
+						           style="background-color: #e9ecef;">
+						           
+						    </div>
                     </div>
 
                      <div class="row">

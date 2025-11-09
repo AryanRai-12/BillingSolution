@@ -7,6 +7,8 @@ import com.billingsolutions.model.CustomerGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -48,13 +50,19 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     boolean existsByIdAndBusiness(Long id, Business business);
     
     
-    Optional<CustomerGroup> findByNameAndBusiness(String name, Business business);
+    
+    
+    Optional<Customer> findTopByBusinessOrderByIdDesc(Business business);
 
-    /**
-     * Finds all customer groups for a specific business.
-     * @param business The current business.
-     * @return A list of customer groups.
-     */
-    List<CustomerGroup> findByBusinessOrderByName(Business business);
+    // Method to count customers for party code generation fallback
+    long countByBusiness(Business business);
+    
+    @Query("SELECT c FROM Customer c WHERE c.business = :business AND " +
+            "(:groupId IS NULL OR c.customerGroup.id = :groupId) AND " +
+            "(:query IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%')) OR c.phone LIKE CONCAT('%', :query, '%'))")
+     Page<Customer> searchCustomers(@Param("business") Business business, 
+                                    @Param("query") String query, 
+                                    @Param("groupId") Long groupId, 
+                                    Pageable pageable);
 }
 

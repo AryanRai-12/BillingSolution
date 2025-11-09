@@ -29,6 +29,7 @@ com\billingsolutions\service\BillPaymentDetailsDTO.class
 com\billingsolutions\service\InsufficientProfitException.class
 com\billingsolutions\BillingSolutionsApplication.class
 com\billingsolutions\model\enums\UnitType.class
+com\billingsolutions\service\DataImportService.class
 com\billingsolutions\service\ProductDTO.class
 com\billingsolutions\repository\BillRepository.class
 com\billingsolutions\repository\BillItemRepository.class
@@ -46,6 +47,7 @@ com\billingsolutions\controller\VendorController.class
 com\billingsolutions\service\ProductService.class
 com\billingsolutions\repository\ProductRepository.class
 com\billingsolutions\controller\ProductController.class
+com\billingsolutions\service\CustomerDto.class
 com\billingsolutions\model\User.class
 com\billingsolutions\repository\projection\CustomerProfit.class
 com\billingsolutions\config\DataInitializer.class

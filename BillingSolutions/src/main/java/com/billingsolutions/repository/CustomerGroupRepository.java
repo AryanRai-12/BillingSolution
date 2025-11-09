@@ -11,6 +11,14 @@ import java.util.Optional;
 @Repository
 public interface CustomerGroupRepository extends JpaRepository<CustomerGroup, Long> {
     
+
+    /**
+     * Finds all customer groups for a specific business.
+     * @param business The current business.
+     * @return A list of customer groups.
+     */
+    List<CustomerGroup> findByBusinessOrderByName(Business business);
+	
 	
 	Optional<CustomerGroup> findByNameAndBusiness(String name, Business business);
     // You already have this one

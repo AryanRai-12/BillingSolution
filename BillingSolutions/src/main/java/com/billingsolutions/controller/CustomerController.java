@@ -102,10 +102,18 @@
 package com.billingsolutions.controller;
 
 import com.billingsolutions.model.Customer;
+import com.billingsolutions.model.CustomerGroup;
 import com.billingsolutions.service.CustomerGroupService; // Make sure this is imported
 import com.billingsolutions.service.CustomerService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -123,11 +131,29 @@ public class CustomerController {
 		this.customerGroupService = customerGroupService;
 	}
   
+//	@GetMapping
+//	public String list(Model model) {
+//		model.addAttribute("customers", customerService.findAll());
+//		return "customers/list";
+//	}
 	@GetMapping
-	public String list(Model model) {
-		model.addAttribute("customers", customerService.findAll());
-		return "customers/list";
-	}
+    public String list(@RequestParam(name = "query", required = false) String query,
+                                @RequestParam(name = "groupId", required = false) Long groupId,
+                                @RequestParam(name = "page", defaultValue = "0") int page,
+                                @RequestParam(name = "size", defaultValue = "15") int size,
+                                Model model) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        Page<Customer> customerPage = customerService.searchCustomers(query, groupId, pageable);
+        List<CustomerGroup> customerGroups = customerGroupService.findAllForCurrentBusiness();
+
+        model.addAttribute("customerPage", customerPage);
+        model.addAttribute("customerGroups", customerGroups);
+        model.addAttribute("query", query);
+        model.addAttribute("selectedGroupId", groupId);
+
+        return "customers/list";
+    }
 
 	@GetMapping("/new")
 	public String createForm(Model model) {

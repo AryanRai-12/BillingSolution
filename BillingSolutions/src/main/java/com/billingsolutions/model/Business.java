@@ -17,6 +17,9 @@ public class Business {
 
     @Column(nullable = false)
     private String name;
+    
+    @Column(nullable = false)
+    private Long customerCodeCounter = 0L;
 
     @Column(nullable = false, unique = true)
     private String ownerEmail;

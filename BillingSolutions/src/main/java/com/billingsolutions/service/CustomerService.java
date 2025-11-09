@@ -11,10 +11,14 @@ import com.billingsolutions.repository.CustomerRepository;
 import com.billingsolutions.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 // ADDED: Spring Security classes to get the currently logged-in user
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,6 +32,7 @@ public class CustomerService {
     // ADDED: UserRepository dependency
     private final UserRepository userRepository;
     private final CustomerGroupRepository customerGroupRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     // MODIFIED: The constructor now requires the UserRepository
     public CustomerService(CustomerRepository customerRepository, UserRepository userRepository, 
@@ -73,6 +78,42 @@ public class CustomerService {
     public Optional<Customer> findByPartyCode(String partyCode) { 
         return customerRepository.findByPartyCodeAndBusiness(partyCode, getCurrentBusiness()); 
     }
+    
+    
+    private String generateNextPartyCode(Business business) {
+        // Find the most recently created customer for this business.
+        Optional<Customer> lastCustomer = customerRepository.findTopByBusinessOrderByIdDesc(business);
+        
+        int nextNumber = 1;
+        if (lastCustomer.isPresent()) {
+            String lastCode = lastCustomer.get().getPartyCode();
+            logger.info("Last party code for business '{}' was '{}'", business.getName(), lastCode);
+            try {
+                // Safely extract the numeric part of the code after the last hyphen.
+                String numericPart = lastCode.substring(lastCode.lastIndexOf("-") + 1);
+                int lastNumber = Integer.parseInt(numericPart);
+                nextNumber = lastNumber + 1;
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                // If parsing fails (e.g., due to old data with a different format),
+                // we use a robust fallback by counting all customers for the business.
+                logger.warn("Could not parse party code '{}'. Using count-based fallback.", lastCode, e);
+                long customerCount = customerRepository.countByBusiness(business);
+                nextNumber = (int) customerCount + 1;
+            }
+        }
+
+        // Create a short, uppercase prefix from the business name (e.g., "My Awesome Company" -> "MYAW").
+        String prefix = business.getName()
+                                .replaceAll("\\s+", "") // Remove all whitespace
+                                .toUpperCase();
+        prefix = prefix.length() > 4 ? prefix.substring(0, 4) : prefix; // Limit to 4 characters
+
+        return prefix + "-" + nextNumber;
+    }
+    
+    
+    
+    
 
     // MODIFIED: This now automatically assigns the business to new customers.
     @Transactional
@@ -82,6 +123,12 @@ public class CustomerService {
         // Ensure the business is set, especially for new customers
         if (customer.getBusiness() == null) {
             customer.setBusiness(currentBusiness);
+        }
+        
+        if (customer.getId() == null) {
+            String newPartyCode = generateNextPartyCode(currentBusiness);
+            customer.setPartyCode(newPartyCode);
+            logger.info("Generated new party code '{}' for new customer in business '{}'", newPartyCode, currentBusiness.getName());
         }
 
         // Check if the customer is being created or updated without a group
@@ -124,6 +171,12 @@ public class CustomerService {
         customerRepository.save(customer);
     }
     
+    public Page<Customer> searchCustomers(String query, Long groupId, Pageable pageable) {
+        Business currentBusiness = getCurrentBusiness();
+        String effectiveQuery = (query != null && !query.trim().isEmpty()) ? query.trim() : null;
+
+        return customerRepository.searchCustomers(currentBusiness, effectiveQuery, groupId, pageable);
+    }
     
     public Customer update(Long id, Customer form) {
         // Securely find the existing customer. This throws an exception if not found.
@@ -138,7 +191,6 @@ public class CustomerService {
         existingCustomer.setPhone(form.getPhone());
         existingCustomer.setEmail(form.getEmail());
         existingCustomer.setGst(form.getGst());
-        existingCustomer.setPartyCode(form.getPartyCode());
         existingCustomer.setCreditLimit(form.getCreditLimit());
         existingCustomer.setDue(form.getDue());
         existingCustomer.setCustomerGroup(form.getCustomerGroup());

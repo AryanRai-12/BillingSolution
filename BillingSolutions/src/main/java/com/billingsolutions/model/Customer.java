@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "customers")
+@Table(name = "customers", uniqueConstraints = {
+	    @UniqueConstraint(columnNames = {"business_id", "partyCode"})
+	})
 public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +52,7 @@ public class Customer {
 
 	private String houseAddress;
 
-	@NotBlank(message = "Party code is required.")
+	
 	@Column(unique = true)
 	private String partyCode;
 	

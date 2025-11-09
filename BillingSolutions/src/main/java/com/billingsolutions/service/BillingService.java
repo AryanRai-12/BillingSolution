@@ -1148,6 +1148,13 @@ public class BillingService {
             item.setUnitPriceSnapshot(product.getSellingPrice());
             item.setUnitCostSnapshot(product.getCostPrice());
             item.setTotalPieces(piecesSold);
+            
+            item.setProductNameSnapshot(product.getName());         // <-- ADD THIS
+            item.setProductSkuSnapshot(product.getSku());         // <-- ADD THIS
+            item.setProductHsnSnapshot(product.getHsn());         // <-- ADD THIS
+            item.setProductGroupSnapshot(product.getProductGroup());  // <-- ADD THIS
+            item.setUnitTypeSnapshot(product.getUnitType());
+            
             BigDecimal effectiveQuantityBD = new BigDecimal(piecesSold);
             BigDecimal grossLineTotal = product.getSellingPrice().multiply(effectiveQuantityBD);
             BigDecimal discountAmount = grossLineTotal.multiply(itemReq.getDiscountPercent()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
